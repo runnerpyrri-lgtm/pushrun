@@ -1,13 +1,28 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const UNAVAILABLE_REGISTRATION = null;
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const APPLY_URLS = {
   chuncheon: "https://www.chuncheonmarathon.com/apply/part-application.html",
   jtbc: "https://runable.me/",
-  seoulMarathon: "https://dongma.club"
+  jtbcOfficial: "https://marathon.jtbc.com/",
+  seoulMarathon: "https://dongma.club",
+  daegu: "https://daegumarathon.daegu.go.kr",
+  ytn: "https://marathongo.co.kr/raceDetail/domestic/2026-ytn-seoul-tour-marathon",
+  seoulInternational: "https://marathongo.co.kr/raceDetail/domestic/2026-seoul-international-marathon",
+  seoulHalf: "https://marathongo.co.kr/raceDetail/domestic/2026-seoul-half-marathon",
+  nightBusan: "https://marathongo.co.kr/raceDetail/domestic/2026-night-run-busan",
+  theRaceBusan: "https://marathongo.co.kr/raceDetail/domestic/2026-the-race-busan-10k",
+  incheonHalf: "https://marathongo.co.kr/raceDetail/domestic/26th-incheon-international-half-marathon-2026",
+  incheonFederation: "https://marathongo.co.kr/raceDetail/domestic/2026-incheon-athletics-federation-marathon",
+  cheongju: "https://marathongo.co.kr/raceDetail/domestic/2026-jeonmahyeop-cheongju-marathon",
+  gyeongju: "https://marathongo.co.kr/raceDetail/domestic/2026-gyeongju-marathon",
+  mbnSeoul: "https://marathongo.co.kr/raceDetail/domestic/2026-mbn-seoul-marathon",
+  seoulRun: "https://marathongo.co.kr/raceDetail/domestic/2026-seoulrun",
+  giveRace: "https://marathongo.co.kr/raceDetail/domestic/13th-give-n-race-2026-04-05",
+  busan50k: "https://marathongo.co.kr/raceDetail/domestic/2026-busan-50k",
+  seasideIncheon: "https://marathongo.co.kr/raceDetail/domestic/1st-kyonggi-news-seaside-marathon-2026-05-16"
 };
 
 const state = {
@@ -25,320 +40,297 @@ const state = {
   timers: []
 };
 
-function makeDate(minutesFromNow) {
-  return new Date(Date.now() + minutesFromNow * 60 * 1000).toISOString();
-}
-
 const RACES = [
-  {
-    id: "demo-10",
-    name: "서울 잠실 10K",
-    region: "서울",
-    city: "잠실",
-    venue: "잠실종합운동장",
-    raceDate: "2026-09-13T00:00:00+09:00",
-    registrationOpenAt: makeDate(11),
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "official",
-    capacity: 5000,
-    popularity: 98,
-    note: "접수 시작 전 알림을 켜두기 좋은 도심 10K 대회."
-  },
-  {
-    id: "seoul-half",
-    name: "서울 하프 마라톤",
-    region: "서울",
-    city: "광화문",
-    venue: "광화문광장",
-    raceDate: "2026-10-18T00:00:00+09:00",
-    registrationOpenAt: "2026-07-12T20:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K"],
-    status: "scheduled",
-    sourceConfidence: "official",
-    capacity: 12000,
-    popularity: 94,
-    note: "인기 대회. 접수 시작 직후 확인 권장."
-  },
-  {
-    id: "busan-night-run",
-    name: "부산 나이트 런",
-    region: "부산",
-    city: "해운대",
-    venue: "해운대 해변로",
-    raceDate: "2026-08-29T00:00:00+09:00",
-    registrationOpenAt: "2026-07-09T10:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "multi_source",
-    capacity: 7000,
-    popularity: 87,
-    note: "접수처와 공식 공지 기준이 일치합니다."
-  },
-  {
-    id: "daegu-full",
-    name: "대구 풀코스 챌린지",
-    region: "대구",
-    city: "수성구",
-    venue: "대구스타디움",
-    raceDate: "2026-11-08T00:00:00+09:00",
-    registrationOpenAt: "2026-07-25T14:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Full", "Half", "10K"],
-    status: "scheduled",
-    sourceConfidence: "official",
-    capacity: 15000,
-    popularity: 90,
-    note: "풀코스 선착순 구간 주의."
-  },
-  {
-    id: "jeju-trail",
-    name: "제주 오름 트레일런",
-    region: "제주",
-    city: "서귀포",
-    venue: "오름 코스",
-    raceDate: "2026-10-03T00:00:00+09:00",
-    registrationOpenAt: "2026-07-16T09:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Trail", "15K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 1800,
-    popularity: 76,
-    note: "소규모 모집. 빠른 확인 추천."
-  },
-  {
-    id: "incheon-bridge",
-    name: "인천 브릿지 레이스",
-    region: "인천",
-    city: "송도",
-    venue: "센트럴파크",
-    raceDate: "2026-09-27T00:00:00+09:00",
-    registrationOpenAt: "2026-07-20T11:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K", "5K"],
-    status: "changed",
-    sourceConfidence: "multi_source",
-    capacity: 9000,
-    popularity: 82,
-    note: "접수 시간이 11:00로 변경되었습니다."
-  },
-  {
-    id: "gangneung-sea",
-    name: "강릉 바다 마라톤",
-    region: "강원",
-    city: "강릉",
-    venue: "경포해변",
-    raceDate: "2026-08-16T00:00:00+09:00",
-    registrationOpenAt: "2026-07-15T18:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K"],
-    status: "postponed",
-    sourceConfidence: "multi_source",
-    capacity: 4000,
-    popularity: 65,
-    note: "일정 재공지 확인 대상입니다."
-  },
-  {
-    id: "han-river-kids",
-    name: "한강 키즈 패밀리런",
-    region: "서울",
-    city: "여의도",
-    venue: "여의도 한강공원",
-    raceDate: "2026-08-23T00:00:00+09:00",
-    registrationOpenAt: "2026-07-11T13:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Kids", "3K", "5K"],
-    status: "cancelled",
-    sourceConfidence: "official",
-    capacity: 2500,
-    popularity: 59,
-    note: "취소 공지 확인."
-  },
-  {
-    id: "chuncheon-autumn",
-    name: "2026 춘천마라톤",
-    region: "강원",
-    city: "춘천",
-    venue: "춘천 공지천교",
-    raceDate: "2026-10-25T09:00:00+09:00",
-    registrationOpenAt: "2026-07-14T14:00:00+09:00",
-    registrationUrl: APPLY_URLS.chuncheon,
-    distances: ["Full", "10K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 12000,
-    popularity: 91,
-    note: "Full 일반접수는 7월 14일 14시, 10km는 7월 16일 14시에 열립니다."
-  },
-  {
-    id: "gyeongju-international",
-    name: "경주 국제 마라톤",
-    region: "경북",
-    city: "경주",
-    venue: "경주시내 코스",
-    raceDate: "2026-10-18T00:00:00+09:00",
-    registrationOpenAt: "2026-08-12T14:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Full", "Half", "10K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 10000,
-    popularity: 88,
-    note: "역사 도시 코스."
-  },
   {
     id: "jtbc-seoul",
     name: "2026 JTBC 서울마라톤",
     region: "서울",
     city: "상암",
     venue: "상암 월드컵공원",
-    raceDate: "2026-11-01T00:00:00+09:00",
+    raceDate: "2026-11-01T08:00:00+09:00",
     registrationOpenAt: "2026-07-01T00:00:00+09:00",
+    registrationCloseAt: "2026-07-31T23:59:00+09:00",
     registrationUrl: APPLY_URLS.jtbc,
     distances: ["Full", "10K"],
     status: "open",
-    sourceConfidence: "single_source",
     capacity: 30000,
-    popularity: 96,
-    note: "러너블에서 미등록 추가접수 선응모가 진행 중입니다."
+    popularity: 99,
+    sourceName: "러너블 · JTBC 공식",
+    note: "러너블에서 미등록 추가접수 선응모가 7월 한 달간 진행 중입니다."
   },
   {
-    id: "jeonju-hanok",
-    name: "전주 한옥마을 러닝",
-    region: "전북",
-    city: "전주",
-    venue: "한옥마을 일대",
-    raceDate: "2026-09-20T00:00:00+09:00",
-    registrationOpenAt: "2026-07-30T09:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K", "5K"],
+    id: "ytn-seoul-tour",
+    name: "2026 YTN 서울투어마라톤",
+    region: "서울",
+    city: "서울광장",
+    venue: "서울광장",
+    raceDate: "2026-09-06T07:30:00+09:00",
+    registrationOpenAt: "2026-06-17T10:00:00+09:00",
+    registrationCloseAt: "2026-07-15T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.ytn,
+    distances: ["Half", "11K"],
+    status: "open",
+    capacity: 5000,
+    popularity: 86,
+    sourceName: "마라톤GO",
+    note: "접수 기간은 6월 17일부터 7월 15일까지로 확인됩니다."
+  },
+  {
+    id: "cheongju-jeonmahyeop",
+    name: "2026 전마협회장배 청주마라톤",
+    region: "충북",
+    city: "청주",
+    venue: "무심천 체육공원",
+    raceDate: "2026-09-06T07:30:00+09:00",
+    registrationOpenAt: "2026-06-10T10:00:00+09:00",
+    registrationCloseAt: "2026-08-06T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.cheongju,
+    distances: ["10K", "5K"],
+    status: "open",
+    capacity: 3000,
+    popularity: 78,
+    sourceName: "마라톤GO",
+    note: "10km 2,000명, 5km 1,000명 선착순 모집으로 확인됩니다."
+  },
+  {
+    id: "chuncheon-marathon",
+    name: "2026 춘천마라톤",
+    region: "강원",
+    city: "춘천",
+    venue: "춘천 공지천공원",
+    raceDate: "2026-10-25T09:00:00+09:00",
+    registrationOpenAt: "2026-07-14T14:00:00+09:00",
+    registrationCloseAt: "2026-07-23T18:00:00+09:00",
+    registrationUrl: APPLY_URLS.chuncheon,
+    distances: ["Full", "10K"],
     status: "scheduled",
-    sourceConfidence: "single_source",
+    capacity: 12000,
+    popularity: 96,
+    sourceName: "공식 · 마라톤GO",
+    note: "Full 일반접수는 7월 14일 14시, 10km 일반접수는 7월 16일 14시에 열립니다."
+  },
+  {
+    id: "daegu-marathon",
+    name: "2026 대구마라톤",
+    region: "대구",
+    city: "대구",
+    venue: "대구스타디움 및 시내 일원",
+    raceDate: "2026-02-22T09:00:00+09:00",
+    registrationOpenAt: "2025-09-15T10:00:00+09:00",
+    registrationCloseAt: "2025-12-31T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.daegu,
+    distances: ["Full", "10K", "5K"],
+    status: "closed",
+    capacity: 40000,
+    popularity: 92,
+    sourceName: "대구마라톤 공식",
+    note: "풀코스/단체 9월 17일 10시, 10km/건강달리기 9월 22일 10시 오픈으로 공지됐습니다."
+  },
+  {
+    id: "seoul-international",
+    name: "2026 서울마라톤",
+    region: "서울",
+    city: "광화문",
+    venue: "광화문광장",
+    raceDate: "2026-03-15T08:00:00+09:00",
+    registrationOpenAt: "2025-06-09T19:00:00+09:00",
+    registrationCloseAt: "2026-06-10T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.seoulMarathon,
+    distances: ["Full", "10K"],
+    status: "closed",
+    capacity: 38000,
+    popularity: 98,
+    sourceName: "동마클럽 · 마라톤GO",
+    note: "접수처는 동마클럽으로 확인됩니다."
+  },
+  {
+    id: "seoul-half",
+    name: "2026 서울하프마라톤",
+    region: "서울",
+    city: "광화문",
+    venue: "광화문광장",
+    raceDate: "2026-04-26T08:00:00+09:00",
+    registrationOpenAt: "2025-12-16T10:00:00+09:00",
+    registrationCloseAt: "2025-12-18T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.seoulHalf,
+    distances: ["Half", "10K"],
+    status: "closed",
+    capacity: 12000,
+    popularity: 94,
+    sourceName: "마라톤GO",
+    note: "홈페이지 선착순 접수, HALF 8만원·10km 7만원으로 확인됩니다."
+  },
+  {
+    id: "night-run-busan",
+    name: "2026 나이트런 부산",
+    region: "부산",
+    city: "광안리",
+    venue: "광안리 해변",
+    raceDate: "2026-08-01T19:00:00+09:00",
+    registrationOpenAt: "2026-06-01T10:00:00+09:00",
+    registrationCloseAt: "2026-07-01T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.nightBusan,
+    distances: ["10K", "5K"],
+    status: "closed",
+    capacity: 7000,
+    popularity: 88,
+    sourceName: "마라톤GO",
+    note: "6월 티켓 오픈 예정으로 공지된 대회입니다."
+  },
+  {
+    id: "mbn-seoul",
+    name: "2026 MBN 서울마라톤",
+    region: "서울",
+    city: "광화문",
+    venue: "광화문 광장, 잠실종합운동장",
+    raceDate: "2026-11-15T08:00:00+09:00",
+    registrationOpenAt: "2026-06-22T10:00:00+09:00",
+    registrationCloseAt: "2026-06-26T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.mbnSeoul,
+    distances: ["Half", "10K"],
+    status: "closed",
+    capacity: 12000,
+    popularity: 89,
+    sourceName: "마라톤GO",
+    note: "HALF 6월 25일, 10km 6월 26일 접수로 확인됩니다."
+  },
+  {
+    id: "gyeongju-marathon",
+    name: "2026 경주마라톤",
+    region: "경북",
+    city: "경주",
+    venue: "경주시민운동장",
+    raceDate: "2026-10-17T08:00:00+09:00",
+    registrationOpenAt: "2026-05-26T10:00:00+09:00",
+    registrationCloseAt: "2026-05-28T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.gyeongju,
+    distances: ["Full", "Half", "10K"],
+    status: "closed",
+    capacity: 10000,
+    popularity: 88,
+    sourceName: "마라톤GO",
+    note: "풀·하프·10km 참가비와 접수 기간이 확인됩니다."
+  },
+  {
+    id: "seoulrun",
+    name: "2026 서울런",
+    region: "서울",
+    city: "여의도",
+    venue: "여의도공원 문화의마당",
+    raceDate: "2026-06-28T08:00:00+09:00",
+    registrationOpenAt: "2026-03-18T10:00:00+09:00",
+    registrationCloseAt: "2026-06-17T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.seoulRun,
+    distances: ["Half", "10K", "5K"],
+    status: "closed",
+    capacity: 5000,
+    popularity: 76,
+    sourceName: "마라톤GO",
+    note: "서울 여의도공원에서 열리는 하프·10km·5km 대회입니다."
+  },
+  {
+    id: "the-race-busan",
+    name: "2026 THE RACE BUSAN 10K",
+    region: "부산",
+    city: "부산항",
+    venue: "부산항북항 친수공원",
+    raceDate: "2026-04-19T08:00:00+09:00",
+    registrationOpenAt: "2026-02-09T10:00:00+09:00",
+    registrationCloseAt: "2026-03-06T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.theRaceBusan,
+    distances: ["10K"],
+    status: "closed",
+    capacity: 6000,
+    popularity: 82,
+    sourceName: "마라톤GO",
+    note: "부산항북항 친수공원 예정지에서 열리는 10km 대회입니다."
+  },
+  {
+    id: "incheon-half",
+    name: "제26회 인천국제하프마라톤",
+    region: "인천",
+    city: "문학",
+    venue: "인천문학경기장",
+    raceDate: "2026-03-22T08:30:00+09:00",
+    registrationOpenAt: "2026-01-05T10:00:00+09:00",
+    registrationCloseAt: "2026-02-13T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.incheonHalf,
+    distances: ["Half", "10K"],
+    status: "closed",
+    capacity: 9000,
+    popularity: 80,
+    sourceName: "마라톤GO",
+    note: "2026년 1월 5일 접수 예정으로 확인된 인천 하프 대회입니다."
+  },
+  {
+    id: "incheon-federation",
+    name: "2026 인천시육상연맹배 마라톤",
+    region: "인천",
+    city: "정서진",
+    venue: "정서진아라타워",
+    raceDate: "2026-05-17T08:00:00+09:00",
+    registrationOpenAt: "2026-03-11T14:00:00+09:00",
+    registrationCloseAt: "2026-04-03T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.incheonFederation,
+    distances: ["Half", "10K", "5K"],
+    status: "closed",
     capacity: 5000,
     popularity: 72,
-    note: "관광형 러닝 대회."
+    sourceName: "마라톤GO",
+    note: "3월 11일 14시 접수 예정으로 확인됩니다."
   },
   {
-    id: "ulsan-industrial",
-    name: "울산 태화강 마라톤",
-    region: "울산",
-    city: "울산",
-    venue: "태화강 국가정원",
-    raceDate: "2026-09-06T00:00:00+09:00",
-    registrationOpenAt: "2026-07-22T10:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 4500,
-    popularity: 68,
-    note: "강변 코스."
-  },
-  {
-    id: "daejeon-science",
-    name: "대전 사이언스런",
-    region: "대전",
-    city: "유성",
-    venue: "엑스포 과학공원",
-    raceDate: "2026-10-11T00:00:00+09:00",
-    registrationOpenAt: "2026-08-01T11:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 3500,
-    popularity: 61,
-    note: "가족 참가형."
-  },
-  {
-    id: "suwon-fortress",
-    name: "수원 화성 러닝 페스타",
-    region: "경기",
-    city: "수원",
-    venue: "화성행궁 일대",
-    raceDate: "2026-09-12T00:00:00+09:00",
-    registrationOpenAt: "2026-07-18T10:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 6000,
-    popularity: 75,
-    note: "수도권 근교 대회."
-  },
-  {
-    id: "gwangju-mudeung",
-    name: "광주 무등산 트레일",
-    region: "광주",
-    city: "광주",
-    venue: "무등산권",
-    raceDate: "2026-10-04T00:00:00+09:00",
-    registrationOpenAt: "2026-08-08T09:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Trail", "15K", "7K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 1800,
-    popularity: 70,
-    note: "트레일 모집 인원 적음."
-  },
-  {
-    id: "paju-dmz",
-    name: "파주 평화 러닝",
-    region: "경기",
-    city: "파주",
-    venue: "임진각 평화누리",
-    raceDate: "2026-09-27T00:00:00+09:00",
-    registrationOpenAt: "2026-07-28T13:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K", "5K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
+    id: "give-n-race",
+    name: "제13회 GIVE N RACE",
+    region: "부산",
+    city: "벡스코",
+    venue: "부산 벡스코 야외광장",
+    raceDate: "2026-04-05T09:00:00+09:00",
+    registrationOpenAt: "2026-02-02T10:00:00+09:00",
+    registrationCloseAt: "2026-03-02T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.giveRace,
+    distances: ["10K", "8K"],
+    status: "closed",
     capacity: 7000,
     popularity: 79,
-    note: "수도권 주말 대회."
+    sourceName: "마라톤GO",
+    note: "기부 문화와 결합한 부산 러닝 대회입니다."
   },
   {
-    id: "mokpo-sea",
-    name: "목포 해상케이블카 마라톤",
-    region: "전남",
-    city: "목포",
-    venue: "목포 해변 코스",
-    raceDate: "2026-11-15T00:00:00+09:00",
-    registrationOpenAt: "2026-09-01T10:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["Half", "10K"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 4000,
-    popularity: 64,
-    note: "가을 남해권 대회."
+    id: "busan-50k",
+    name: "2026 BUSAN 50K",
+    region: "부산",
+    city: "부산",
+    venue: "신라대학교 대운동장",
+    raceDate: "2026-05-09T06:00:00+09:00",
+    registrationOpenAt: "2026-01-05T10:00:00+09:00",
+    registrationCloseAt: "2026-02-03T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.busan50k,
+    distances: ["Trail", "50K", "37K", "24K", "12K"],
+    status: "closed",
+    capacity: 1800,
+    popularity: 74,
+    sourceName: "마라톤GO",
+    note: "트레일·울트라 성격의 부산 장거리 레이스입니다."
   },
   {
-    id: "sejong-lake",
-    name: "세종 호수공원 러닝",
-    region: "세종",
-    city: "세종",
-    venue: "세종호수공원",
-    raceDate: "2026-09-19T00:00:00+09:00",
-    registrationOpenAt: "2026-07-24T10:00:00+09:00",
-    registrationUrl: UNAVAILABLE_REGISTRATION,
-    distances: ["10K", "5K", "Family"],
-    status: "scheduled",
-    sourceConfidence: "single_source",
-    capacity: 3000,
-    popularity: 55,
-    note: "가족 참가형."
+    id: "seaside-incheon",
+    name: "제1회 경기신문 씨사이드 마라톤",
+    region: "인천",
+    city: "중구",
+    venue: "인천 중구 씨사이드파크",
+    raceDate: "2026-05-16T09:00:00+09:00",
+    registrationOpenAt: "2026-02-23T14:00:00+09:00",
+    registrationCloseAt: "2026-04-24T23:59:00+09:00",
+    registrationUrl: APPLY_URLS.seasideIncheon,
+    distances: ["Half", "10K", "5K"],
+    status: "closed",
+    capacity: 5000,
+    popularity: 70,
+    sourceName: "마라톤GO",
+    note: "하프·10km·5km 전종목 선착순 5,000명으로 확인됩니다."
   }
 ];
-
-function getRaces() {
-  return [...RACES].sort((a, b) => new Date(a.registrationOpenAt) - new Date(b.registrationOpenAt));
-}
 
 function loadJson(key, fallback) {
   try {
@@ -372,20 +364,54 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function formatWeekday(value) {
+  return new Intl.DateTimeFormat("ko-KR", { weekday: "short" }).format(new Date(value));
+}
+
+function formatShortDateTime(value) {
+  const date = new Date(value);
+  return `${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)}) ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function formatShortDate(value) {
+  const date = new Date(value);
+  return `${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)})`;
+}
+
+function formatRegistrationRange(race) {
+  if (!race.registrationCloseAt) return formatShortDateTime(race.registrationOpenAt);
+  return `${formatShortDateTime(race.registrationOpenAt)} - ${formatShortDateTime(race.registrationCloseAt)}`;
+}
+
 function pad(value) {
   return String(value).padStart(2, "0");
 }
 
-function timeLeft(value) {
-  const diff = new Date(value).getTime() - Date.now();
-  if (diff <= 0) return "접수 시작";
-  const totalSeconds = Math.floor(diff / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  if (days > 0) return `${days}일 ${pad(hours)}:${pad(minutes)}`;
-  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+function raceSortGroup(race) {
+  const now = Date.now();
+  const opensAt = new Date(race.registrationOpenAt).getTime();
+  const closesAt = new Date(race.registrationCloseAt || race.registrationOpenAt).getTime();
+  const raceAt = new Date(race.raceDate).getTime();
+  if (race.status === "open" || (opensAt <= now && now <= closesAt)) return 0;
+  if (opensAt > now) return 1;
+  if (raceAt > now) return 2;
+  return 3;
+}
+
+function sortValueForGroup(race, group) {
+  if (group === 0) return new Date(race.registrationCloseAt || race.registrationOpenAt).getTime();
+  if (group === 1) return new Date(race.registrationOpenAt).getTime();
+  if (group === 2) return new Date(race.raceDate).getTime();
+  return -new Date(race.raceDate).getTime();
+}
+
+function getRaces() {
+  return [...RACES].sort((a, b) => {
+    const groupA = raceSortGroup(a);
+    const groupB = raceSortGroup(b);
+    if (groupA !== groupB) return groupA - groupB;
+    return sortValueForGroup(a, groupA) - sortValueForGroup(b, groupB);
+  });
 }
 
 function isWithinDays(value, days) {
@@ -422,7 +448,7 @@ function filteredRaces() {
     if (query && !searchable.includes(query)) return false;
     if (state.regionFilter !== "all" && race.region !== state.regionFilter) return false;
     if (!distanceMatches(race, state.distanceFilter)) return false;
-    if (state.statusFilter === "soon") return isWithinDays(race.registrationOpenAt, SOON_DAYS);
+    if (state.statusFilter === "soon") return race.status === "open" || isWithinDays(race.registrationOpenAt, SOON_DAYS);
     if (state.statusFilter === "popular") return race.popularity >= 85;
     if (state.statusFilter === "changed") return ["changed", "cancelled", "postponed"].includes(race.status);
     return true;
@@ -487,9 +513,9 @@ function renderPermissionEntry() {
 function registrationButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "ghost-btn" : "mini-btn";
   if (!race.registrationUrl) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">접수 미정</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true">확인 중</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-registration="${race.id}">접수 페이지</button>`;
+  return `<button class="${classes}" type="button" data-open-registration="${race.id}">접수 확인</button>`;
 }
 
 function renderDistanceFilters() {
@@ -549,23 +575,26 @@ function renderRaceList() {
     .map((race) => {
       const selected = state.selectedRaceId === race.id ? " selected" : "";
       const enabled = state.alerts[race.id]?.enabled;
-      const soon = isWithinDays(race.registrationOpenAt, SOON_DAYS);
-      const registrationChip = race.registrationUrl ? "접수 페이지 준비" : "접수 미정";
+      const soon = race.status === "open" || isWithinDays(race.registrationOpenAt, SOON_DAYS);
+      const registrationChip = race.registrationUrl ? "접수 확인 가능" : "확인 중";
       return `
         <article class="race-card${selected}" data-race-id="${race.id}">
           <div class="race-card-head">
             <div>
               <h3>${race.name}</h3>
-              <p class="meta-line">${race.region} ${race.city} · ${race.distances.join(" · ")}</p>
+              <p class="meta-line">${race.region} ${race.city} · ${race.venue}</p>
             </div>
             <span class="status-pill ${race.status}">${statusLabel(race.status)}</span>
           </div>
-          <p class="meta-line">접수 ${formatDateTime(race.registrationOpenAt)} · 대회 ${formatDate(race.raceDate)}</p>
+          <div class="schedule-pair">
+            <div><span>접수</span><strong>${formatRegistrationRange(race)}</strong></div>
+            <div><span>대회</span><strong>${formatShortDateTime(race.raceDate)}</strong></div>
+          </div>
           <div class="chips">
-            ${soon ? `<span class="chip highlight">곧 접수</span>` : ""}
+            ${soon ? `<span class="chip highlight">${race.status === "open" ? "접수중" : "곧 접수"}</span>` : ""}
             ${enabled ? `<span class="chip highlight">알림 켜짐</span>` : ""}
             <span class="chip ${race.registrationUrl ? "highlight" : "warn"}">${registrationChip}</span>
-            <span class="chip">선착순 ${race.capacity.toLocaleString()}명</span>
+            <span class="chip">${race.sourceName}</span>
           </div>
           <div class="race-card-actions">
             <button class="mini-btn strong" type="button" data-open-alert="${race.id}">알림 설정</button>
@@ -600,15 +629,15 @@ function renderDetail() {
       <span class="status-pill ${race.status}">${statusLabel(race.status)}</span>
     </div>
     <div class="detail-block date-callout">
-      <span>접수 시작</span>
-      <strong>${formatDateTime(race.registrationOpenAt)}</strong>
+      <span>${race.status === "open" ? "지금 확인할 접수" : "알림 받을 접수"}</span>
+      <strong>${formatRegistrationRange(race)}</strong>
     </div>
     <div class="detail-block field-list">
-      <div class="field-row"><span>접수 시작</span><strong>${formatDateTime(race.registrationOpenAt)}</strong></div>
-      <div class="field-row"><span>대회일</span><strong>${formatDate(race.raceDate)}</strong></div>
+      <div class="field-row"><span>접수 기간</span><strong>${formatRegistrationRange(race)}</strong></div>
+      <div class="field-row"><span>대회일</span><strong>${formatShortDateTime(race.raceDate)}</strong></div>
       <div class="field-row"><span>장소</span><strong>${race.venue}</strong></div>
       <div class="field-row"><span>거리</span><strong>${race.distances.join(" · ")}</strong></div>
-      <div class="field-row"><span>접수 페이지</span><strong>${race.registrationUrl ? "열기 가능" : "아직 미정"}</strong></div>
+      <div class="field-row"><span>확인처</span><strong>${race.sourceName}</strong></div>
     </div>
     <div class="detail-block detail-actions">
       <button class="primary-btn" type="button" data-open-alert="${race.id}">알림 설정</button>

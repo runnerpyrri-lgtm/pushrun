@@ -476,6 +476,37 @@ p {
   font-size: 1.05rem;
 }
 
+.schedule-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.schedule-pair > div {
+  min-width: 0;
+  border: 1px solid #edf1e8;
+  border-radius: var(--r);
+  background: #f9fbf6;
+  padding: 10px;
+}
+
+.schedule-pair span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 950;
+}
+
+.schedule-pair strong {
+  display: block;
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .race-card-actions {
   display: flex;
   gap: 8px;
@@ -907,6 +938,18 @@ p {
   .modal-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .schedule-pair {
+    gap: 6px;
+  }
+
+  .schedule-pair > div {
+    padding: 9px 8px;
+  }
+
+  .schedule-pair strong {
+    font-size: 0.8rem;
   }
 
   .preset-grid {
