@@ -20,11 +20,14 @@
             <small>러닝 접수 알림</small>
           </span>
         </button>
-        <nav class="topnav" aria-label="주요 화면">
-          <button class="nav-pill active" type="button" data-view="home">홈</button>
-          <button class="nav-pill" type="button" data-view="alerts">내 알림</button>
-          <button class="nav-pill" type="button" data-view="settings">설정</button>
-        </nav>
+        <div class="top-actions">
+          <button class="ghost-btn compact" type="button" id="syncButton">새로고침</button>
+          <nav class="topnav" aria-label="주요 화면">
+            <button class="nav-pill active" type="button" data-view="home">홈</button>
+            <button class="nav-pill" type="button" data-view="alerts">내 알림</button>
+            <button class="nav-pill" type="button" data-view="settings">설정</button>
+          </nav>
+        </div>
       </header>
 
       <main>
@@ -33,17 +36,7 @@
             <div class="filter-head">
               <div>
                 <span class="section-kicker">Race Finder</span>
-                <h1>접수 오픈을 가장 먼저 잡는 알림</h1>
-              </div>
-              <button class="ghost-btn compact" type="button" id="syncButton">새로고침</button>
-            </div>
-
-            <div class="filter-block wide">
-              <div class="segmented" role="tablist" aria-label="상태 필터">
-                <button class="segment active" type="button" data-status-filter="all">전체</button>
-                <button class="segment" type="button" data-status-filter="soon">곧 접수</button>
-                <button class="segment" type="button" data-status-filter="popular">인기</button>
-                <button class="segment" type="button" data-status-filter="changed">변경/취소</button>
+                <h1>대회 접수 알림</h1>
               </div>
             </div>
 
@@ -52,14 +45,14 @@
             </div>
 
             <div class="filter-row">
-              <label class="search-box">
-                <span>검색</span>
-                <input id="searchInput" type="search" placeholder="대회명, 지역" autocomplete="off" />
-              </label>
-
               <label class="select-box">
                 <span>지역</span>
                 <select id="regionFilter"></select>
+              </label>
+
+              <label class="search-box">
+                <span>검색</span>
+                <input id="searchInput" type="search" placeholder="대회명, 지역" autocomplete="off" />
               </label>
 
               <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">확인</button>
@@ -71,8 +64,8 @@
               <div class="section-title-row">
                 <div>
                   <span class="section-kicker">Race Board</span>
-                  <h2>전체 예정 대회</h2>
-                  <p class="meta-line">곧 접수 기준은 접수 시작 14일 이내입니다.</p>
+                  <h2>접수 가능한 대회</h2>
+                  <p class="meta-line">마감된 접수와 지난 대회는 숨겼습니다.</p>
                 </div>
                 <span class="small-note" id="raceCountLabel">0개</span>
               </div>
@@ -113,7 +106,10 @@
             <section class="settings-panel">
               <h2>배터리 최적화 제외</h2>
               <p>휴대폰이 앱을 잠재우지 않도록 설정하면 접수 알림이 더 안정적으로 도착합니다.</p>
-              <button class="ghost-btn" type="button" id="batteryGuideButton">설정 방법 보기</button>
+              <div class="settings-actions">
+                <button class="primary-btn" type="button" id="openBatterySettingsButton">휴대폰 설정 열기</button>
+                <button class="ghost-btn" type="button" id="batteryGuideButton">설정 안내</button>
+              </div>
             </section>
             <section class="settings-panel">
               <h2>자동 업데이트</h2>
@@ -175,6 +171,29 @@
           <button class="ghost-btn" type="button" id="permissionLaterButton">나중에</button>
         </div>
         <p class="meta-line tiny-copy">출시 앱에서는 휴대폰 알림과 배터리 설정으로 연결됩니다.</p>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="batteryModal" hidden>
+      <section class="alert-modal permission-modal" role="dialog" aria-modal="true" aria-labelledby="batteryTitle">
+        <button class="modal-close" type="button" id="batteryCloseButton" aria-label="닫기">×</button>
+        <span class="section-kicker">Battery</span>
+        <h2 id="batteryTitle">알림이 늦지 않게 배터리 제한을 풀어주세요.</h2>
+        <p class="meta-line">Android는 설정 화면으로 이동할 수 있고, iPhone은 설정 앱에서 저전력 모드를 확인하면 됩니다.</p>
+        <div class="permission-steps">
+          <div>
+            <strong>Android</strong>
+            <p>설정 → 앱 → PushRun → 배터리 → 제한 없음 또는 최적화 제외를 선택하세요.</p>
+          </div>
+          <div>
+            <strong>iPhone</strong>
+            <p>설정 → 배터리에서 저전력 모드를 꺼두면 알림과 백그라운드 동작이 더 안정적입니다.</p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" type="button" id="batterySettingsAgainButton">설정 다시 열기</button>
+          <button class="ghost-btn" type="button" id="batteryDoneButton">확인</button>
+        </div>
       </section>
     </div>
 

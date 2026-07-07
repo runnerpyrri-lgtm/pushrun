@@ -50,6 +50,12 @@ button {
   margin-bottom: 12px;
 }
 
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -354,7 +360,7 @@ p {
 
 .filter-row {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(130px, 0.42fr) auto;
+  grid-template-columns: minmax(128px, 0.34fr) minmax(190px, 1fr) auto;
   gap: 10px;
   align-items: end;
 }
@@ -395,17 +401,17 @@ p {
 
 .chip-row {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
 }
 
 .filter-chip {
   border: 1px solid var(--line);
   background: #fff;
-  min-height: 38px;
+  min-height: 42px;
   padding: 0 8px;
   white-space: nowrap;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
 }
 
 .apply-btn {
@@ -657,6 +663,12 @@ p {
   color: var(--muted);
 }
 
+.settings-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
 .check-list {
   display: grid;
   gap: 10px;
@@ -817,6 +829,14 @@ p {
     display: none;
   }
 
+  .topbar {
+    gap: 10px;
+  }
+
+  .top-actions {
+    margin-left: auto;
+  }
+
   .content-grid,
   .settings-grid {
     grid-template-columns: 1fr;
@@ -828,7 +848,11 @@ p {
   }
 
   .filter-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(118px, 0.38fr) minmax(0, 1fr);
+  }
+
+  .apply-btn {
+    grid-column: 1 / -1;
   }
 
   .detail-panel {
@@ -903,13 +927,13 @@ p {
   }
 
   .chip-row {
-    gap: 4px;
+    gap: 5px;
   }
 
   .filter-chip {
-    min-height: 34px;
-    padding: 0 3px;
-    font-size: 0.76rem;
+    min-height: 38px;
+    padding: 0 4px;
+    font-size: 0.82rem;
   }
 
   .race-card,

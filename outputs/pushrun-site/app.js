@@ -28,11 +28,9 @@ const APPLY_URLS = {
 const state = {
   selectedRaceId: null,
   modalRaceId: null,
-  statusFilter: "all",
   distanceFilter: "all",
   regionFilter: "all",
   query: "",
-  draftStatusFilter: "all",
   draftDistanceFilter: "all",
   draftRegionFilter: "all",
   draftQuery: "",
@@ -406,12 +404,19 @@ function sortValueForGroup(race, group) {
 }
 
 function getRaces() {
-  return [...RACES].sort((a, b) => {
+  return RACES.filter(isVisibleRace).sort((a, b) => {
     const groupA = raceSortGroup(a);
     const groupB = raceSortGroup(b);
     if (groupA !== groupB) return groupA - groupB;
     return sortValueForGroup(a, groupA) - sortValueForGroup(b, groupB);
   });
+}
+
+function isVisibleRace(race) {
+  const now = Date.now();
+  const raceAt = new Date(race.raceDate).getTime();
+  const closesAt = new Date(race.registrationCloseAt || race.registrationOpenAt).getTime();
+  return raceAt >= now && closesAt >= now && !["cancelled", "postponed"].includes(race.status);
 }
 
 function isWithinDays(value, days) {
@@ -448,9 +453,6 @@ function filteredRaces() {
     if (query && !searchable.includes(query)) return false;
     if (state.regionFilter !== "all" && race.region !== state.regionFilter) return false;
     if (!distanceMatches(race, state.distanceFilter)) return false;
-    if (state.statusFilter === "soon") return race.status === "open" || isWithinDays(race.registrationOpenAt, SOON_DAYS);
-    if (state.statusFilter === "popular") return race.popularity >= 85;
-    if (state.statusFilter === "changed") return ["changed", "cancelled", "postponed"].includes(race.status);
     return true;
   });
 }
@@ -515,7 +517,7 @@ function registrationButtonHtml(race, variant = "mini") {
   if (!race.registrationUrl) {
     return `<button class="${classes}" type="button" disabled aria-disabled="true">확인 중</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-registration="${race.id}">접수 확인</button>`;
+  return `<button class="${classes}" type="button" data-open-registration="${race.id}">대회 페이지</button>`;
 }
 
 function renderDistanceFilters() {
@@ -539,21 +541,13 @@ function renderRegionFilter() {
   select.value = state.draftRegionFilter;
 }
 
-function renderStatusFilters() {
-  document.querySelectorAll("[data-status-filter]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.statusFilter === state.draftStatusFilter);
-  });
-}
-
 function syncDraftFilters() {
-  state.draftStatusFilter = state.statusFilter;
   state.draftDistanceFilter = state.distanceFilter;
   state.draftRegionFilter = state.regionFilter;
   state.draftQuery = state.query;
 }
 
 function applyFilters() {
-  state.statusFilter = state.draftStatusFilter;
   state.distanceFilter = state.draftDistanceFilter;
   state.regionFilter = state.draftRegionFilter;
   state.query = state.draftQuery;
@@ -576,7 +570,7 @@ function renderRaceList() {
       const selected = state.selectedRaceId === race.id ? " selected" : "";
       const enabled = state.alerts[race.id]?.enabled;
       const soon = race.status === "open" || isWithinDays(race.registrationOpenAt, SOON_DAYS);
-      const registrationChip = race.registrationUrl ? "접수 확인 가능" : "확인 중";
+      const registrationChip = race.registrationUrl ? "대회 페이지" : "확인 중";
       return `
         <article class="race-card${selected}" data-race-id="${race.id}">
           <div class="race-card-head">
@@ -826,11 +820,11 @@ function openRegistration(raceId) {
   const race = getRaces().find((item) => item.id === raceId);
   if (!race) return;
   if (!race.registrationUrl) {
-    showToast("올해 접수 페이지는 아직 공개되지 않았어요.");
+    showToast("올해 대회 페이지는 아직 공개되지 않았어요.");
     return;
   }
   window.open(race.registrationUrl, "_blank", "noopener,noreferrer");
-  showToast("접수 페이지를 열었어요.");
+  showToast("대회 페이지를 열었어요.");
 }
 
 function simulateSync() {
@@ -841,7 +835,26 @@ function simulateSync() {
 }
 
 function showBatteryGuide() {
-  showToast("휴대폰 설정에서 PushRun 배터리 제한을 해제하면 알림이 더 안정적이에요.");
+  document.getElementById("batteryModal").hidden = false;
+}
+
+function closeBatteryGuide() {
+  document.getElementById("batteryModal").hidden = true;
+}
+
+function openBatterySettings() {
+  const ua = navigator.userAgent.toLowerCase();
+  showBatteryGuide();
+  if (ua.includes("android")) {
+    window.location.href = "intent://settings/#Intent;action=android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS;end";
+    showToast("배터리 설정이 열리면 PushRun을 제한 없음으로 바꿔주세요.");
+    return;
+  }
+  if (/iphone|ipad|ipod/.test(ua)) {
+    showToast("iPhone은 설정 앱의 배터리에서 저전력 모드를 확인해주세요.");
+    return;
+  }
+  showToast("휴대폰에서 열면 배터리 설정 안내를 볼 수 있어요.");
 }
 
 function showToast(message) {
@@ -903,12 +916,6 @@ function bindEvents() {
   });
 
   document.addEventListener("click", (event) => {
-    const statusButton = event.target.closest("[data-status-filter]");
-    if (statusButton) {
-      state.draftStatusFilter = statusButton.dataset.statusFilter;
-      renderStatusFilters();
-    }
-
     const distanceButton = event.target.closest("[data-distance-filter]");
     if (distanceButton) {
       state.draftDistanceFilter = distanceButton.dataset.distanceFilter;
@@ -951,10 +958,16 @@ function bindEvents() {
   });
 
   document.getElementById("batteryGuideButton").addEventListener("click", showBatteryGuide);
+  document.getElementById("openBatterySettingsButton").addEventListener("click", openBatterySettings);
+  document.getElementById("batterySettingsAgainButton").addEventListener("click", openBatterySettings);
+  document.getElementById("batteryCloseButton").addEventListener("click", closeBatteryGuide);
+  document.getElementById("batteryDoneButton").addEventListener("click", closeBatteryGuide);
+  document.getElementById("batteryModal").addEventListener("click", (event) => {
+    if (event.target.id === "batteryModal") closeBatteryGuide();
+  });
 }
 
 function render() {
-  renderStatusFilters();
   renderDistanceFilters();
   renderRegionFilter();
   const searchInput = document.getElementById("searchInput");
