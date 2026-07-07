@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.0";
-const ASSET_VERSION = "20260707-9";
+const APP_VERSION = "0.6.1";
+const ASSET_VERSION = "20260707-10";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -206,7 +206,6 @@ function getAlertTarget(race) {
   if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return null;
   const now = Date.now();
   const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
-  const closesAt = race.registrationCloseAt ? new Date(race.registrationCloseAt).getTime() : null;
   const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
 
   if (opensAt && opensAt > now) {
@@ -219,17 +218,7 @@ function getAlertTarget(race) {
     };
   }
 
-  if (closesAt && closesAt > now && isAcceptingNow(race)) {
-    return {
-      type: "registration_close",
-      at: race.registrationCloseAt,
-      label: "접수 마감",
-      shortLabel: "마감 알림",
-      statusLabel: "접수 마감 알림"
-    };
-  }
-
-  if (raceAt && raceAt > now) {
+  if (!isAcceptingNow(race) && raceAt && raceAt > now) {
     return {
       type: "race_day",
       at: race.raceDate,
@@ -306,7 +295,7 @@ function getCategoryCopy() {
   return state.activeCategory === "open"
     ? {
         title: "현재 접수중",
-        description: "지금 신청 가능한 대회를 마감이 가까운 순서로 정리했습니다.",
+        description: "",
         empty: "현재 접수중인 대회가 없어요."
       }
     : {
@@ -411,11 +400,6 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
           offset === 0
             ? "지금 접수가 열렸어요. 대회 사이트에서 바로 확인하세요."
             : `${pad(targetAt.getHours())}:${pad(targetAt.getMinutes())} 접수 시작. 로그인과 결제 정보를 준비하세요.`;
-      }
-
-      if (target.type === "registration_close") {
-        title = offset === 0 ? `[${race.name}] 접수 마감 시간` : `[${race.name}] 접수 마감 ${offset}분 전`;
-        body = "접수 마감 전입니다. 신청할 대회라면 접수 사이트를 확인하세요.";
       }
 
       if (target.type === "race_day") {
@@ -560,7 +544,7 @@ function renderRaceList() {
       <div class="focus-board-head">
         <div>
           <h2>${copy.title}</h2>
-          <p>${copy.description}</p>
+          ${copy.description ? `<p>${copy.description}</p>` : ""}
         </div>
         <strong>${countLabel}</strong>
       </div>
@@ -594,17 +578,21 @@ function raceCardHtml(race) {
   const enabled = state.alerts[race.id]?.enabled;
   const isConfirmed = canUseRegistrationTimer(race);
   const alertTarget = getAlertTarget(race);
+  const isOpenOnly = isAcceptingNow(race) && !isConfirmed;
   const safeId = escapeHtml(race.id);
   const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
   const linkNote = race.linkVerifiedFrom === "마라톤온라인 home 아이콘" ? "대회 홈페이지 연결" : "원본 목록 연결";
   const startLabel = race.registrationOpenAt ? formatRegistrationPoint(race.registrationOpenAt) : "확인중";
   const endLabel = race.registrationCloseAt ? formatRegistrationPoint(race.registrationCloseAt) : "확인중";
+  const actionButtons = isOpenOnly
+    ? `<div class="list-action-row single">${registrationButtonHtml(race)}</div>`
+    : `<div class="list-action-row">${alertButtonHtml(race)}${registrationButtonHtml(race)}</div>`;
   return `
     <article class="race-card list-card${selected}" data-race-id="${safeId}">
       <div class="list-card-grid">
         <div class="list-date">
           <strong>${escapeHtml(registrationActionText(race))}</strong>
-          <span>대회 ${escapeHtml(formatShortDate(race.raceDate))}</span>
+          <span class="race-day-chip"><small>대회일</small><b>${escapeHtml(formatShortDate(race.raceDate))}</b></span>
           ${alertTarget ? `<em>${escapeHtml(alertTarget.statusLabel)}</em>` : ""}
         </div>
         <div class="list-body">
@@ -626,10 +614,7 @@ function raceCardHtml(race) {
           </div>
         </div>
         <div class="list-action-wrap">
-          <div class="list-action-row">
-            ${alertButtonHtml(race)}
-            ${registrationButtonHtml(race)}
-          </div>
+          ${actionButtons}
           <p class="source-line">${escapeHtml(race.sourceName)} · ${escapeHtml(linkNote)}</p>
         </div>
       </div>
@@ -654,6 +639,9 @@ function renderDetail() {
   }
   const isConfirmed = canUseRegistrationTimer(race);
   const alertTarget = getAlertTarget(race);
+  const actionButtons = isAcceptingNow(race) && !isConfirmed
+    ? registrationButtonHtml(race, "detail")
+    : `${alertButtonHtml(race, "detail")}${registrationButtonHtml(race, "detail")}`;
   panel.innerHTML = `
     <div class="detail-head">
       <div>
@@ -677,8 +665,7 @@ function renderDetail() {
       <div class="field-row"><span>확인처</span><strong>${escapeHtml(race.sourceName)}</strong></div>
     </div>
     <div class="detail-block detail-actions">
-      ${alertButtonHtml(race, "detail")}
-      ${registrationButtonHtml(race, "detail")}
+      ${actionButtons}
     </div>
   `;
 }
@@ -709,7 +696,7 @@ function renderModal() {
 function renderAlerts() {
   const list = document.getElementById("alertList");
   const racesById = Object.fromEntries(getRaces().map((race) => [race.id, race]));
-  const active = Object.values(state.alerts).filter((alert) => alert.enabled);
+  const active = Object.values(state.alerts).filter((alert) => alert.enabled && alert.targetType !== "registration_close");
   if (!active.length) {
     list.innerHTML = `<div class="alert-card"><h3>켜진 알림이 없어요.</h3><p class="meta-line">대회 카드의 알림 설정을 눌러 추가하세요.</p></div>`;
     return;
@@ -760,13 +747,13 @@ function renderCategoryTabs() {
   const target = document.getElementById("categoryTabs");
   if (!target) return;
   target.innerHTML = [
-    ["confirmed", "접수 예정", `${confirmed.length}개`, confirmed[0] ? `첫 접수 ${formatShortDate(confirmed[0].registrationOpenAt)} · ${confirmed[0].name}` : "접수일 확정 대기"],
-    ["open", "현재 접수중", `${openNow.length}개`, openNow[0] ? `마감 ${formatShortDate(openNow[0].registrationCloseAt || openNow[0].raceDate)} · ${openNow[0].name}` : "접수중 대기"]
+    ["confirmed", "접수 예정", confirmed.length, confirmed[0] ? `첫 접수 ${formatShortDate(confirmed[0].registrationOpenAt)}` : "접수일 확정 대기"],
+    ["open", "현재 접수중", openNow.length, openNow[0] ? "바로 신청 가능" : "접수중 대기"]
   ]
     .map(([value, label, count, note]) => `
       <button class="category-tab ${state.activeCategory === value ? "active" : ""}" type="button" data-category="${value}">
         <span>${escapeHtml(label)}</span>
-        <strong>${escapeHtml(count)}</strong>
+        <strong><b>${escapeHtml(count)}</b><small>개</small></strong>
         <p>${escapeHtml(note)}</p>
       </button>
     `)
@@ -836,7 +823,7 @@ function scheduleBrowserTimers(alerts) {
 function scheduleAllBrowserTimers() {
   clearBrowserTimers();
   Object.values(state.alerts).forEach((subscription) => {
-    if (subscription.enabled) scheduleBrowserTimers(subscription.scheduledAlerts || []);
+    if (subscription.enabled && subscription.targetType !== "registration_close") scheduleBrowserTimers(subscription.scheduledAlerts || []);
   });
 }
 
