@@ -645,6 +645,112 @@ p {
   background: #fff;
 }
 
+.race-list-list {
+  display: grid;
+  gap: 12px;
+}
+
+.list-card {
+  display: grid;
+  gap: 13px;
+  padding: 18px;
+  background: #fff;
+}
+
+.list-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.list-date {
+  display: grid;
+  gap: 4px;
+}
+
+.list-date strong {
+  color: var(--ink);
+  font-size: clamp(1.45rem, 4.8vw, 2.15rem);
+  line-height: 1;
+}
+
+.list-date span {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.list-card h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 4.6vw, 2rem);
+  line-height: 1.16;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.list-meta {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+  line-height: 1.35;
+}
+
+.list-info-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 10px;
+}
+
+.list-info-grid > div {
+  min-width: 0;
+  border: 1px solid #edf1e8;
+  border-radius: var(--r);
+  background: #f9fbf6;
+  padding: 13px;
+}
+
+.list-info-grid span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 950;
+}
+
+.list-info-grid strong {
+  display: block;
+  color: var(--ink);
+  font-size: clamp(1.02rem, 3.5vw, 1.22rem);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.list-info-grid em {
+  display: block;
+  margin-top: 7px;
+  color: #314022;
+  font-size: 0.84rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.list-action-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.list-action-row .mini-btn,
+.list-action-row .ghost-btn,
+.list-action-row .primary-btn {
+  min-height: 48px;
+  font-size: 1rem;
+}
+
 .focus-card-top {
   display: flex;
   justify-content: space-between;
@@ -1316,7 +1422,9 @@ p {
   }
 
   .focus-facts,
-  .focus-action-row {
+  .focus-action-row,
+  .list-info-grid,
+  .list-action-row {
     grid-template-columns: 1fr;
   }
 
