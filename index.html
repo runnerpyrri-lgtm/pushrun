@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="러닝 대회 접수 시작 시간을 놓치지 않도록 20분 전, 10분 전, 정각 알림을 예약하는 PushRun."
+      content="접수일정이 확정된 러닝 대회와 지금 접수중인 대회를 빠르게 확인하는 PushRun."
     />
     <title>PushRun - 러닝 대회 접수 알림</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-2" />
+    <link rel="stylesheet" href="./styles.css?v=20260707-3" />
   </head>
   <body>
     <div class="app-shell">
@@ -36,9 +36,11 @@
             <div class="filter-head">
               <div>
                 <span class="section-kicker">Race Finder</span>
-                <h1>대회 접수 알림</h1>
+                <h1>접수할 대회만 빠르게</h1>
               </div>
             </div>
+
+            <div class="summary-grid" id="summaryGrid" aria-label="대회 요약"></div>
 
             <div class="filter-block wide">
               <div class="chip-row" id="distanceFilters"></div>
@@ -64,7 +66,7 @@
               <div class="section-title-row">
                 <div>
                   <span class="section-kicker">Race Board</span>
-                  <h2>올해 남은 대회</h2>
+                  <h2>확정 접수와 접수중 대회</h2>
                 </div>
                 <span class="small-note" id="raceCountLabel">0개</span>
               </div>
@@ -85,7 +87,7 @@
           <div class="page-heading">
             <span class="section-kicker">My Alerts</span>
             <h1>내 접수 알림</h1>
-            <p>켜둔 대회와 예약된 알림만 보여줍니다.</p>
+            <p>접수 시작 시간이 확정된 대회에 켜둔 알림만 보여줍니다.</p>
           </div>
           <div class="alert-list" id="alertList"></div>
         </section>
@@ -94,7 +96,7 @@
           <div class="page-heading">
             <span class="section-kicker">Settings</span>
             <h1>알림 설정</h1>
-            <p>앱이 꺼져 있어도 접수 알림을 받을 수 있게 준비합니다.</p>
+            <p>브라우저가 열려 있을 때 접수 알림을 받을 수 있게 준비합니다.</p>
           </div>
           <div class="settings-grid">
             <section class="settings-panel">
@@ -113,9 +115,9 @@
             <section class="settings-panel">
               <h2>자동 업데이트</h2>
               <ul class="check-list">
-                <li>매일 06:00 전체 대회 확인</li>
-                <li>접수 14일 이내 대회는 3시간마다 확인</li>
-                <li>취소/시간변경 시 알림 재설정</li>
+                <li>새로고침 버튼으로 최신 대회 데이터를 다시 불러옵니다.</li>
+                <li>접수일정이 확정된 대회와 지금 접수중인 대회를 나눠 보여줍니다.</li>
+                <li>마라톤온라인식 목록은 접수 확인용으로 분류합니다.</li>
               </ul>
               <p class="meta-line" id="lastSyncText">마지막 확인: 준비 중</p>
             </section>
@@ -154,7 +156,7 @@
         <button class="modal-close" type="button" id="permissionCloseButton" aria-label="닫기">×</button>
         <span class="section-kicker">Ready to Run</span>
         <h2 id="permissionTitle">알림이 살아있어야 접수 순간을 잡아요.</h2>
-        <p class="meta-line">PushRun이 앱 밖에서도 접수 시간을 알려드릴 수 있게 아래 두 가지만 켜주세요.</p>
+        <p class="meta-line">PushRun이 브라우저 알림으로 접수 시간을 알려드릴 수 있게 아래 두 가지를 확인해주세요.</p>
         <div class="permission-steps">
           <div>
             <strong>알림 허용</strong>
@@ -169,7 +171,7 @@
           <button class="primary-btn" type="button" id="permissionEnableButton">알림 허용하기</button>
           <button class="ghost-btn" type="button" id="permissionLaterButton">나중에</button>
         </div>
-        <p class="meta-line tiny-copy">출시 앱에서는 휴대폰 알림과 배터리 설정으로 연결됩니다.</p>
+        <p class="meta-line tiny-copy">현재 웹 버전은 브라우저가 알림을 보낼 수 있는 상태에서 가장 안정적입니다.</p>
       </section>
     </div>
 
@@ -197,6 +199,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=20260707-2"></script>
+    <script src="./app.js?v=20260707-3"></script>
   </body>
 </html>

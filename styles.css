@@ -358,6 +358,43 @@ p {
   white-space: nowrap;
 }
 
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.summary-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: #fff;
+  padding: 13px;
+}
+
+.summary-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.summary-card strong {
+  display: block;
+  margin: 5px 0;
+  color: var(--ink);
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.summary-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .filter-head .ghost-btn {
   justify-self: start;
   white-space: nowrap;
@@ -452,6 +489,21 @@ p {
   gap: 10px;
 }
 
+.race-board-section {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.compact-row {
+  align-items: start;
+  margin-top: 0;
+}
+
+.compact-row p {
+  margin: 5px 0 0;
+}
+
 .race-card,
 .alert-card {
   border: 1px solid var(--line);
@@ -464,6 +516,50 @@ p {
 .race-card {
   width: 100%;
   text-align: left;
+}
+
+.race-card-main {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 13px;
+  align-items: start;
+}
+
+.race-date-block {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  border: 1px solid #edf1e8;
+  border-radius: var(--r);
+  background: #f9fbf6;
+  padding: 11px 7px;
+  text-align: center;
+}
+
+.race-date-block strong {
+  color: var(--ink);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.race-date-block span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.race-date-block em {
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--lime);
+  padding: 4px 6px;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.race-card-body {
+  min-width: 0;
 }
 
 .race-card.selected {
@@ -856,6 +952,7 @@ p {
   }
 
   .content-grid,
+  .summary-grid,
   .settings-grid {
     grid-template-columns: 1fr;
   }
@@ -967,6 +1064,17 @@ p {
   .detail-head,
   .alert-head {
     gap: 8px;
+  }
+
+  .race-card-main {
+    grid-template-columns: 1fr;
+  }
+
+  .race-date-block {
+    grid-template-columns: auto auto 1fr;
+    justify-items: start;
+    align-items: center;
+    text-align: left;
   }
 
   .status-pill {
