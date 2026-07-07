@@ -237,11 +237,15 @@ p {
 .primary-btn,
 .ghost-btn,
 .danger-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: var(--r);
   min-height: 44px;
   padding: 0 16px;
   font-weight: 950;
+  text-decoration: none;
   transition:
     transform 0.16s ease,
     box-shadow 0.16s ease,
@@ -949,6 +953,9 @@ p {
 }
 
 .mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--line);
   border-radius: 7px;
   min-height: 36px;
@@ -956,6 +963,7 @@ p {
   background: #fff;
   color: var(--ink);
   font-weight: 900;
+  text-decoration: none;
 }
 
 .mini-btn.strong {

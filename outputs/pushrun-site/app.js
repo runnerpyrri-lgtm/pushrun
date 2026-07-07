@@ -1,12 +1,12 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.4.0";
-const ASSET_VERSION = "20260707-5";
+const APP_VERSION = "0.4.1";
+const ASSET_VERSION = "20260707-6";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
-const MARATHON_ONLINE_URL = "https://marathon.pe.kr/index_calendar.html";
+const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
 
 const state = {
   selectedRaceId: null,
@@ -60,7 +60,9 @@ function parseScheduleFeed(feed) {
       raceDate: `${entry.date}T${normalizeRaceTime(entry.time)}+09:00`,
       registrationOpenAt: null,
       registrationCloseAt: null,
-      registrationUrl: MARATHON_ONLINE_URL,
+      registrationUrl: entry.registrationUrl || entry.sourceDetailUrl || MARATHON_ONLINE_LIST_URL,
+      sourceDetailUrl: entry.sourceDetailUrl || null,
+      linkVerifiedFrom: entry.linkVerifiedFrom || "마라톤온라인 목록",
       distances: entry.distances,
       status: isOpen ? "open" : entry.status,
       registrationStatus: isOpen ? "open" : entry.status || "unknown",
@@ -68,8 +70,8 @@ function parseScheduleFeed(feed) {
       alertCapabilities: ["race_day"],
       capacity: null,
       popularity: 50,
-      sourceName: "마라톤GO · 마라톤온라인 참고",
-      note: `${entry.time} 예정. 마라톤온라인 목록에서 접수 상태를 확인하세요.`,
+      sourceName: entry.sourceName || "마라톤온라인",
+      note: `${entry.time} 예정. 마라톤온라인 원본의 접수중 표시와 홈페이지 링크를 기준으로 확인합니다.`,
       registrationLabel: entry.status === "open" ? "접수중" : entry.status === "closed" ? "접수 마감" : "접수 일정 준비중"
     };
   });
@@ -242,13 +244,13 @@ function getCategoryCopy() {
     ? {
         kicker: "Open Now",
         title: "현재 접수중",
-        description: "지금 신청 페이지로 들어가서 확인할 대회입니다.",
+        description: "마라톤온라인 원본에서 접수중으로 표시된 대회만 모았습니다.",
         empty: "현재 접수중인 대회가 없어요."
       }
     : {
         kicker: "Upcoming",
         title: "접수 예정",
-        description: "접수 첫날이 가까운 순서로 정리했습니다.",
+        description: "접수 첫날과 시간이 확정된 대회만 알림 대상으로 정리했습니다.",
         empty: "접수 시간이 확정된 대회가 없어요."
       };
 }
@@ -370,7 +372,8 @@ function registrationButtonHtml(race, variant = "mini") {
   if (!race.registrationUrl) {
     return `<button class="${classes}" type="button" disabled aria-disabled="true">확인처 준비중</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-registration="${escapeHtml(race.id)}">${isAcceptingNow(race) ? "접수 확인" : "대회 페이지"}</button>`;
+  const label = isAcceptingNow(race) ? "접수 사이트" : "대회 페이지";
+  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
@@ -473,8 +476,9 @@ function raceCardHtml(race) {
   const isConfirmed = canUseRegistrationTimer(race);
   const safeId = escapeHtml(race.id);
   const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
-  const primaryLine = isConfirmed ? formatRegistrationRange(race) : "접수 페이지 확인";
+  const primaryLine = isConfirmed ? formatRegistrationRange(race) : "원본 접수중 표시";
   const deadlineLine = isConfirmed ? `접수까지 ${formatDday(race.registrationOpenAt)}` : `${formatShortDate(race.raceDate)} 대회`;
+  const linkNote = race.linkVerifiedFrom === "마라톤온라인 home 아이콘" ? "대회 홈페이지 연결" : "원본 목록 연결";
   return `
     <article class="race-card list-card${selected}" data-race-id="${safeId}">
       <div class="list-card-top">
@@ -495,7 +499,7 @@ function raceCardHtml(race) {
         <div>
           <span>거리</span>
           <strong>${escapeHtml(race.distances.join(" · "))}</strong>
-          <em>${escapeHtml(race.sourceName)}</em>
+          <em>${escapeHtml(`${race.sourceName} · ${linkNote}`)}</em>
         </div>
       </div>
       <div class="list-action-row">
@@ -625,7 +629,7 @@ function renderCategoryTabs() {
   if (!target) return;
   target.innerHTML = [
     ["confirmed", "접수 예정", `${confirmed.length}개`, confirmed[0] ? `${formatDday(confirmed[0].registrationOpenAt)} ${confirmed[0].name}` : "접수일 확정 대기"],
-    ["open", "현재 접수중", `${openNow.length}개`, openNow[0] ? `${openNow[0].name} 바로 확인` : "접수중 대기"]
+    ["open", "현재 접수중", `${openNow.length}개`, openNow[0] ? `${openNow[0].name} 접수 사이트` : "접수중 대기"]
   ]
     .map(([value, label, count, note]) => `
       <button class="category-tab ${state.activeCategory === value ? "active" : ""}" type="button" data-category="${value}">
@@ -747,17 +751,6 @@ function cancelAlert(raceId) {
   }
 }
 
-function openRegistration(raceId) {
-  const race = getRaces().find((item) => item.id === raceId);
-  if (!race) return;
-  if (!race.registrationUrl) {
-    showToast("올해 대회 페이지는 아직 공개되지 않았어요.");
-    return;
-  }
-  window.open(race.registrationUrl, "_blank", "noopener,noreferrer");
-  showToast("대회 페이지를 열었어요.");
-}
-
 async function refreshRaceData() {
   try {
     await loadRaceData();
@@ -825,12 +818,6 @@ function bindEvents() {
     const alertButton = event.target.closest("[data-open-alert]");
     if (alertButton) {
       openAlertModal(alertButton.dataset.openAlert);
-      return;
-    }
-
-    const registrationButton = event.target.closest("[data-open-registration]");
-    if (registrationButton) {
-      openRegistration(registrationButton.dataset.openRegistration);
       return;
     }
 

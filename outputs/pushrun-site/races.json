@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.07-race-data-4",
+  "version": "2026.07.07-race-data-6",
   "sources": [
     "마라톤온라인",
     "마라톤GO",
@@ -358,87 +358,115 @@
   "scheduleFeed": [
     {
       "date": "2026-07-18",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 전마협 청주 무료 초청 훈련 마라톤",
       "region": "충북",
       "venue": "청주 무심천 롤러스케이트장",
       "time": "오전 6시 30분",
       "distances": [
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/e320ef81-c1ba-4939-bc1d-c398e514e920",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41645",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-07-19",
       "status": "open",
       "name": "2026 청계산.인릉산 Trail Run",
       "region": "서울",
-      "venue": "화물터미널 청계산 옛골",
+      "venue": "화물터미널 청계산옛골",
       "time": "08:00",
       "distances": [
         "Half",
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250821130406&csno=20190812093657#baseline",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41140",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-07-31",
       "status": "open",
       "name": "사우나런 in 올림픽공원",
       "region": "서울",
-      "venue": "올림픽공원 인근",
+      "venue": "올림픽 공원 인근",
       "time": "상시",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://saunarun.com/category/?idx=119",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41625",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
-      "date": "2026-07-31",
-      "status": "open",
+      "date": "2026-07-01",
+      "status": "scheduled",
       "name": "사우나런 in 석촌호수",
       "region": "서울",
-      "venue": "석촌호수 인근",
+      "venue": "석촌 호수 인근",
       "time": "상시",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://saunarun.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41611",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-01",
       "status": "open",
       "name": "2026 인사이더런 S",
       "region": "서울",
-      "venue": "일산 킨텍스 제2전시장",
+      "venue": "일산 킨텍스 제2전시장 7,8",
       "time": "09:30",
       "distances": [
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://insiderun.me",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41504",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
-      "date": "2026-08-02",
-      "status": "open",
-      "name": "2026 쿨밸리 트레일레이스",
+      "date": "2026-07-18",
+      "status": "scheduled",
+      "name": "2026 쿨밸리트레일레이스",
       "region": "전북",
       "venue": "장수종합경기장",
       "time": "08:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://rocknrun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41348",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-08",
       "status": "open",
-      "name": "2026 양산 어필 레이스",
+      "name": "2026 양산 어필(up-hill) 레이스",
       "region": "경남",
-      "venue": "양산 에덴밸리 리조트",
+      "venue": "양산 에덴밸리 리조트 루지장",
       "time": "17:30",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.yangsanuphillrace.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41623",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-15",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 전마협 광복절 무료 초청 마라톤",
       "region": "대전",
       "venue": "대전엑스포다리 밑",
@@ -446,7 +474,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/9e568eef-64ff-4548-881f-3a420689dece",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41641",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-15",
@@ -458,7 +490,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://moonnightrun.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41617",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-15",
@@ -469,52 +505,72 @@
       "time": "19:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://rocknrun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41576",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-15",
       "status": "open",
       "name": "영남알프스9봉 트레일 레이스",
       "region": "경남",
-      "venue": "울주군 등억알프스온천호텔",
+      "venue": "청운산장",
       "time": "14:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://jyd.creatorlink.net",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41508",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-15",
       "status": "open",
-      "name": "제38회 지리산화대종주 Trail Run",
+      "name": "제38회 지리산화대종주 UTMB",
       "region": "전남",
       "venue": "화엄사주차장",
       "time": "03:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250820150217&csno=20191209143330#baseline",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41223",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-16",
       "status": "open",
-      "name": "2026 Happy700 평창대관령전국하프마라톤",
+      "name": "2026Happy700평창대관령전국하프마라톤",
       "region": "강원",
-      "venue": "평창동계올림픽 기념관",
+      "venue": "2018 평창동계올림픽 기념관",
       "time": "08:00",
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://www.ifunrunkorea.co.kr/sub0102",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41663",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-22",
       "status": "open",
       "name": "제2회 한양도성길 트레일런",
       "region": "서울",
-      "venue": "낙산공원중앙광장",
+      "venue": "낙산공원중앙광장(낙산길54)",
       "time": "08:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.mtrailrun.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41642",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-29",
@@ -526,18 +582,26 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://danyangmarathon.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41620",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-29",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 전마협 증평 무료 마라톤",
       "region": "충북",
-      "venue": "증평군 다목적운동장",
+      "venue": "증평군 다목적운동장 일원",
       "time": "07:00",
       "distances": [
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/48116855-ac2a-4db5-b343-593a01c5b353",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41624",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-30",
@@ -549,7 +613,11 @@
       "distances": [
         "Trail",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://daegwallyeongrun.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41590",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-08-30",
@@ -562,19 +630,27 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://seoulhalfrun.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41581",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-05",
       "status": "open",
       "name": "2026 하반기 JUST RUN10 세종",
       "region": "세종",
-      "venue": "세종마루공원 금강변",
+      "venue": "세종마루공원 밑 금강변",
       "time": "08:00",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://runten.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41650",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-05",
@@ -586,19 +662,27 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://runbs.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41639",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-05",
       "status": "open",
       "name": "제2회 2026 Vrun",
       "region": "서울",
-      "venue": "신정교하부 육상트랙구장",
+      "venue": "신정교하부육상트랙구장",
       "time": "09:00",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://vrun.kr/index.asp",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41595",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-05",
@@ -609,18 +693,26 @@
       "time": "17:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.scultra100.net",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41559",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-06",
-      "status": "open",
+      "status": "scheduled",
       "name": "제9회 인천 서구청장배 단축마라톤",
       "region": "인천",
-      "venue": "청라호수공원 멀티프라자",
+      "venue": "청라호수공원 멀티프라자 트랙",
       "time": "08:30",
       "distances": [
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://www.sgicaaf.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41628",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-06",
@@ -633,18 +725,26 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://kdjrun.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41582",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-06",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 샌드런 IN 영덕",
       "region": "경북",
       "venue": "영덕 대진해수욕장",
       "time": "10:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://sandrun.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41402",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-06",
@@ -657,34 +757,46 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://bonghwarun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41368",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-06",
       "status": "open",
-      "name": "제24회 청광종주 Trail Running",
+      "name": "제24회 청광종주TRAILRUNNING",
       "region": "서울",
-      "venue": "양재동 화물터미널",
+      "venue": "양재동 화물",
       "time": "08:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250626120820&csno=20191016122754#baseline",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41254",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-12",
       "status": "open",
       "name": "제2회 화이트런 생리대 기부마라톤",
       "region": "서울",
-      "venue": "신정교하부 육상트랙구장",
+      "venue": "영등포구 신정교하부 육상트랙구",
       "time": "09:00",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://whiterun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41549",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-12",
-      "status": "open",
+      "status": "scheduled",
       "name": "제2회 초록우산 런웨이 마라톤",
       "region": "대전",
       "venue": "대전엑스포시민광장",
@@ -693,7 +805,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/9443583f-6577-466c-ab2f-43d1dbd820d4",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41532",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-12",
@@ -705,12 +821,16 @@
       "distances": [
         "Trail",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://bbangtrailrun.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41354",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-13",
       "status": "open",
-      "name": "2026 포항이차전지전국마라톤",
+      "name": "2026포항이차전지전국마라톤",
       "region": "경북",
       "venue": "포항운하관주차장",
       "time": "08:00",
@@ -718,19 +838,27 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://energyrun.co.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41648",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-13",
       "status": "open",
       "name": "2026 런서울런",
       "region": "서울",
-      "venue": "서울광장",
+      "venue": "서울 광장",
       "time": "07:30",
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://runseoulrun.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41643",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-13",
@@ -743,44 +871,60 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.ganghwamarathon.co.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41606",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-13",
       "status": "open",
-      "name": "제16회 스마일 런 페스티벌",
+      "name": "제 16회 스마일 런 페스티벌",
       "region": "서울",
-      "venue": "상암동 평화의공원",
+      "venue": "상암동 평화의공원 평화광장",
       "time": "08:30",
       "distances": [
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.smilerun.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41591",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-13",
       "status": "open",
-      "name": "제14회 설악산공룡능선 UTMB CLIMBATHON",
+      "name": "제14회설악산공룡능선UTMB",
       "region": "강원",
-      "venue": "한계령휴게소",
+      "venue": "설익산한계령휴계소",
       "time": "03:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250910133652&csno=20191227110239#baseline",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41192",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-19",
       "status": "open",
       "name": "제18회 사이버 영토 수호 마라톤",
       "region": "서울",
-      "venue": "여의도 물빛무대 앞",
+      "venue": "여의도 물빛무대 앞 광",
       "time": "08:00",
       "distances": [
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.cyber-run.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41629",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-19",
@@ -792,23 +936,31 @@
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/2044eb82-fcdb-4e56-b79b-f3543a6a360d",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41541",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-20",
       "status": "open",
       "name": "제2회 마포구청장배 마라톤 대회",
       "region": "서울",
-      "venue": "평화의공원 평화광장",
+      "venue": "평화의 공원 평화광장",
       "time": "08:30",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/53b338c6-d38a-47b3-9479-080b00c6113a",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41657",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-20",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 한돈런",
       "region": "경기",
       "venue": "미사 조정경기장",
@@ -816,7 +968,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://handonrun.com/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41630",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-20",
@@ -829,11 +985,15 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.runddm.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41605",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-09-20",
-      "status": "closed",
+      "status": "scheduled",
       "name": "2026 공주마라톤",
       "region": "충남",
       "venue": "공주시민운동장",
@@ -842,7 +1002,11 @@
         "Full",
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://www.gongjumarathon.com/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41588",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-03",
@@ -853,19 +1017,27 @@
       "time": "07:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://samsamis.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41649",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-03",
       "status": "open",
       "name": "2026 천사데이기념 동두천천사마라톤",
       "region": "경기",
-      "venue": "동두천 캠프보산",
+      "venue": "경기도 동두천시 캠프보산",
       "time": "09:00",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://hope1004.org",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41608",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-03",
@@ -878,18 +1050,26 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/fcaa0bc8-1489-47c3-8fec-8e5a5c17284e",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41491",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-03",
       "status": "open",
-      "name": "제2회 아산이순신 트레일",
+      "name": "제 2회 아산이순신 트레일",
       "region": "충남",
-      "venue": "아산 신정호",
+      "venue": "아산 신정호 이순신장군 동상앞",
       "time": "09:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://isunshintrail.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41316",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-04",
@@ -901,7 +1081,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.knmarathon.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41660",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-04",
@@ -914,7 +1098,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.hongcheonrun.net/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41571",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-04",
@@ -926,11 +1114,15 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://runbookcity.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41560",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-04",
-      "status": "closed",
+      "status": "open",
       "name": "2026 안동마라톤",
       "region": "경북",
       "venue": "안동시민운동장",
@@ -940,32 +1132,44 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.admarathon.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41516",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-04",
-      "status": "closed",
+      "status": "scheduled",
       "name": "제20회 달서하프마라톤",
       "region": "대구",
-      "venue": "호림강나루공원",
+      "venue": "대구 달서구 호림강나루공원",
       "time": "08:30",
       "distances": [
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.달서하프마라톤.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41332",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-05",
-      "status": "closed",
+      "status": "scheduled",
       "name": "2026 서울오픈마라톤",
       "region": "서울",
-      "venue": "광화문광장",
+      "venue": "광화문광장(예정)",
       "time": "07:30",
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://seoulopen.or.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41551",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-09",
@@ -977,19 +1181,27 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://cafe.naver.com/browna6seu",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41656",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-09",
       "status": "open",
       "name": "2026 한글런",
       "region": "세종",
-      "venue": "세종시 중앙공원 축제마당",
+      "venue": "세종중앙공원 도시축제마당",
       "time": "시간 미정",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://hangeulrun.com/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41664",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-10",
@@ -1001,7 +1213,11 @@
       "distances": [
         "Trail",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://cafe.naver.com/gumitrailrunnerclub",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41601",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-10",
@@ -1013,7 +1229,11 @@
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/b43655f0-60be-4c97-ad62-d377f6586ae0",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41567",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-10",
@@ -1024,7 +1244,11 @@
       "time": "17:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.chultra.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41236",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-11",
@@ -1038,7 +1262,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://najumarathon.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41434",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-11",
@@ -1052,7 +1280,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eindex&csno=20190605121808&opp=20260203121910#baseline",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41422",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-17",
@@ -1065,22 +1297,30 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://jsrun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41655",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-17",
       "status": "open",
       "name": "2026 대전 Dtrail 레이스",
       "region": "대전",
-      "venue": "보문산 숲속공연장",
+      "venue": "보문산 숲속공연장, 은행동",
       "time": "07:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://dtrail.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41646",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-18",
-      "status": "open",
+      "status": "scheduled",
       "name": "제23회 여주 세종대왕 마라톤",
       "region": "경기",
       "venue": "여주 현암지구공원",
@@ -1088,7 +1328,11 @@
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/edaee6e1-0d92-4248-9927-06ed3b0abfd0",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41610",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-18",
@@ -1101,7 +1345,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.dcmarathon.or.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41603",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-18",
@@ -1113,44 +1361,60 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://maraton.dbsfa365.co.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41596",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-18",
       "status": "open",
       "name": "그린스텝 2026",
       "region": "전남",
-      "venue": "해남 솔라시도",
+      "venue": "전라남도 해남군 솔라시도",
       "time": "09:00",
       "distances": [
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.greenstep.co.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41548",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-18",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 아시아 오픈 마라톤",
       "region": "서울",
-      "venue": "서울 광화문광장",
+      "venue": "광화문 광장(예정)",
       "time": "08:00",
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://asiarun.kr/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41303",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-24",
       "status": "open",
       "name": "2026 제3회 감성런",
       "region": "서울",
-      "venue": "신정교하부 육상트랙구장",
+      "venue": "신정교하부육상트랙구장",
       "time": "09:00",
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://xn--439a68tboh.kr/index.asp",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41637",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-25",
@@ -1163,24 +1427,32 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://gmrun.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41661",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-25",
       "status": "open",
       "name": "K-RUN 챌린지",
       "region": "서울",
-      "venue": "뚝섬한강공원 수변광장",
+      "venue": "서울 뚝섬한강공원 수변광장",
       "time": "09:00",
       "distances": [
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.irunman.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41653",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-25",
-      "status": "scheduled",
+      "status": "open",
       "name": "제19회 청도반시 전국마라톤",
       "region": "경북",
       "venue": "청도공설운동장",
@@ -1189,7 +1461,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://청도반시마라톤.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41621",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-10-25",
@@ -1202,7 +1478,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://csmarathon.co.kr/csmarathon/",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41477",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-01",
@@ -1215,7 +1495,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.djmarathon.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41659",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-01",
@@ -1228,7 +1512,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://gcmarathon.co.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41654",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-01",
@@ -1240,7 +1528,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/d596615e-cf32-4f20-bdbe-13b633f51c4e",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41638",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-01",
@@ -1253,21 +1545,29 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.humanrun.org",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41552",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-07",
       "status": "open",
       "name": "제15회 부여 굿뜨래 마라톤 대회",
       "region": "충남",
-      "venue": "부여 구드래나루터",
+      "venue": "부여 구드래나루터 선착장",
       "time": "08:30",
       "distances": [
         "Full",
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://mara1080.com/event/ffc023fc-7a54-4610-bdd6-2bb9a1028122",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41662",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-07",
@@ -1280,18 +1580,26 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://runyc.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41539",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-08",
       "status": "open",
       "name": "제5회 거제시체육회장배 거제앵산트레일레이스",
       "region": "경남",
-      "venue": "거제 하청면스포츠타운",
+      "venue": "경남 거제시 하청면스포츠타운",
       "time": "09:00",
       "distances": [
         "Trail"
-      ]
+      ],
+      "registrationUrl": "http://www.거제앵산트레일레이스.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41658",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-08",
@@ -1303,7 +1611,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.songparunsportal.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41647",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-08",
@@ -1315,7 +1627,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://k-marathon.or.kr/main.php",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41634",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-15",
@@ -1328,11 +1644,15 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://www.gcrun.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41644",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-15",
-      "status": "open",
+      "status": "scheduled",
       "name": "2026 가민런 코리아",
       "region": "경기",
       "venue": "고양종합운동장",
@@ -1340,7 +1660,11 @@
       "distances": [
         "Half",
         "10K"
-      ]
+      ],
+      "registrationUrl": "http://runable.me/product/18977?comp=18962",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41614",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-15",
@@ -1352,7 +1676,11 @@
       "distances": [
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://sjrun.com",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41602",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     },
     {
       "date": "2026-11-15",
@@ -1365,7 +1693,11 @@
         "Half",
         "10K",
         "5K"
-      ]
+      ],
+      "registrationUrl": "http://영남알프스마라톤.kr",
+      "sourceDetailUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41565",
+      "sourceName": "마라톤온라인",
+      "linkVerifiedFrom": "마라톤온라인 home 아이콘"
     }
   ]
 }
