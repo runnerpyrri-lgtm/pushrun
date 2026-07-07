@@ -343,9 +343,12 @@ p {
 
 .filters-panel {
   display: grid;
-  gap: 10px;
-  padding: 16px;
-  margin-bottom: 10px;
+  gap: 12px;
+  padding: 18px;
+  margin-bottom: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 251, 241, 0.92)),
+    #fff;
 }
 
 .filter-head {
@@ -357,7 +360,7 @@ p {
 
 .filter-head h1 {
   margin: 7px 0 0;
-  font-size: clamp(1.45rem, 3vw, 2.15rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.45rem);
   line-height: 1.05;
   white-space: nowrap;
 }
@@ -402,7 +405,7 @@ p {
 .filter-head p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.35;
 }
 
@@ -419,9 +422,9 @@ p {
   align-items: center;
   border: 1px solid var(--line);
   border-radius: var(--r);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.78);
   color: var(--ink);
-  min-height: 78px;
+  min-height: 74px;
   padding: 12px 14px;
   text-align: left;
   box-shadow: 0 6px 14px rgba(16, 24, 32, 0.04);
@@ -446,7 +449,7 @@ p {
   display: block;
   grid-column: 2;
   grid-row: 1 / 3;
-  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-size: clamp(1.75rem, 3.4vw, 2.25rem);
   line-height: 1;
 }
 
@@ -475,6 +478,11 @@ p {
   grid-template-columns: minmax(128px, 0.34fr) minmax(190px, 1fr) auto;
   gap: 10px;
   align-items: end;
+  border: 1px solid #cfdbc4;
+  border-radius: var(--r);
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 10px 24px rgba(16, 24, 32, 0.06);
 }
 
 .filter-block.wide {
@@ -495,11 +503,11 @@ p {
 .report-form input,
 .report-form textarea {
   width: 100%;
-  border: 1px solid var(--line);
+  border: 1px solid #d4dfca;
   border-radius: var(--r);
   background: #fff;
   color: var(--ink);
-  padding: 12px 13px;
+  padding: 13px 13px;
   outline: none;
 }
 
@@ -676,39 +684,56 @@ p {
 
 .race-list-list {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 10px;
 }
 
 .list-card {
-  padding: 12px;
+  padding: 13px;
   background: #fff;
+  border-color: #d8e4cf;
 }
 
 .list-card-grid {
   display: grid;
-  grid-template-columns: minmax(138px, 0.8fr) minmax(240px, 2fr) minmax(190px, 1.1fr) minmax(130px, 0.72fr);
-  gap: 12px;
-  align-items: center;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: stretch;
 }
 
 .list-date {
   display: grid;
-  gap: 5px;
-  align-content: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: center;
   min-width: 0;
+  border-radius: var(--r);
+  background: #101820;
+  color: #fff;
+  padding: 10px 11px;
 }
 
 .list-date strong {
-  color: var(--ink);
-  font-size: 1rem;
+  color: var(--lime);
+  font-size: 1.02rem;
   line-height: 1.15;
   white-space: nowrap;
 }
 
 .list-date span {
-  color: var(--muted);
-  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8rem;
   font-weight: 950;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.list-date em {
+  grid-column: 1 / -1;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 850;
 }
 
 .list-body {
@@ -716,16 +741,17 @@ p {
 }
 
 .list-title-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   min-width: 0;
 }
 
 .list-card h3 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(1rem, 2.4vw, 1.18rem);
+  font-size: 1.04rem;
   line-height: 1.22;
   letter-spacing: 0;
   overflow-wrap: anywhere;
@@ -744,9 +770,9 @@ p {
 .registration-strip {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid #dfe8d4;
+  border: 1px solid #d7e4cd;
   border-radius: var(--r);
-  background: #fbfdf8;
+  background: #f8fbf3;
   overflow: hidden;
 }
 
@@ -770,7 +796,7 @@ p {
   display: block;
   margin-top: 3px;
   color: var(--ink);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.2;
   overflow-wrap: anywhere;
 }
@@ -784,23 +810,23 @@ p {
 .course-chips span {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: 25px;
   border-radius: 999px;
-  background: #edf6dc;
+  background: #ecf7d8;
   color: #1e321a;
   padding: 0 8px;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 950;
   white-space: nowrap;
 }
 
 .source-line {
-  margin: 5px 0 0;
+  margin: 6px 0 0;
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 850;
   line-height: 1.25;
-  text-align: center;
+  text-align: left;
 }
 
 .list-action-row {
@@ -817,9 +843,9 @@ p {
 .list-action-row .mini-btn,
 .list-action-row .ghost-btn,
 .list-action-row .primary-btn {
-  min-height: 36px;
+  min-height: 38px;
   padding: 0 9px;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   white-space: nowrap;
 }
 
@@ -1371,13 +1397,13 @@ p {
   }
 
   .list-card-grid {
-    grid-template-columns: minmax(130px, 0.8fr) minmax(0, 1.4fr);
-    align-items: start;
+    grid-template-columns: 1fr;
+    align-items: stretch;
   }
 
   .registration-strip,
   .list-action-wrap {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   .source-line {

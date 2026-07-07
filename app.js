@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.5.1";
-const ASSET_VERSION = "20260707-8";
+const APP_VERSION = "0.6.0";
+const ASSET_VERSION = "20260707-9";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -202,6 +202,50 @@ function canUseRegistrationTimer(race) {
   return race.alertCapabilities?.includes("registration_time") && new Date(race.registrationOpenAt).getTime() > Date.now();
 }
 
+function getAlertTarget(race) {
+  if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return null;
+  const now = Date.now();
+  const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
+  const closesAt = race.registrationCloseAt ? new Date(race.registrationCloseAt).getTime() : null;
+  const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
+
+  if (opensAt && opensAt > now) {
+    return {
+      type: "registration_open",
+      at: race.registrationOpenAt,
+      label: "접수 시작",
+      shortLabel: "시작 알림",
+      statusLabel: "접수 시작 알림"
+    };
+  }
+
+  if (closesAt && closesAt > now && isAcceptingNow(race)) {
+    return {
+      type: "registration_close",
+      at: race.registrationCloseAt,
+      label: "접수 마감",
+      shortLabel: "마감 알림",
+      statusLabel: "접수 마감 알림"
+    };
+  }
+
+  if (raceAt && raceAt > now) {
+    return {
+      type: "race_day",
+      at: race.raceDate,
+      label: "대회일",
+      shortLabel: "대회 알림",
+      statusLabel: "대회일 알림"
+    };
+  }
+
+  return null;
+}
+
+function canUseAlert(race) {
+  return Boolean(getAlertTarget(race));
+}
+
 function isAcceptingNow(race) {
   if (!race) return false;
   if (race.registrationStatus === "open") return true;
@@ -262,12 +306,12 @@ function getCategoryCopy() {
   return state.activeCategory === "open"
     ? {
         title: "현재 접수중",
-        description: "마감이 가까운 순서입니다. 바로 신청할 대회만 남겼습니다.",
+        description: "지금 신청 가능한 대회를 마감이 가까운 순서로 정리했습니다.",
         empty: "현재 접수중인 대회가 없어요."
       }
     : {
         title: "접수 예정",
-        description: "접수 시작일이 가까운 순서입니다. 놓치면 아쉬운 대회부터 알림을 예약하세요.",
+        description: "접수 첫날이 확정된 대회를 빠른 순서로 정리했습니다.",
         empty: "접수 시간이 확정된 대회가 없어요."
       };
 }
@@ -351,17 +395,44 @@ function filteredRaces() {
 }
 
 function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
-  if (!race.registrationOpenAt || race.status === "closed") return [];
-  const openAt = new Date(race.registrationOpenAt);
+  const target = getAlertTarget(race);
+  if (!target) return [];
+  const targetAt = new Date(target.at);
   return offsets
     .map((offset) => {
-      const fireAt = new Date(openAt.getTime() - offset * 60 * 1000);
-      const title = offset === 0 ? `[${race.name}] 접수 시작!` : `[${race.name}] 접수 ${offset}분 전`;
-      const body =
-        offset === 0
-          ? "지금 신청이 열리는 시간이에요. PushRun에서 접수 상태를 확인하세요."
-          : `${pad(openAt.getHours())}:${pad(openAt.getMinutes())} 접수 시작. 로그인/결제 정보를 준비하세요.`;
-      return { offset, fireAt: fireAt.toISOString(), title, body, raceId: race.id };
+      const fireAt = new Date(targetAt.getTime() - offset * 60 * 1000);
+      const when = offset === 0 ? "정각" : `${offset}분 전`;
+      let title = `[${race.name}] ${target.label} ${when}`;
+      let body = `${formatRegistrationPoint(target.at)} ${target.label} 예정입니다.`;
+
+      if (target.type === "registration_open") {
+        title = offset === 0 ? `[${race.name}] 접수 시작!` : `[${race.name}] 접수 시작 ${offset}분 전`;
+        body =
+          offset === 0
+            ? "지금 접수가 열렸어요. 대회 사이트에서 바로 확인하세요."
+            : `${pad(targetAt.getHours())}:${pad(targetAt.getMinutes())} 접수 시작. 로그인과 결제 정보를 준비하세요.`;
+      }
+
+      if (target.type === "registration_close") {
+        title = offset === 0 ? `[${race.name}] 접수 마감 시간` : `[${race.name}] 접수 마감 ${offset}분 전`;
+        body = "접수 마감 전입니다. 신청할 대회라면 접수 사이트를 확인하세요.";
+      }
+
+      if (target.type === "race_day") {
+        title = offset === 0 ? `[${race.name}] 대회일 알림` : `[${race.name}] 대회일 ${offset}분 전`;
+        body = "오늘 대회 일정입니다. 출발 시간과 장소를 다시 확인하세요.";
+      }
+
+      return {
+        offset,
+        fireAt: fireAt.toISOString(),
+        title,
+        body,
+        raceId: race.id,
+        targetType: target.type,
+        targetAt: target.at,
+        targetLabel: target.label
+      };
     })
     .filter((alert) => new Date(alert.fireAt).getTime() > Date.now());
 }
@@ -383,8 +454,8 @@ function selectRace(id) {
 
 function openAlertModal(raceId) {
   const race = getRaces().find((item) => item.id === raceId);
-  if (!race || !canUseRegistrationTimer(race)) {
-    showToast(isAcceptingNow(race) ? "이미 접수중이에요. 대회 페이지에서 바로 확인하세요." : "접수 시간이 확정된 대회만 알림을 설정할 수 있어요.");
+  if (!race || !canUseAlert(race)) {
+    showToast("예약 가능한 알림 시간이 없어요. 대회 사이트에서 직접 확인하세요.");
     return;
   }
   state.modalRaceId = raceId;
@@ -416,16 +487,17 @@ function registrationButtonHtml(race, variant = "mini") {
   if (!race.registrationUrl) {
     return `<button class="${classes}" type="button" disabled aria-disabled="true">확인처 준비중</button>`;
   }
-  const label = isAcceptingNow(race) ? "접수 사이트" : "대회 페이지";
+  const label = isAcceptingNow(race) ? "접수 사이트" : "대회 사이트";
   return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "primary-btn" : "mini-btn strong";
-  if (!canUseRegistrationTimer(race)) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">${isAcceptingNow(race) ? "이미 접수중" : "접수일 확인중"}</button>`;
+  const target = getAlertTarget(race);
+  if (!target) {
+    return `<button class="${classes}" type="button" disabled aria-disabled="true">알림 불가</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}">알림 예약</button>`;
+  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}">${escapeHtml(target.shortLabel)}</button>`;
 }
 
 function renderDistanceFilters() {
@@ -521,6 +593,7 @@ function raceCardHtml(race) {
   const selected = state.selectedRaceId === race.id ? " selected" : "";
   const enabled = state.alerts[race.id]?.enabled;
   const isConfirmed = canUseRegistrationTimer(race);
+  const alertTarget = getAlertTarget(race);
   const safeId = escapeHtml(race.id);
   const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
   const linkNote = race.linkVerifiedFrom === "마라톤온라인 home 아이콘" ? "대회 홈페이지 연결" : "원본 목록 연결";
@@ -532,6 +605,7 @@ function raceCardHtml(race) {
         <div class="list-date">
           <strong>${escapeHtml(registrationActionText(race))}</strong>
           <span>대회 ${escapeHtml(formatShortDate(race.raceDate))}</span>
+          ${alertTarget ? `<em>${escapeHtml(alertTarget.statusLabel)}</em>` : ""}
         </div>
         <div class="list-body">
           <div class="list-title-row">
@@ -552,9 +626,9 @@ function raceCardHtml(race) {
           </div>
         </div>
         <div class="list-action-wrap">
-          <div class="list-action-row ${isConfirmed ? "" : "single"}">
-            ${isConfirmed ? alertButtonHtml(race) : registrationButtonHtml(race)}
-            ${isConfirmed ? registrationButtonHtml(race) : ""}
+          <div class="list-action-row">
+            ${alertButtonHtml(race)}
+            ${registrationButtonHtml(race)}
           </div>
           <p class="source-line">${escapeHtml(race.sourceName)} · ${escapeHtml(linkNote)}</p>
         </div>
@@ -579,6 +653,7 @@ function renderDetail() {
     return;
   }
   const isConfirmed = canUseRegistrationTimer(race);
+  const alertTarget = getAlertTarget(race);
   panel.innerHTML = `
     <div class="detail-head">
       <div>
@@ -594,7 +669,7 @@ function renderDetail() {
     </div>
     <div class="detail-block field-list">
       <div class="field-row"><span>접수 기간</span><strong>${escapeHtml(formatRegistrationRange(race))}</strong></div>
-      <div class="field-row"><span>접수까지</span><strong>${isConfirmed ? escapeHtml(formatDday(race.registrationOpenAt)) : "이미 접수중 또는 확인중"}</strong></div>
+      <div class="field-row"><span>알림 기준</span><strong>${alertTarget ? `${escapeHtml(alertTarget.label)} ${escapeHtml(formatDday(alertTarget.at))}` : "알림 불가"}</strong></div>
       <div class="field-row"><span>대회일</span><strong>${escapeHtml(formatShortDateTime(race.raceDate))}</strong></div>
       <div class="field-row"><span>대회까지</span><strong>${escapeHtml(formatDday(race.raceDate))}</strong></div>
       <div class="field-row"><span>장소</span><strong>${escapeHtml(race.venue)}</strong></div>
@@ -611,12 +686,14 @@ function renderDetail() {
 function renderModal() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
+  const target = getAlertTarget(race);
+  if (!target) return;
   const subscription = state.alerts[race.id];
   const selectedOffsets = subscription?.offsets || DEFAULT_OFFSETS;
   const possibleAlerts = buildRegistrationAlerts(race, selectedOffsets);
   document.getElementById("modalRaceName").textContent = race.name;
-  document.getElementById("modalRaceMeta").textContent = `${formatDateTime(race.registrationOpenAt)} · ${race.region} ${race.city}`;
-  document.getElementById("modalCountdown").textContent = formatDateTime(race.registrationOpenAt);
+  document.getElementById("modalRaceMeta").textContent = `${target.label} ${formatDateTime(target.at)} · ${race.region} ${race.city}`;
+  document.getElementById("modalCountdown").textContent = formatDateTime(target.at);
   document.getElementById("modalPresetGrid").innerHTML = DEFAULT_OFFSETS.map(
     (offset) => `
       <label>
@@ -625,7 +702,7 @@ function renderModal() {
       </label>
     `
   ).join("");
-  document.getElementById("modalAlertHint").textContent = `예약 가능 알림 ${possibleAlerts.length}개. 지난 시간은 자동 제외됩니다.`;
+  document.getElementById("modalAlertHint").textContent = `${target.statusLabel} ${possibleAlerts.length}개 예약 가능. 지난 시간은 자동 제외됩니다.`;
   document.getElementById("modalCancelAlertButton").hidden = !subscription?.enabled;
 }
 
@@ -641,6 +718,8 @@ function renderAlerts() {
     .map((subscription) => {
       const race = racesById[subscription.raceId];
       if (!race) return "";
+      const targetLabel = subscription.targetLabel || "접수 시작";
+      const targetAt = subscription.targetAt || race.registrationOpenAt || race.raceDate;
       const visibleOffsets = (subscription.scheduledAlerts?.length
         ? subscription.scheduledAlerts.map((alert) => alert.offset)
         : subscription.offsets
@@ -650,9 +729,9 @@ function renderAlerts() {
           <div class="alert-head">
             <div>
               <h3>${escapeHtml(race.name)}</h3>
-              <p class="meta-line">${escapeHtml(formatDateTime(race.registrationOpenAt))}</p>
+              <p class="meta-line">${escapeHtml(targetLabel)} ${escapeHtml(formatDateTime(targetAt))}</p>
             </div>
-            <span class="status-pill scheduled">접수 알림</span>
+            <span class="status-pill scheduled">${escapeHtml(targetLabel)} 알림</span>
           </div>
           <div class="chips">
             ${visibleOffsets.map((offset) => `<span class="chip highlight">${offset === 0 ? "정각" : `${offset}분 전`}</span>`).join("")}
@@ -681,7 +760,7 @@ function renderCategoryTabs() {
   const target = document.getElementById("categoryTabs");
   if (!target) return;
   target.innerHTML = [
-    ["confirmed", "접수 예정", `${confirmed.length}개`, confirmed[0] ? `다음 ${formatShortDate(confirmed[0].registrationOpenAt)} · ${confirmed[0].name}` : "접수일 확정 대기"],
+    ["confirmed", "접수 예정", `${confirmed.length}개`, confirmed[0] ? `첫 접수 ${formatShortDate(confirmed[0].registrationOpenAt)} · ${confirmed[0].name}` : "접수일 확정 대기"],
     ["open", "현재 접수중", `${openNow.length}개`, openNow[0] ? `마감 ${formatShortDate(openNow[0].registrationCloseAt || openNow[0].raceDate)} · ${openNow[0].name}` : "접수중 대기"]
   ]
     .map(([value, label, count, note]) => `
@@ -720,7 +799,7 @@ async function ensureNotificationPermission() {
 function fireWebAlert(alert) {
   showToast(alert.title);
   if ("Notification" in window && Notification.permission === "granted") {
-    new Notification(alert.title, { body: alert.body, tag: `${alert.raceId}-${alert.offset}` });
+    new Notification(alert.title, { body: alert.body, tag: `${alert.raceId}-${alert.targetType || "alert"}-${alert.offset}` });
   }
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -764,6 +843,11 @@ function scheduleAllBrowserTimers() {
 async function enableAlertFromModal() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
+  const target = getAlertTarget(race);
+  if (!target) {
+    showToast("예약 가능한 알림 시간이 없어요.");
+    return;
+  }
   if (race.status === "cancelled") {
     showToast("취소된 대회는 알림을 켤 수 없어요.");
     return;
@@ -782,6 +866,9 @@ async function enableAlertFromModal() {
   state.alerts[race.id] = {
     enabled: true,
     raceId: race.id,
+    targetType: target.type,
+    targetAt: target.at,
+    targetLabel: target.label,
     offsets,
     scheduledAlerts,
     createdAt: new Date().toISOString()

@@ -8,7 +8,7 @@
       content="러닝 대회 접수 예정과 현재 접수중인 대회를 빠르게 확인하는 PushRun."
     />
     <title>PushRun - 러닝 대회 접수 알림</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-8" />
+    <link rel="stylesheet" href="./styles.css?v=20260707-9" />
   </head>
   <body>
     <div class="app-shell">
@@ -35,16 +35,10 @@
           <section class="filters-panel" aria-label="대회 필터">
             <div class="filter-head">
               <div>
-                <span class="section-kicker">PushRun Board</span>
-                <h1>접수 타이밍만 빠르게</h1>
-                <p>알림 예약할 대회와 지금 신청할 대회를 바로 나눠 봅니다.</p>
+                <span class="section-kicker">Race Finder</span>
+                <h1>내가 뛸 대회 찾기</h1>
+                <p>지역, 거리, 접수 상태로 좁히고 대회 사이트와 알림을 바로 실행합니다.</p>
               </div>
-            </div>
-
-            <div class="category-tabs" id="categoryTabs" aria-label="대회 카테고리"></div>
-
-            <div class="filter-block wide">
-              <div class="chip-row" id="distanceFilters"></div>
             </div>
 
             <div class="filter-row">
@@ -60,6 +54,12 @@
 
               <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">확인</button>
             </div>
+
+            <div class="category-tabs" id="categoryTabs" aria-label="대회 카테고리"></div>
+
+            <div class="filter-block wide">
+              <div class="chip-row" id="distanceFilters"></div>
+            </div>
           </section>
 
           <section class="content-grid">
@@ -70,8 +70,8 @@
         <section class="view" id="view-alerts" aria-label="내 알림">
           <div class="page-heading">
             <span class="section-kicker">My Alerts</span>
-            <h1>내 접수 알림</h1>
-            <p>접수 시작 시간이 확정된 대회에 켜둔 알림만 보여줍니다.</p>
+            <h1>내 알림</h1>
+            <p>접수 시작, 접수 마감, 대회일 기준으로 켜둔 알림을 보여줍니다.</p>
           </div>
           <div class="alert-list" id="alertList"></div>
         </section>
@@ -183,6 +183,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=20260707-8"></script>
+    <script src="./app.js?v=20260707-9"></script>
   </body>
 </html>
