@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="러닝 대회 접수 시작 시간을 놓치지 않도록 20분 전, 10분 전, 정각 알림을 예약하는 PushRun."
+    />
+    <title>PushRun - 러닝 대회 접수 알림</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="brand" type="button" data-view="home" aria-label="PushRun 홈">
+          <span class="brand-mark">PR</span>
+          <span>
+            <strong>PushRun</strong>
+            <small>러닝 접수 알림</small>
+          </span>
+        </button>
+        <nav class="topnav" aria-label="주요 화면">
+          <button class="nav-pill active" type="button" data-view="home">홈</button>
+          <button class="nav-pill" type="button" data-view="alerts">내 알림</button>
+          <button class="nav-pill" type="button" data-view="settings">설정</button>
+        </nav>
+      </header>
+
+      <main>
+        <section class="view active" id="view-home" aria-label="대회 탐색">
+          <section class="filters-panel" aria-label="대회 필터">
+            <div class="filter-head">
+              <div>
+                <span class="section-kicker">Race Finder</span>
+                <h1>접수 오픈을 가장 먼저 잡는 알림</h1>
+              </div>
+              <button class="ghost-btn compact" type="button" id="syncButton">새로고침</button>
+            </div>
+
+            <div class="filter-block wide">
+              <div class="segmented" role="tablist" aria-label="상태 필터">
+                <button class="segment active" type="button" data-status-filter="all">전체</button>
+                <button class="segment" type="button" data-status-filter="soon">곧 접수</button>
+                <button class="segment" type="button" data-status-filter="popular">인기</button>
+                <button class="segment" type="button" data-status-filter="changed">변경/취소</button>
+              </div>
+            </div>
+
+            <div class="filter-block wide">
+              <div class="chip-row" id="distanceFilters"></div>
+            </div>
+
+            <div class="filter-row">
+              <label class="search-box">
+                <span>검색</span>
+                <input id="searchInput" type="search" placeholder="대회명, 지역" autocomplete="off" />
+              </label>
+
+              <label class="select-box">
+                <span>지역</span>
+                <select id="regionFilter"></select>
+              </label>
+
+              <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">확인</button>
+            </div>
+          </section>
+
+          <section class="content-grid">
+            <div>
+              <div class="section-title-row">
+                <div>
+                  <span class="section-kicker">Race Board</span>
+                  <h2>전체 예정 대회</h2>
+                  <p class="meta-line">곧 접수 기준은 접수 시작 14일 이내입니다.</p>
+                </div>
+                <span class="small-note" id="raceCountLabel">0개</span>
+              </div>
+              <div class="race-list" id="raceList"></div>
+            </div>
+
+            <aside class="detail-panel" id="raceDetail" aria-label="대회 상세">
+                <div class="empty-detail">
+                  <span class="mini-logo">PR</span>
+                  <h2>대회를 선택하세요</h2>
+                <p>접수 시간과 알림 설정을 바로 확인합니다.</p>
+              </div>
+            </aside>
+          </section>
+        </section>
+
+        <section class="view" id="view-alerts" aria-label="내 알림">
+          <div class="page-heading">
+            <span class="section-kicker">My Alerts</span>
+            <h1>내 접수 알림</h1>
+            <p>켜둔 대회와 예약된 알림만 보여줍니다.</p>
+          </div>
+          <div class="alert-list" id="alertList"></div>
+        </section>
+
+        <section class="view" id="view-settings" aria-label="설정">
+          <div class="page-heading">
+            <span class="section-kicker">Settings</span>
+            <h1>알림 설정</h1>
+            <p>앱이 꺼져 있어도 접수 알림을 받을 수 있게 준비합니다.</p>
+          </div>
+          <div class="settings-grid">
+            <section class="settings-panel">
+              <h2>알림 권한</h2>
+              <p id="permissionText">확인 중</p>
+              <button class="primary-btn" type="button" id="requestPermissionButton">알림 켜기</button>
+            </section>
+            <section class="settings-panel">
+              <h2>배터리 최적화 제외</h2>
+              <p>휴대폰이 앱을 잠재우지 않도록 설정하면 접수 알림이 더 안정적으로 도착합니다.</p>
+              <button class="ghost-btn" type="button" id="batteryGuideButton">설정 방법 보기</button>
+            </section>
+            <section class="settings-panel">
+              <h2>자동 업데이트</h2>
+              <ul class="check-list">
+                <li>매일 06:00 전체 대회 확인</li>
+                <li>접수 14일 이내 대회는 3시간마다 확인</li>
+                <li>취소/시간변경 시 알림 재설정</li>
+              </ul>
+              <p class="meta-line" id="lastSyncText">마지막 확인: 준비 중</p>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <footer class="mobile-tabs" aria-label="모바일 화면 이동">
+        <button class="mobile-tab active" type="button" data-view="home">홈</button>
+        <button class="mobile-tab" type="button" data-view="alerts">알림</button>
+        <button class="mobile-tab" type="button" data-view="settings">설정</button>
+      </footer>
+    </div>
+
+    <div class="modal-backdrop" id="alertModal" hidden>
+      <section class="alert-modal" role="dialog" aria-modal="true" aria-labelledby="modalRaceName">
+        <button class="modal-close" type="button" id="modalCloseButton" aria-label="닫기">×</button>
+        <span class="section-kicker">Alert Setup</span>
+        <h2 id="modalRaceName">알림 설정</h2>
+        <p class="meta-line" id="modalRaceMeta"></p>
+        <div class="modal-countdown" id="modalCountdown">--:--:--</div>
+        <div class="modal-section">
+          <strong>알림 받을 시간</strong>
+          <div class="preset-grid" id="modalPresetGrid"></div>
+          <p class="meta-line" id="modalAlertHint"></p>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" type="button" id="modalSaveButton">알림 켜기</button>
+          <button class="danger-btn" type="button" id="modalCancelAlertButton">알림 끄기</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-backdrop" id="permissionModal" hidden>
+      <section class="alert-modal permission-modal" role="dialog" aria-modal="true" aria-labelledby="permissionTitle">
+        <button class="modal-close" type="button" id="permissionCloseButton" aria-label="닫기">×</button>
+        <span class="section-kicker">Ready to Run</span>
+        <h2 id="permissionTitle">알림이 살아있어야 접수 순간을 잡아요.</h2>
+        <p class="meta-line">PushRun이 앱 밖에서도 접수 시간을 알려드릴 수 있게 아래 두 가지만 켜주세요.</p>
+        <div class="permission-steps">
+          <div>
+            <strong>알림 허용</strong>
+            <p>20분 전, 10분 전, 정각 팝업을 받습니다.</p>
+          </div>
+          <div>
+            <strong>배터리 제한 해제</strong>
+            <p>휴대폰이 앱을 잠재워도 알림이 끊기지 않게 합니다.</p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" type="button" id="permissionEnableButton">알림 허용하기</button>
+          <button class="ghost-btn" type="button" id="permissionLaterButton">나중에</button>
+        </div>
+        <p class="meta-line tiny-copy">출시 앱에서는 휴대폰 알림과 배터리 설정으로 연결됩니다.</p>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
