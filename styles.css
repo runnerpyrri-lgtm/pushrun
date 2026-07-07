@@ -395,6 +395,61 @@ p {
   overflow-wrap: anywhere;
 }
 
+.filter-head p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.category-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.category-tab {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: #fff;
+  color: var(--ink);
+  min-height: 110px;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(16, 24, 32, 0.05);
+}
+
+.category-tab.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 14px 28px rgba(16, 24, 32, 0.18);
+}
+
+.category-tab span {
+  display: block;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.category-tab strong {
+  display: block;
+  margin: 8px 0 6px;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 0.95;
+}
+
+.category-tab p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.category-tab.active p {
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .filter-head .ghost-btn {
   justify-self: start;
   white-space: nowrap;
@@ -462,7 +517,7 @@ p {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -560,6 +615,160 @@ p {
 
 .race-card-body {
   min-width: 0;
+}
+
+.focus-board {
+  display: grid;
+  gap: 14px;
+}
+
+.focus-board-head {
+  display: grid;
+  gap: 6px;
+}
+
+.focus-board-head h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5.8vw, 3.4rem);
+  line-height: 1.02;
+}
+
+.focus-board-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.08rem;
+  line-height: 1.45;
+}
+
+.focus-card {
+  padding: clamp(20px, 4vw, 34px);
+  background: #fff;
+}
+
+.focus-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.focus-card-top strong {
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--lime);
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.focus-card h3 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.focus-meta {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: clamp(1.1rem, 3.8vw, 1.45rem);
+  line-height: 1.35;
+}
+
+.focus-message {
+  display: grid;
+  gap: 8px;
+  margin: 22px 0;
+  border-radius: var(--r);
+  background: var(--ink);
+  color: #fff;
+  padding: 18px;
+}
+
+.focus-message span {
+  color: var(--lime);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.focus-message strong {
+  font-size: clamp(1.55rem, 5vw, 2.6rem);
+  line-height: 1.08;
+}
+
+.focus-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.focus-facts > div {
+  border: 1px solid #edf1e8;
+  border-radius: var(--r);
+  background: #f9fbf6;
+  padding: 14px;
+}
+
+.focus-facts span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.focus-facts strong {
+  color: var(--ink);
+  font-size: 1.12rem;
+  line-height: 1.35;
+}
+
+.focus-action-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.focus-action-row .mini-btn,
+.focus-action-row .ghost-btn,
+.focus-action-row .primary-btn {
+  min-height: 54px;
+  font-size: 1.05rem;
+}
+
+.quiet-note,
+.focus-enabled {
+  color: var(--muted);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.focus-enabled {
+  margin: 14px 0 0;
+  color: #314022;
+}
+
+.focus-empty {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: #fff;
+  padding: 24px;
+}
+
+.focus-empty h3 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.focus-empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .race-card.selected {
@@ -1027,7 +1236,33 @@ p {
   }
 
   .filter-head h1 {
-    font-size: clamp(1.05rem, 4.55vw, 1.28rem);
+    font-size: clamp(1.7rem, 8vw, 2.35rem);
+    white-space: normal;
+  }
+
+  .filter-head p {
+    font-size: 1rem;
+  }
+
+  .category-tabs {
+    gap: 8px;
+  }
+
+  .category-tab {
+    min-height: 104px;
+    padding: 13px;
+  }
+
+  .category-tab span {
+    font-size: 0.92rem;
+  }
+
+  .category-tab strong {
+    font-size: 2rem;
+  }
+
+  .category-tab p {
+    display: none;
   }
 
   .filters-panel .segmented {
@@ -1058,6 +1293,31 @@ p {
   .report-form,
   .alert-modal {
     padding: 14px;
+  }
+
+  .focus-card {
+    padding: 20px;
+  }
+
+  .focus-board-head h2 {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+  }
+
+  .focus-board-head p {
+    font-size: 1rem;
+  }
+
+  .focus-card h3 {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .focus-meta {
+    font-size: 1.08rem;
+  }
+
+  .focus-facts,
+  .focus-action-row {
+    grid-template-columns: 1fr;
   }
 
   .race-card-head,

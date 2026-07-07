@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="접수일정이 확정된 러닝 대회와 지금 접수중인 대회를 빠르게 확인하는 PushRun."
+      content="러닝 대회 접수 첫날 알림과 지금 접수중인 대회를 빠르게 확인하는 PushRun."
     />
     <title>PushRun - 러닝 대회 접수 알림</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-3" />
+    <link rel="stylesheet" href="./styles.css?v=20260707-4" />
   </head>
   <body>
     <div class="app-shell">
@@ -36,11 +36,12 @@
             <div class="filter-head">
               <div>
                 <span class="section-kicker">Race Finder</span>
-                <h1>접수할 대회만 빠르게</h1>
+                <h1>접수 첫날을 놓치지 않게</h1>
+                <p>알림 걸 대회와 지금 신청할 대회를 하나씩만 보여줍니다.</p>
               </div>
             </div>
 
-            <div class="summary-grid" id="summaryGrid" aria-label="대회 요약"></div>
+            <div class="category-tabs" id="categoryTabs" aria-label="대회 카테고리"></div>
 
             <div class="filter-block wide">
               <div class="chip-row" id="distanceFilters"></div>
@@ -66,20 +67,12 @@
               <div class="section-title-row">
                 <div>
                   <span class="section-kicker">Race Board</span>
-                  <h2>확정 접수와 접수중 대회</h2>
+                  <h2>다음 행동</h2>
                 </div>
                 <span class="small-note" id="raceCountLabel">0개</span>
               </div>
               <div class="race-list" id="raceList"></div>
             </div>
-
-            <aside class="detail-panel" id="raceDetail" aria-label="대회 상세">
-                <div class="empty-detail">
-                  <span class="mini-logo">PR</span>
-                  <h2>대회를 선택하세요</h2>
-                <p>접수 시간과 알림 설정을 바로 확인합니다.</p>
-              </div>
-            </aside>
           </section>
         </section>
 
@@ -199,6 +192,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=20260707-3"></script>
+    <script src="./app.js?v=20260707-4"></script>
   </body>
 </html>

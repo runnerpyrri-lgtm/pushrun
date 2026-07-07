@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.2.0";
-const ASSET_VERSION = "20260707-3";
+const APP_VERSION = "0.3.0";
+const ASSET_VERSION = "20260707-4";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -17,6 +17,7 @@ const state = {
   draftDistanceFilter: "all",
   draftRegionFilter: "all",
   draftQuery: "",
+  activeCategory: "confirmed",
   races: [],
   dataVersion: "",
   alerts: loadJson(ALERT_STORAGE_KEY, {}),
@@ -232,6 +233,26 @@ function getOpenRegistrationRaces() {
     .sort((a, b) => new Date(a.raceDate).getTime() - new Date(b.raceDate).getTime());
 }
 
+function getCategoryRaces() {
+  return state.activeCategory === "open" ? getOpenRegistrationRaces() : getConfirmedRegistrationRaces();
+}
+
+function getCategoryCopy() {
+  return state.activeCategory === "open"
+    ? {
+        kicker: "Open Now",
+        title: "지금 접수중",
+        description: "이미 접수가 열린 대회입니다. 알림보다 접수 사이트 확인이 먼저예요.",
+        empty: "지금 접수중인 대회가 없어요."
+      }
+    : {
+        kicker: "Next Alert",
+        title: "접수 첫날 알림",
+        description: "접수 시작 시간이 확인된 대회 중 가장 가까운 1개만 보여줍니다.",
+        empty: "접수 시간이 확정된 대회가 없어요."
+      };
+}
+
 function isVisibleRace(race) {
   const now = Date.now();
   const raceAt = new Date(race.raceDate).getTime();
@@ -393,7 +414,7 @@ function applyFilters() {
   state.query = state.draftQuery;
   state.selectedRaceId = null;
   renderRaceList();
-  renderSummary();
+  renderCategoryTabs();
   renderDetail();
   showToast("선택한 조건으로 대회를 찾았어요.");
 }
@@ -402,14 +423,23 @@ function renderRaceList() {
   const list = document.getElementById("raceList");
   const confirmed = getConfirmedRegistrationRaces();
   const openNow = getOpenRegistrationRaces();
-  document.getElementById("raceCountLabel").textContent = `확정 ${confirmed.length}개 · 접수중 ${openNow.length}개`;
-  if (!confirmed.length && !openNow.length) {
-    list.innerHTML = `<div class="alert-card"><h3>지금 볼 대회가 없어요.</h3><p class="meta-line">접수일정이 확정됐거나 접수중인 대회만 보여줍니다. 필터를 줄이거나 검색어를 바꿔보세요.</p></div>`;
+  const races = getCategoryRaces();
+  const copy = getCategoryCopy();
+  const countLabel = state.activeCategory === "open" ? `${openNow.length}개 중 1개` : `${confirmed.length}개 중 1개`;
+  document.getElementById("raceCountLabel").textContent = races.length ? countLabel : "0개";
+  if (!races.length) {
+    list.innerHTML = `<div class="focus-empty"><h3>${copy.empty}</h3><p>필터를 줄이거나 새로고침으로 최신 데이터를 다시 확인하세요.</p></div>`;
     return;
   }
   list.innerHTML = `
-    ${raceSectionHtml("접수일정 확정", "접수 시작이 얼마 남지 않은 순서로 보여줍니다.", confirmed, "confirmed")}
-    ${raceSectionHtml("지금 접수중", "알림 시간은 지났지만 지금 사이트에서 바로 확인할 대회입니다.", openNow, "open")}
+    <section class="focus-board ${state.activeCategory}">
+      <div class="focus-board-head">
+        <span class="section-kicker">${copy.kicker}</span>
+        <h2>${copy.title}</h2>
+        <p>${copy.description}</p>
+      </div>
+      ${raceCardHtml(races[0])}
+    </section>
   `;
 }
 
@@ -437,52 +467,42 @@ function raceCardHtml(race) {
   const isConfirmed = canUseRegistrationTimer(race);
   const safeId = escapeHtml(race.id);
   const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
+  const primaryLine = isConfirmed ? `${formatRegistrationRange(race)} 접수 시작` : "지금 접수 페이지 확인";
+  const secondaryLine = isConfirmed ? `${formatDday(race.registrationOpenAt)} 남음` : `${formatShortDate(race.raceDate)} 대회`;
   return `
-    <article class="race-card${selected}" data-race-id="${safeId}">
-      <div class="race-card-main">
-        <div class="race-date-block">
-          <strong>${escapeHtml(formatShortDate(race.raceDate).split("(")[0])}</strong>
-          <span>${escapeHtml(formatWeekday(race.raceDate))}</span>
-          <em>${escapeHtml(formatDday(race.raceDate))}</em>
+    <article class="race-card focus-card${selected}" data-race-id="${safeId}">
+      <div class="focus-card-top">
+        <span class="status-pill ${escapeHtml(statusClass)}">${escapeHtml(displayStatusLabel(race))}</span>
+        <strong>${escapeHtml(isConfirmed ? formatDday(race.registrationOpenAt) : "신청 가능")}</strong>
+      </div>
+      <h3>${escapeHtml(race.name)}</h3>
+      <p class="focus-meta">${escapeHtml(race.region)} · ${escapeHtml(race.venue)}</p>
+      <div class="focus-message">
+        <span>${escapeHtml(primaryLine)}</span>
+        <strong>${escapeHtml(secondaryLine)}</strong>
+      </div>
+      <div class="focus-facts">
+        <div>
+          <span>거리</span>
+          <strong>${escapeHtml(race.distances.join(" · "))}</strong>
         </div>
-        <div class="race-card-body">
-          <div class="race-card-head">
-            <div>
-              <h3>${escapeHtml(race.name)}</h3>
-              <p class="meta-line">${escapeHtml(race.region)} ${escapeHtml(race.city)} · ${escapeHtml(race.venue)}</p>
-            </div>
-            <span class="status-pill ${escapeHtml(statusClass)}">${escapeHtml(displayStatusLabel(race))}</span>
-          </div>
-          <div class="schedule-pair">
-            <div>
-              <span>${isConfirmed ? "접수 시작" : "접수 상태"}</span>
-              <strong>${escapeHtml(formatRegistrationRange(race))}</strong>
-              <em>${isConfirmed ? `접수까지 ${escapeHtml(formatDday(race.registrationOpenAt))}` : "지금 사이트 확인"}</em>
-            </div>
-            <div>
-              <span>거리</span>
-              <strong>${escapeHtml(race.distances.join(" · "))}</strong>
-              <em>${escapeHtml(race.sourceStatus || race.sourceName)}</em>
-            </div>
-          </div>
-          <div class="chips">
-            ${isWithinDays(race.registrationOpenAt, SOON_DAYS) ? `<span class="chip highlight">곧 접수</span>` : ""}
-            ${enabled ? `<span class="chip highlight">알림 켜짐</span>` : ""}
-            <span class="chip ${isConfirmed ? "highlight" : "warn"}">${isConfirmed ? "시간 알림 가능" : "접수중 확인용"}</span>
-            <span class="chip">${escapeHtml(race.sourceName)}</span>
-          </div>
-          <div class="race-card-actions">
-            ${alertButtonHtml(race)}
-            ${registrationButtonHtml(race)}
-          </div>
+        <div>
+          <span>대회일</span>
+          <strong>${escapeHtml(formatShortDate(race.raceDate))}</strong>
         </div>
       </div>
+      <div class="focus-action-row">
+        ${isConfirmed ? alertButtonHtml(race) : registrationButtonHtml(race)}
+        ${isConfirmed ? registrationButtonHtml(race) : `<span class="quiet-note">알림보다 신청 확인이 먼저예요.</span>`}
+      </div>
+      ${enabled ? `<p class="focus-enabled">알림이 켜져 있어요.</p>` : ""}
     </article>
   `;
 }
 
 function renderDetail() {
   const panel = document.getElementById("raceDetail");
+  if (!panel) return;
   const race = getRaces().find((item) => item.id === state.selectedRaceId);
   if (!race) {
     panel.innerHTML = `
@@ -591,23 +611,21 @@ function renderSyncStatus() {
   if (target) target.textContent = text;
 }
 
-function renderSummary() {
+function renderCategoryTabs() {
   const confirmed = getConfirmedRegistrationRaces();
   const openNow = getOpenRegistrationRaces();
-  const activeCount = Object.values(state.alerts).filter((alert) => alert.enabled).length;
-  const target = document.getElementById("summaryGrid");
+  const target = document.getElementById("categoryTabs");
   if (!target) return;
   target.innerHTML = [
-    ["접수일정 확정", `${confirmed.length}개`, confirmed[0] ? `${confirmed[0].name} ${formatDday(confirmed[0].registrationOpenAt)}` : "확정된 접수 일정 대기"],
-    ["지금 접수중", `${openNow.length}개`, openNow[0] ? `${openNow[0].name} 바로 확인` : "접수중 대회 대기"],
-    ["내 알림", `${activeCount}개`, `PushRun v${APP_VERSION}`]
+    ["confirmed", "접수 알림", `${confirmed.length}개`, confirmed[0] ? `${confirmed[0].name} ${formatDday(confirmed[0].registrationOpenAt)}` : "접수일 확정 대기"],
+    ["open", "지금 접수중", `${openNow.length}개`, openNow[0] ? `${openNow[0].name} 바로 확인` : "접수중 대기"]
   ]
-    .map(([label, value, note]) => `
-      <div class="summary-card">
+    .map(([value, label, count, note]) => `
+      <button class="category-tab ${state.activeCategory === value ? "active" : ""}" type="button" data-category="${value}">
         <span>${escapeHtml(label)}</span>
-        <strong>${escapeHtml(value)}</strong>
+        <strong>${escapeHtml(count)}</strong>
         <p>${escapeHtml(note)}</p>
-      </div>
+      </button>
     `)
     .join("");
 }
@@ -784,6 +802,18 @@ function setView(viewName) {
 }
 
 function bindEvents() {
+  const categoryTabs = document.getElementById("categoryTabs");
+  if (categoryTabs) {
+    categoryTabs.addEventListener("click", (event) => {
+      const categoryButton = event.target.closest("[data-category]");
+      if (!categoryButton) return;
+      state.activeCategory = categoryButton.dataset.category;
+      state.selectedRaceId = null;
+      renderCategoryTabs();
+      renderRaceList();
+    });
+  }
+
   document.addEventListener("click", (event) => {
     const alertButton = event.target.closest("[data-open-alert]");
     if (alertButton) {
@@ -883,7 +913,7 @@ function render() {
   renderRegionFilter();
   const searchInput = document.getElementById("searchInput");
   if (searchInput) searchInput.value = state.draftQuery;
-  renderSummary();
+  renderCategoryTabs();
   renderRaceList();
   renderDetail();
   renderAlerts();
@@ -909,9 +939,6 @@ async function initApp() {
   }
   render();
   if (!state.races.length) showToast("대회 데이터를 불러오지 못했어요. 잠시 후 새로고침해주세요.");
-  if (!localStorage.getItem(PERMISSION_GUIDE_KEY)) {
-    setTimeout(openPermissionGuide, 600);
-  }
   startTicker();
   scheduleAllBrowserTimers();
 }
