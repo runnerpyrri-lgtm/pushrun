@@ -3,7 +3,7 @@ const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
-const RACE_DATA_URL = "./races.json";
+const RACE_DATA_URL = "./races.json?v=20260707-2";
 
 const state = {
   selectedRaceId: null,
