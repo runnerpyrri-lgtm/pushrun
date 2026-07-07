@@ -1,0 +1,8 @@
+{
+  "name": "pushrun-web-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File outputs/serve-pushrun.ps1 -Port 4173"
+  }
+}
