@@ -2,7 +2,7 @@ const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const APP_VERSION = "0.6.3";
-const ASSET_VERSION = "20260708-5";
+const ASSET_VERSION = "20260708-6";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -594,40 +594,36 @@ function raceCardHtml(race) {
   const isConfirmed = canUseRegistrationTimer(race);
   const alertTarget = getAlertTarget(race);
   const safeId = escapeHtml(race.id);
-  const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
-  const linkNote = race.linkVerifiedFrom === "마라톤온라인 home 아이콘" ? "대회 홈페이지 연결" : "원본 목록 연결";
   const startLabel = race.registrationOpenAt ? formatRegistrationPoint(race.registrationOpenAt) : "확인중";
-  const endLabel = race.registrationCloseAt ? formatRegistrationPoint(race.registrationCloseAt) : "확인중";
+  const raceDateLabel = formatShortDate(race.raceDate);
+  const ticketDday = alertTarget ? formatDday(alertTarget.at) : formatDday(race.raceDate);
   const actionButtons = `<div class="list-action-row ticket-actions">${registrationButtonHtml(race)}${alertButtonHtml(race)}</div>`;
   return `
     <article class="race-card list-card${selected}" data-race-id="${safeId}">
       <div class="list-card-grid">
         <div class="list-date">
-          <strong>${escapeHtml(registrationActionText(race))}</strong>
-          <span class="race-day-chip"><small>대회일</small><b>${escapeHtml(formatShortDate(race.raceDate))}</b></span>
-          ${alertTarget ? `<em>${escapeHtml(alertTarget.statusLabel)}</em>` : ""}
+          <span>접수</span>
+          <strong>${escapeHtml(ticketDday)}</strong>
+          <em>↕</em>
         </div>
         <div class="list-body">
           <div class="list-title-row">
             <h3>${escapeHtml(race.name)}</h3>
-            <span class="status-pill ${escapeHtml(statusClass)}">${escapeHtml(displayStatusLabel(race))}</span>
           </div>
-          <p class="list-meta">${escapeHtml(race.region)} · ${escapeHtml(race.venue)}</p>
           ${courseChipsHtml(race)}
         </div>
         <div class="registration-strip">
           <div>
-            <span>시작</span>
+            <span>접수</span>
             <strong>${escapeHtml(startLabel)}</strong>
           </div>
           <div>
-            <span>마감</span>
-            <strong>${escapeHtml(endLabel)}</strong>
+            <span>대회</span>
+            <strong>${escapeHtml(raceDateLabel)}</strong>
           </div>
         </div>
         <div class="list-action-wrap">
           ${actionButtons}
-          <p class="source-line">${escapeHtml(race.sourceName)} · ${escapeHtml(linkNote)}</p>
         </div>
       </div>
       ${enabled ? `<p class="focus-enabled">알림이 켜져 있어요.</p>` : ""}
