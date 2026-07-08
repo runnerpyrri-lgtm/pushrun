@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.5";
-const ASSET_VERSION = "20260708-8";
+const APP_VERSION = "0.6.6";
+const ASSET_VERSION = "20260708-9";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
