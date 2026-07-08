@@ -421,17 +421,16 @@ p {
 }
 
 .category-tab {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  column-gap: 14px;
+  display: flex;
   align-items: center;
+  justify-content: center;
   border: 1px solid var(--line);
   border-radius: var(--r);
   background: #fff;
   color: var(--ink);
-  min-height: 76px;
-  padding: 12px 13px;
-  text-align: left;
+  min-height: 46px;
+  padding: 0 13px;
+  text-align: center;
   box-shadow: 0 8px 18px rgba(16, 24, 32, 0.05);
 }
 
@@ -445,7 +444,7 @@ p {
 .category-tab span {
   display: block;
   min-width: 0;
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   font-weight: 950;
   white-space: nowrap;
 }
@@ -702,6 +701,7 @@ p {
 }
 
 .focus-board-head > strong {
+  display: none;
   flex: 0 0 auto;
   border: 1px solid rgba(16, 24, 32, 0.1);
   border-radius: var(--r);
@@ -784,7 +784,7 @@ p {
 
 .list-card-grid {
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr) 54px;
+  grid-template-columns: 68px minmax(0, 1fr) 54px;
   grid-template-rows: auto auto;
   gap: 0 10px;
   align-items: stretch;
@@ -796,7 +796,7 @@ p {
   grid-row: 1 / 3;
   align-content: center;
   justify-items: center;
-  gap: 7px;
+  gap: 9px;
   min-width: 0;
   border-radius: 8px 0 0 8px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--card-accent) 88%, #ffffff), var(--card-accent));
@@ -807,7 +807,7 @@ p {
 
 .list-date strong {
   color: #fff;
-  font-size: 1.22rem;
+  font-size: clamp(1.38rem, 4vw, 1.68rem);
   line-height: 1;
   white-space: nowrap;
 }
@@ -847,10 +847,7 @@ p {
 }
 
 .list-date em {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 1.05rem;
-  font-style: normal;
-  font-weight: 900;
+  display: none;
 }
 
 .list-body {
@@ -922,7 +919,7 @@ p {
   display: block;
   margin-top: 0;
   color: var(--ink);
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   line-height: 1.2;
   overflow-wrap: anywhere;
 }
@@ -1393,9 +1390,15 @@ p {
 }
 
 .alert-modal {
-  width: min(520px, 100%);
-  padding: 22px;
+  width: min(430px, 100%);
+  padding: 18px;
   position: relative;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(183, 244, 33, 0.18), transparent 34%),
+    #ffffff;
+  border: 1px solid rgba(16, 24, 32, 0.1);
+  border-radius: 18px;
+  box-shadow: 0 28px 70px rgba(16, 24, 32, 0.26);
 }
 
 .modal-close {
@@ -1412,11 +1415,43 @@ p {
 }
 
 .alert-modal h2 {
-  margin: 12px 40px 6px 0;
+  margin: 8px 40px 5px 0;
+  font-size: clamp(1.2rem, 5vw, 1.6rem);
+  line-height: 1.16;
 }
 
 .modal-countdown {
-  font-size: clamp(2rem, 7vw, 3rem);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  align-items: end;
+  margin: 14px 0 10px;
+  border-radius: 14px;
+  background: var(--ink);
+  color: #fff;
+  padding: 14px;
+}
+
+.modal-countdown span {
+  grid-column: 1 / -1;
+  color: var(--lime);
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.modal-countdown strong {
+  color: #fff;
+  font-size: clamp(2rem, 10vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.modal-countdown small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: right;
 }
 
 .date-callout {
@@ -1440,8 +1475,8 @@ p {
 
 .modal-section {
   display: grid;
-  gap: 10px;
-  margin: 14px 0;
+  gap: 9px;
+  margin: 12px 0;
 }
 
 .preset-grid {
@@ -1455,11 +1490,21 @@ p {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 46px;
+  min-height: 42px;
   border: 1px solid var(--line);
-  border-radius: var(--r);
+  border-radius: 12px;
   background: #fff;
   font-weight: 950;
+}
+
+.preset-grid input {
+  accent-color: var(--ink);
+}
+
+.preset-grid label:has(input:checked) {
+  border-color: var(--ink);
+  background: #f4ffe2;
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 32, 0.06);
 }
 
 .permission-modal h2 {
@@ -1562,7 +1607,7 @@ p {
   }
 
   .list-card-grid {
-    grid-template-columns: 58px minmax(0, 1fr) 54px;
+    grid-template-columns: 68px minmax(0, 1fr) 54px;
     align-items: stretch;
   }
 
@@ -1656,10 +1701,8 @@ p {
   }
 
   .category-tab {
-    min-height: 78px;
+    min-height: 42px;
     padding: 10px;
-    grid-template-columns: 1fr;
-    gap: 5px;
   }
 
   .category-tab span {
@@ -1667,6 +1710,7 @@ p {
   }
 
   .category-tab strong {
+    display: none;
     grid-column: auto;
     grid-row: auto;
     justify-content: flex-start;
@@ -1681,7 +1725,7 @@ p {
   }
 
   .category-tab p {
-    display: block;
+    display: none;
     font-size: 0.72rem;
     line-height: 1.15;
   }
@@ -1763,7 +1807,7 @@ p {
   }
 
   .list-card-grid {
-    grid-template-columns: 58px minmax(0, 1fr) 54px;
+    grid-template-columns: 64px minmax(0, 1fr) 54px;
     gap: 0 9px;
   }
 
@@ -1773,7 +1817,7 @@ p {
   }
 
   .list-date strong {
-    font-size: 1.18rem;
+    font-size: clamp(1.28rem, 6vw, 1.55rem);
   }
 
   .race-day-chip {
@@ -1787,7 +1831,7 @@ p {
   }
 
   .list-date em {
-    font-size: 1rem;
+    display: none;
   }
 
   .list-title-row {
@@ -1814,7 +1858,7 @@ p {
   }
 
   .registration-strip strong {
-    font-size: 0.78rem;
+    font-size: 0.86rem;
   }
 
   .list-action-row .mini-btn,
@@ -1855,6 +1899,11 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .modal-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
   .schedule-pair {
     gap: 6px;
   }
@@ -1873,7 +1922,14 @@ p {
   }
 
   .preset-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .preset-grid label {
+    gap: 5px;
+    min-height: 40px;
+    font-size: 0.82rem;
   }
 }
 
