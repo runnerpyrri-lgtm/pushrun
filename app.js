@@ -2,7 +2,7 @@ const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const APP_VERSION = "0.6.3";
-const ASSET_VERSION = "20260708-4";
+const ASSET_VERSION = "20260708-5";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -483,21 +483,20 @@ function renderPermissionEntry() {
 }
 
 function registrationButtonHtml(race, variant = "mini") {
-  const classes = variant === "detail" ? "ghost-btn" : "mini-btn";
+  const classes = variant === "detail" ? "ghost-btn" : "mini-btn action-site";
   if (!race.registrationUrl) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">확인처 준비중</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true">준비중</button>`;
   }
-  const label = isAcceptingNow(race) ? "접수 사이트" : "대회 사이트";
-  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer">접수</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
-  const classes = variant === "detail" ? "primary-btn" : "mini-btn strong";
+  const classes = variant === "detail" ? "primary-btn" : "mini-btn strong action-alert";
   const target = getAlertTarget(race);
   if (!target) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">알림 불가</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true">알림</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}">${escapeHtml(target.shortLabel)}</button>`;
+  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}">알림</button>`;
 }
 
 function renderDistanceFilters() {
@@ -594,15 +593,12 @@ function raceCardHtml(race) {
   const enabled = state.alerts[race.id]?.enabled;
   const isConfirmed = canUseRegistrationTimer(race);
   const alertTarget = getAlertTarget(race);
-  const isOpenOnly = isAcceptingNow(race) && !isConfirmed;
   const safeId = escapeHtml(race.id);
   const statusClass = isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : race.status;
   const linkNote = race.linkVerifiedFrom === "마라톤온라인 home 아이콘" ? "대회 홈페이지 연결" : "원본 목록 연결";
   const startLabel = race.registrationOpenAt ? formatRegistrationPoint(race.registrationOpenAt) : "확인중";
   const endLabel = race.registrationCloseAt ? formatRegistrationPoint(race.registrationCloseAt) : "확인중";
-  const actionButtons = isOpenOnly
-    ? `<div class="list-action-row single">${registrationButtonHtml(race)}</div>`
-    : `<div class="list-action-row">${alertButtonHtml(race)}${registrationButtonHtml(race)}</div>`;
+  const actionButtons = `<div class="list-action-row ticket-actions">${registrationButtonHtml(race)}${alertButtonHtml(race)}</div>`;
   return `
     <article class="race-card list-card${selected}" data-race-id="${safeId}">
       <div class="list-card-grid">
