@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.07-race-data-7",
+  "version": "2026.07.08-race-data-8",
   "sources": [
     "마라톤온라인",
     "마라톤GO",
@@ -36,7 +36,7 @@
       "raceDate": "2026-09-06T07:30:00+09:00",
       "registrationOpenAt": "2026-06-17T10:00:00+09:00",
       "registrationCloseAt": "2026-07-15T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-ytn-seoul-tour-marathon",
+      "registrationUrl": "https://run.ytn.co.kr/",
       "distances": [
         "Half",
         "11K"
@@ -45,7 +45,8 @@
       "capacity": 5000,
       "popularity": 86,
       "sourceName": "마라톤GO",
-      "note": "접수 기간은 6월 17일부터 7월 15일까지로 확인됩니다."
+      "note": "접수 기간은 6월 17일부터 7월 15일까지로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-ytn-seoul-tour-marathon"
     },
     {
       "id": "cheongju-jeonmahyeop",
@@ -56,7 +57,7 @@
       "raceDate": "2026-09-06T07:30:00+09:00",
       "registrationOpenAt": "2026-06-10T10:00:00+09:00",
       "registrationCloseAt": "2026-08-06T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-jeonmahyeop-cheongju-marathon",
+      "registrationUrl": "http://mara1080.com/event/a9780087-8fc3-4849-a234-7659978f6792",
       "distances": [
         "10K",
         "5K"
@@ -65,7 +66,8 @@
       "capacity": 3000,
       "popularity": 78,
       "sourceName": "마라톤GO",
-      "note": "10km 2,000명, 5km 1,000명 선착순 모집으로 확인됩니다."
+      "note": "10km 2,000명, 5km 1,000명 선착순 모집으로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-jeonmahyeop-cheongju-marathon"
     },
     {
       "id": "chuncheon-marathon",
@@ -137,7 +139,7 @@
       "raceDate": "2026-04-26T08:00:00+09:00",
       "registrationOpenAt": "2025-12-16T10:00:00+09:00",
       "registrationCloseAt": "2025-12-18T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-seoul-half-marathon",
+      "registrationUrl": "http://www.seoulhalfmarathon.com",
       "distances": [
         "Half",
         "10K"
@@ -146,7 +148,8 @@
       "capacity": 12000,
       "popularity": 94,
       "sourceName": "마라톤GO",
-      "note": "홈페이지 선착순 접수, HALF 8만원·10km 7만원으로 확인됩니다."
+      "note": "홈페이지 선착순 접수, HALF 8만원·10km 7만원으로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-seoul-half-marathon"
     },
     {
       "id": "night-run-busan",
@@ -157,7 +160,7 @@
       "raceDate": "2026-08-01T19:00:00+09:00",
       "registrationOpenAt": "2026-06-01T10:00:00+09:00",
       "registrationCloseAt": "2026-07-01T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-night-run-busan",
+      "registrationUrl": "http://www.nightracebusan.co.kr/",
       "distances": [
         "10K",
         "5K"
@@ -166,7 +169,8 @@
       "capacity": 7000,
       "popularity": 88,
       "sourceName": "마라톤GO",
-      "note": "6월 티켓 오픈 예정으로 공지된 대회입니다."
+      "note": "6월 티켓 오픈 예정으로 공지된 대회입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-night-run-busan"
     },
     {
       "id": "mbn-seoul",
@@ -177,7 +181,7 @@
       "raceDate": "2026-11-15T08:00:00+09:00",
       "registrationOpenAt": "2026-06-22T10:00:00+09:00",
       "registrationCloseAt": "2026-06-26T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-mbn-seoul-marathon",
+      "registrationUrl": "http://mbn-seoulmarathon.com",
       "distances": [
         "Half",
         "10K"
@@ -186,7 +190,8 @@
       "capacity": 12000,
       "popularity": 89,
       "sourceName": "마라톤GO",
-      "note": "HALF 6월 25일, 10km 6월 26일 접수로 확인됩니다."
+      "note": "HALF 6월 25일, 10km 6월 26일 접수로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-mbn-seoul-marathon"
     },
     {
       "id": "gyeongju-marathon",
@@ -197,7 +202,7 @@
       "raceDate": "2026-10-17T08:00:00+09:00",
       "registrationOpenAt": "2026-05-26T10:00:00+09:00",
       "registrationCloseAt": "2026-05-28T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-gyeongju-marathon",
+      "registrationUrl": "http://www.gyeongjumarathon.com/home",
       "distances": [
         "Full",
         "Half",
@@ -207,7 +212,8 @@
       "capacity": 10000,
       "popularity": 88,
       "sourceName": "마라톤GO",
-      "note": "풀·하프·10km 참가비와 접수 기간이 확인됩니다."
+      "note": "풀·하프·10km 참가비와 접수 기간이 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-gyeongju-marathon"
     },
     {
       "id": "seoulrun",
@@ -218,7 +224,7 @@
       "raceDate": "2026-06-28T08:00:00+09:00",
       "registrationOpenAt": "2026-03-18T10:00:00+09:00",
       "registrationCloseAt": "2026-06-17T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-seoulrun",
+      "registrationUrl": "http://seoulrun.kr/",
       "distances": [
         "Half",
         "10K",
@@ -228,7 +234,8 @@
       "capacity": 5000,
       "popularity": 76,
       "sourceName": "마라톤GO",
-      "note": "서울 여의도공원에서 열리는 하프·10km·5km 대회입니다."
+      "note": "서울 여의도공원에서 열리는 하프·10km·5km 대회입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-seoulrun"
     },
     {
       "id": "the-race-busan",
@@ -239,7 +246,7 @@
       "raceDate": "2026-04-19T08:00:00+09:00",
       "registrationOpenAt": "2026-02-09T10:00:00+09:00",
       "registrationCloseAt": "2026-03-06T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-the-race-busan-10k",
+      "registrationUrl": "http://busan.therace.co.kr",
       "distances": [
         "10K"
       ],
@@ -247,7 +254,8 @@
       "capacity": 6000,
       "popularity": 82,
       "sourceName": "마라톤GO",
-      "note": "부산항북항 친수공원 예정지에서 열리는 10km 대회입니다."
+      "note": "부산항북항 친수공원 예정지에서 열리는 10km 대회입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-the-race-busan-10k"
     },
     {
       "id": "incheon-half",
@@ -258,7 +266,7 @@
       "raceDate": "2026-03-22T08:30:00+09:00",
       "registrationOpenAt": "2026-01-05T10:00:00+09:00",
       "registrationCloseAt": "2026-02-13T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/26th-incheon-international-half-marathon-2026",
+      "registrationUrl": "http://www.incheonmarathon.co.kr/",
       "distances": [
         "Half",
         "10K"
@@ -267,7 +275,8 @@
       "capacity": 9000,
       "popularity": 80,
       "sourceName": "마라톤GO",
-      "note": "2026년 1월 5일 접수 예정으로 확인된 인천 하프 대회입니다."
+      "note": "2026년 1월 5일 접수 예정으로 확인된 인천 하프 대회입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/26th-incheon-international-half-marathon-2026"
     },
     {
       "id": "incheon-federation",
@@ -278,7 +287,7 @@
       "raceDate": "2026-05-17T08:00:00+09:00",
       "registrationOpenAt": "2026-03-11T14:00:00+09:00",
       "registrationCloseAt": "2026-04-03T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-incheon-athletics-federation-marathon",
+      "registrationUrl": "http://incheonafcup.co.kr/",
       "distances": [
         "Half",
         "10K",
@@ -288,7 +297,8 @@
       "capacity": 5000,
       "popularity": 72,
       "sourceName": "마라톤GO",
-      "note": "3월 11일 14시 접수 예정으로 확인됩니다."
+      "note": "3월 11일 14시 접수 예정으로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-incheon-athletics-federation-marathon"
     },
     {
       "id": "give-n-race",
@@ -299,7 +309,7 @@
       "raceDate": "2026-04-05T09:00:00+09:00",
       "registrationOpenAt": "2026-02-02T10:00:00+09:00",
       "registrationCloseAt": "2026-03-02T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/13th-give-n-race-2026-04-05",
+      "registrationUrl": "http://www.givenrace.com/give#/",
       "distances": [
         "10K",
         "8K"
@@ -308,7 +318,8 @@
       "capacity": 7000,
       "popularity": 79,
       "sourceName": "마라톤GO",
-      "note": "기부 문화와 결합한 부산 러닝 대회입니다."
+      "note": "기부 문화와 결합한 부산 러닝 대회입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/13th-give-n-race-2026-04-05"
     },
     {
       "id": "busan-50k",
@@ -319,7 +330,7 @@
       "raceDate": "2026-05-09T06:00:00+09:00",
       "registrationOpenAt": "2026-01-05T10:00:00+09:00",
       "registrationCloseAt": "2026-02-03T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-busan-50k",
+      "registrationUrl": "http://www.busan-50k.com",
       "distances": [
         "Trail",
         "50K",
@@ -331,7 +342,8 @@
       "capacity": 1800,
       "popularity": 74,
       "sourceName": "마라톤GO",
-      "note": "트레일·울트라 성격의 부산 장거리 레이스입니다."
+      "note": "트레일·울트라 성격의 부산 장거리 레이스입니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-busan-50k"
     },
     {
       "id": "seaside-incheon",
@@ -342,7 +354,7 @@
       "raceDate": "2026-05-16T09:00:00+09:00",
       "registrationOpenAt": "2026-02-23T14:00:00+09:00",
       "registrationCloseAt": "2026-04-24T23:59:00+09:00",
-      "registrationUrl": "https://marathongo.co.kr/raceDetail/domestic/1st-kyonggi-news-seaside-marathon-2026-05-16",
+      "registrationUrl": "http://kgseasiderun.co.kr/",
       "distances": [
         "Half",
         "10K",
@@ -352,7 +364,8 @@
       "capacity": 5000,
       "popularity": 70,
       "sourceName": "마라톤GO",
-      "note": "하프·10km·5km 전종목 선착순 5,000명으로 확인됩니다."
+      "note": "하프·10km·5km 전종목 선착순 5,000명으로 확인됩니다.",
+      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/1st-kyonggi-news-seaside-marathon-2026-05-16"
     }
   ],
   "scheduleFeed": [

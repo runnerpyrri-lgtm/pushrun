@@ -2,7 +2,7 @@ const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const APP_VERSION = "0.6.3";
-const ASSET_VERSION = "20260708-2";
+const ASSET_VERSION = "20260708-3";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -116,16 +116,30 @@ function normalizeRaceTime(value) {
 }
 
 function mergeRaces(primary, secondary) {
-  const seen = new Set(primary.map((race) => `${race.name}|${race.raceDate.slice(0, 10)}`));
+  const seen = new Set(primary.map((race) => raceIdentity(race)));
   return [
     ...primary,
     ...secondary.filter((race) => {
-      const key = `${race.name}|${race.raceDate.slice(0, 10)}`;
+      const key = raceIdentity(race);
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     })
   ];
+}
+
+function raceIdentity(race) {
+  return `${normalizeRaceName(race.name)}|${race.raceDate.slice(0, 10)}`;
+}
+
+function normalizeRaceName(name) {
+  return String(name || "")
+    .toLowerCase()
+    .replace(/제\d+회/g, "")
+    .replace(/2026/g, "")
+    .replace(/marathon|race|trail|run/g, "")
+    .replace(/마라톤대회|마라톤|트레일런|트레일|레이스/g, "")
+    .replace(/[^0-9a-z가-힣]/g, "");
 }
 
 function formatDateTime(value) {
@@ -534,9 +548,9 @@ function renderRaceList() {
   const openNow = getOpenRegistrationRaces();
   const races = getCategoryRaces();
   const copy = getCategoryCopy();
-  const countLabel = state.activeCategory === "open" ? `${openNow.length}개` : `${confirmed.length}개`;
+  const countLabel = `대회 ${state.activeCategory === "open" ? openNow.length : confirmed.length}개`;
   const raceCountLabel = document.getElementById("raceCountLabel");
-  if (raceCountLabel) raceCountLabel.textContent = races.length ? countLabel : "0개";
+  if (raceCountLabel) raceCountLabel.textContent = races.length ? countLabel : "대회 0개";
   if (!races.length) {
     list.innerHTML = `<div class="focus-empty"><h3>${copy.empty}</h3><p>검색어를 지우거나 거리·지역 필터를 전체로 바꿔보세요.</p></div>`;
     return;
@@ -566,7 +580,7 @@ function raceSectionHtml(title, description, races, kind) {
           <h2>${title}</h2>
           <p class="meta-line">${description}</p>
         </div>
-        <span class="small-note">${races.length}개</span>
+        <span class="small-note">대회 ${races.length}개</span>
       </div>
       <div class="race-list">
         ${races.length ? races.map(raceCardHtml).join("") : `<div class="alert-card"><h3>${title} 대회가 없어요.</h3><p class="meta-line">새 데이터가 들어오면 이 영역에 자동으로 정리됩니다.</p></div>`}
