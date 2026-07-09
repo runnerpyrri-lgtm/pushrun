@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.6";
-const ASSET_VERSION = "20260708-9";
+const APP_VERSION = "0.6.7";
+const ASSET_VERSION = "20260709-1";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -49,14 +49,17 @@ async function loadRaceData() {
 }
 
 function parseScheduleFeed(feed) {
-  return feed.map((entry, index) => {
+  return feed.map((entry) => {
     const now = Date.now();
     const opensAt = entry.registrationOpenAt ? new Date(entry.registrationOpenAt).getTime() : null;
     const closesAt = entry.registrationCloseAt ? new Date(entry.registrationCloseAt).getTime() : null;
     const isOpen = entry.status === "open" || Boolean(opensAt && opensAt <= now && (!closesAt || now <= closesAt));
     const hasUpcomingOpen = Boolean(opensAt && opensAt > now);
     return {
-      id: `schedule-${index}-${entry.date}`,
+      // ★ 내용 기반 안정 ID. 예전엔 배열 index(`schedule-${index}-...`)라 피드가
+      // 재정렬·삽입되면 ID가 바뀌어 localStorage 에 저장된 알림이 전부 고아가 됐다.
+      // raceIdentity 와 동일한 정규화(이름+날짜)로 뽑아 피드가 바뀌어도 알림이 유지되게 한다.
+      id: `schedule-${normalizeRaceName(entry.name)}-${entry.date}`,
       name: entry.name,
       region: entry.region,
       city: entry.venue.split(" ")[0] || entry.region,
@@ -678,6 +681,19 @@ function renderDetail() {
   `;
 }
 
+// 매초 갱신되는 시간 부분(카운트다운)만 따로 그린다. 체크박스 그리드는 건드리지 않는다.
+function renderModalCountdown() {
+  const race = getRaces().find((item) => item.id === state.modalRaceId);
+  if (!race) return;
+  const target = getAlertTarget(race);
+  if (!target) return;
+  document.getElementById("modalCountdown").innerHTML = `
+    <span>${escapeHtml(target.label)}</span>
+    <strong>${escapeHtml(formatDday(target.at))}</strong>
+    <small>${escapeHtml(formatDateTime(target.at))}</small>
+  `;
+}
+
 function renderModal() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
@@ -687,11 +703,7 @@ function renderModal() {
   const selectedOffsets = subscription?.offsets || DEFAULT_OFFSETS;
   document.getElementById("modalRaceName").textContent = race.name;
   document.getElementById("modalRaceMeta").textContent = `${target.label} ${formatDateTime(target.at)} · ${race.region} ${race.city}`;
-  document.getElementById("modalCountdown").innerHTML = `
-    <span>${escapeHtml(target.label)}</span>
-    <strong>${escapeHtml(formatDday(target.at))}</strong>
-    <small>${escapeHtml(formatDateTime(target.at))}</small>
-  `;
+  renderModalCountdown();
   document.getElementById("modalPresetGrid").innerHTML = DEFAULT_OFFSETS.map(
     (offset) => `
       <label>
@@ -820,16 +832,29 @@ function clearBrowserTimers() {
   state.timers = [];
 }
 
+// setTimeout 의 최대 지연은 약 24.8일(2^31-1 ms). 이보다 먼 알림을 그냥 버리면 영영 안 울린다.
+const MAX_TIMER_DELAY = 2147483647;
+
 function scheduleBrowserTimers(alerts) {
   alerts.forEach((alert) => {
     const delay = new Date(alert.fireAt).getTime() - Date.now();
-    if (delay <= 0 || delay > 2147483647) return;
+    if (delay <= 0) return;
+    if (delay > MAX_TIMER_DELAY) {
+      // ★ 24.8일 넘는 알림(예: 8·9월 대회)은 드롭하지 않고, 상한만큼 잔 뒤 전체 스케줄을
+      // 다시 건다(재무장). 한 번의 스케줄 패스에 재무장 타이머는 하나만 둔다.
+      if (!state.rearmScheduled) {
+        state.rearmScheduled = true;
+        state.timers.push(setTimeout(scheduleAllBrowserTimers, MAX_TIMER_DELAY));
+      }
+      return;
+    }
     state.timers.push(setTimeout(() => fireWebAlert(alert), delay));
   });
 }
 
 function scheduleAllBrowserTimers() {
   clearBrowserTimers();
+  state.rearmScheduled = false;
   Object.values(state.alerts).forEach((subscription) => {
     if (subscription.enabled && subscription.targetType !== "registration_close") scheduleBrowserTimers(subscription.scheduledAlerts || []);
   });
@@ -1059,7 +1084,9 @@ function render() {
 function startTicker() {
   setInterval(() => {
     renderDetail();
-    if (!document.getElementById("alertModal").hidden) renderModal();
+    // 모달이 열려 있으면 카운트다운만 갱신한다. 전체 renderModal 을 매초 부르면
+    // 체크박스 그리드가 재생성되며 사용자가 방금 바꾼 오프셋 선택이 매초 defaults 로 되돌아간다.
+    if (!document.getElementById("alertModal").hidden) renderModalCountdown();
   }, 1000);
 }
 
