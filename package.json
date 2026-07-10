@@ -1,8 +1,9 @@
 {
   "name": "pushrun-web-demo",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "private": true,
   "scripts": {
+    "test": "node scripts/validate-static.mjs",
     "start": "powershell -NoProfile -ExecutionPolicy Bypass -File outputs/serve-pushrun.ps1 -Port 4173"
   }
 }

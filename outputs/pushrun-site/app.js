@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.7";
-const ASSET_VERSION = "20260709-1";
+const APP_VERSION = "0.6.8";
+const ASSET_VERSION = "20260710-1";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -21,7 +21,9 @@ const state = {
   races: [],
   dataVersion: "",
   alerts: loadJson(ALERT_STORAGE_KEY, {}),
-  timers: []
+  timers: [],
+  rearmScheduled: false,
+  lastFocusedElement: null
 };
 
 function loadJson(key, fallback) {
@@ -467,6 +469,45 @@ function selectRace(id) {
   render();
 }
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  state.lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  modal.hidden = false;
+  window.setTimeout(() => modal.querySelector(FOCUSABLE_SELECTOR)?.focus(), 0);
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.hidden = true;
+  state.lastFocusedElement?.focus?.();
+  state.lastFocusedElement = null;
+}
+
+function getOpenModal() {
+  return Array.from(document.querySelectorAll(".modal-backdrop")).find((modal) => !modal.hidden) || null;
+}
+
+function trapModalFocus(event, modal) {
+  const focusable = Array.from(modal.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
+    (element) => element instanceof HTMLElement && element.offsetParent !== null
+  );
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 function openAlertModal(raceId) {
   const race = getRaces().find((item) => item.id === raceId);
   if (!race || !canUseAlert(race)) {
@@ -475,19 +516,19 @@ function openAlertModal(raceId) {
   }
   state.modalRaceId = raceId;
   renderModal();
-  document.getElementById("alertModal").hidden = false;
+  openModal("alertModal");
 }
 
 function closeAlertModal() {
-  document.getElementById("alertModal").hidden = true;
+  closeModal("alertModal");
 }
 
 function openPermissionGuide() {
-  document.getElementById("permissionModal").hidden = false;
+  openModal("permissionModal");
 }
 
 function closePermissionGuide() {
-  document.getElementById("permissionModal").hidden = true;
+  closeModal("permissionModal");
   localStorage.setItem(PERMISSION_GUIDE_KEY, "seen");
   renderPermissionEntry();
 }
@@ -502,7 +543,11 @@ function registrationButtonHtml(race, variant = "mini") {
   if (!race.registrationUrl) {
     return `<button class="${classes}" type="button" disabled aria-disabled="true">준비중</button>`;
   }
-  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer">접수</a>`;
+  const insecure = /^http:\/\//i.test(race.registrationUrl);
+  const warning = insecure
+    ? ' title="보안 연결을 지원하지 않는 외부 사이트입니다" aria-label="접수 사이트 열기, HTTP 연결 주의"'
+    : "";
+  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${warning}>접수${insecure ? " · HTTP" : ""}</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
@@ -803,10 +848,22 @@ async function ensureNotificationPermission() {
   return Notification.permission;
 }
 
-function fireWebAlert(alert) {
+async function fireWebAlert(alert) {
   showToast(alert.title);
   if ("Notification" in window && Notification.permission === "granted") {
-    new Notification(alert.title, { body: alert.body, tag: `${alert.raceId}-${alert.targetType || "alert"}-${alert.offset}` });
+    const options = {
+      body: alert.body,
+      tag: `${alert.raceId}-${alert.targetType || "alert"}-${alert.offset}`,
+      icon: "./icon.svg",
+      data: { url: "./" }
+    };
+    try {
+      const registration = await navigator.serviceWorker?.getRegistration();
+      if (registration) await registration.showNotification(alert.title, options);
+      else new Notification(alert.title, options);
+    } catch {
+      // 화면 토스트는 이미 표시했으므로 브라우저 알림 실패는 조용히 종료한다.
+    }
   }
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -848,7 +905,7 @@ function scheduleBrowserTimers(alerts) {
       }
       return;
     }
-    state.timers.push(setTimeout(() => fireWebAlert(alert), delay));
+    state.timers.push(setTimeout(() => void fireWebAlert(alert), delay));
   });
 }
 
@@ -924,26 +981,11 @@ async function refreshRaceData() {
 }
 
 function showBatteryGuide() {
-  document.getElementById("batteryModal").hidden = false;
+  openModal("batteryModal");
 }
 
 function closeBatteryGuide() {
-  document.getElementById("batteryModal").hidden = true;
-}
-
-function openBatterySettings() {
-  const ua = navigator.userAgent.toLowerCase();
-  showBatteryGuide();
-  if (ua.includes("android")) {
-    window.location.href = "intent://settings/#Intent;action=android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS;end";
-    showToast("배터리 설정이 열리면 PushRun을 제한 없음으로 바꿔주세요.");
-    return;
-  }
-  if (/iphone|ipad|ipod/.test(ua)) {
-    showToast("iPhone은 설정 앱의 배터리에서 저전력 모드를 확인해주세요.");
-    return;
-  }
-  showToast("휴대폰에서 열면 배터리 설정 안내를 볼 수 있어요.");
+  closeModal("batteryModal");
 }
 
 function showToast(message) {
@@ -1058,8 +1100,8 @@ function bindEvents() {
   });
 
   document.getElementById("batteryGuideButton").addEventListener("click", showBatteryGuide);
-  document.getElementById("openBatterySettingsButton").addEventListener("click", openBatterySettings);
-  document.getElementById("batterySettingsAgainButton").addEventListener("click", openBatterySettings);
+  document.getElementById("openBatterySettingsButton").addEventListener("click", showBatteryGuide);
+  document.getElementById("batterySettingsAgainButton").addEventListener("click", closeBatteryGuide);
   document.getElementById("batteryCloseButton").addEventListener("click", closeBatteryGuide);
   document.getElementById("batteryDoneButton").addEventListener("click", closeBatteryGuide);
   document.getElementById("batteryModal").addEventListener("click", (event) => {
@@ -1067,13 +1109,16 @@ function bindEvents() {
   });
 
   document.addEventListener("keydown", (event) => {
+    const modal = getOpenModal();
+    if (!modal) return;
+    if (event.key === "Tab") {
+      trapModalFocus(event, modal);
+      return;
+    }
     if (event.key !== "Escape") return;
-    const alertModal = document.getElementById("alertModal");
-    const permissionModal = document.getElementById("permissionModal");
-    const batteryModal = document.getElementById("batteryModal");
-    if (alertModal && !alertModal.hidden) closeAlertModal();
-    if (permissionModal && !permissionModal.hidden) closePermissionGuide();
-    if (batteryModal && !batteryModal.hidden) closeBatteryGuide();
+    if (modal.id === "alertModal") closeAlertModal();
+    if (modal.id === "permissionModal") closePermissionGuide();
+    if (modal.id === "batteryModal") closeBatteryGuide();
   });
 }
 
@@ -1101,6 +1146,9 @@ function startTicker() {
 }
 
 async function initApp() {
+  if ("serviceWorker" in navigator && window.isSecureContext) {
+    void navigator.serviceWorker.register("./sw.js").catch(() => undefined);
+  }
   bindEvents();
   syncDraftFilters();
   try {

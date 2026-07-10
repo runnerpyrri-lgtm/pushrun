@@ -3,12 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111827" />
     <meta
       name="description"
       content="러닝 대회 접수 예정과 현재 접수중인 대회를 빠르게 확인하는 PushRun."
     />
     <title>PushRun - 러닝 대회 접수 알림</title>
-    <link rel="stylesheet" href="./styles.css?v=20260709-1" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css?v=20260710-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -89,11 +92,11 @@
               <button class="primary-btn" type="button" id="requestPermissionButton">알림 켜기</button>
             </section>
             <section class="settings-panel">
-              <h2>배터리 최적화 제외</h2>
-              <p>휴대폰이 앱을 잠재우지 않도록 설정하면 접수 알림이 더 안정적으로 도착합니다.</p>
+              <h2>알림 동작 조건</h2>
+              <p>현재 버전은 PushRun 페이지가 열려 있을 때만 예약 알림을 확인합니다.</p>
               <div class="settings-actions">
-                <button class="primary-btn" type="button" id="openBatterySettingsButton">휴대폰 설정 열기</button>
-                <button class="ghost-btn" type="button" id="batteryGuideButton">설정 안내</button>
+                <button class="primary-btn" type="button" id="openBatterySettingsButton">알림 한계 보기</button>
+                <button class="ghost-btn" type="button" id="batteryGuideButton">자세히</button>
               </div>
             </section>
             <section class="settings-panel">
@@ -147,42 +150,42 @@
             <p>20분 전, 10분 전, 정각 팝업을 받습니다.</p>
           </div>
           <div>
-            <strong>배터리 제한 해제</strong>
-            <p>휴대폰이 앱을 잠재워도 알림이 끊기지 않게 합니다.</p>
+            <strong>페이지 실행 유지</strong>
+            <p>페이지를 닫거나 기기가 절전 상태가 되면 예약 알림이 울리지 않을 수 있습니다.</p>
           </div>
         </div>
         <div class="modal-actions">
           <button class="primary-btn" type="button" id="permissionEnableButton">알림 허용하기</button>
           <button class="ghost-btn" type="button" id="permissionLaterButton">나중에</button>
         </div>
-        <p class="meta-line tiny-copy">현재 웹 버전은 브라우저가 알림을 보낼 수 있는 상태에서 가장 안정적입니다.</p>
+        <p class="meta-line tiny-copy">중요한 접수 일정은 대회 공식 사이트와 휴대폰 캘린더에도 함께 저장해 주세요.</p>
       </section>
     </div>
 
     <div class="modal-backdrop" id="batteryModal" hidden>
       <section class="alert-modal permission-modal" role="dialog" aria-modal="true" aria-labelledby="batteryTitle">
         <button class="modal-close" type="button" id="batteryCloseButton" aria-label="닫기">×</button>
-        <span class="section-kicker">Battery</span>
-        <h2 id="batteryTitle">알림이 늦지 않게 배터리 제한을 풀어주세요.</h2>
-        <p class="meta-line">Android는 설정 화면으로 이동할 수 있고, iPhone은 설정 앱에서 저전력 모드를 확인하면 됩니다.</p>
+        <span class="section-kicker">Web Alert</span>
+        <h2 id="batteryTitle">현재 웹 알림의 동작 범위입니다.</h2>
+        <p class="meta-line">PushRun은 서버 푸시가 아니라 이 페이지의 타이머로 접수 시각을 확인합니다.</p>
         <div class="permission-steps">
           <div>
-            <strong>Android</strong>
-            <p>설정 → 앱 → PushRun → 배터리 → 제한 없음 또는 최적화 제외를 선택하세요.</p>
+            <strong>가능한 경우</strong>
+            <p>페이지가 열려 있고 브라우저 알림 권한이 허용된 상태입니다.</p>
           </div>
           <div>
-            <strong>iPhone</strong>
-            <p>설정 → 배터리에서 저전력 모드를 꺼두면 알림과 백그라운드 동작이 더 안정적입니다.</p>
+            <strong>보장하지 않는 경우</strong>
+            <p>페이지 종료, 브라우저 강제 종료, 기기 절전 상태에서는 알림이 울리지 않을 수 있습니다.</p>
           </div>
         </div>
         <div class="modal-actions">
-          <button class="primary-btn" type="button" id="batterySettingsAgainButton">설정 다시 열기</button>
+          <button class="primary-btn" type="button" id="batterySettingsAgainButton">확인</button>
           <button class="ghost-btn" type="button" id="batteryDoneButton">확인</button>
         </div>
       </section>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=20260709-1"></script>
+    <script src="./app.js?v=20260710-1"></script>
   </body>
 </html>
