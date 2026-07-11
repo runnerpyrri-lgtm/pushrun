@@ -1,6 +1,6 @@
 {
   "name": "pushrun-web-demo",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "private": true,
   "scripts": {
     "test": "node scripts/validate-static.mjs && node --test \"scripts/*.test.mjs\"",

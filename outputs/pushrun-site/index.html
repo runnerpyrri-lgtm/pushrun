@@ -11,7 +11,13 @@
     <title>PushRun - 러닝 대회 접수 알림</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=20260711-1" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <!-- iOS 홈 화면 실행 품질(상태바·타이틀) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PushRun" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-2" />
   </head>
   <body>
     <div class="app-shell">
@@ -190,7 +196,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./alerts-core.js?v=20260711-1"></script>
-    <script src="./app.js?v=20260711-1"></script>
+    <script src="./alerts-core.js?v=20260711-2"></script>
+    <script src="./app.js?v=20260711-2"></script>
   </body>
 </html>

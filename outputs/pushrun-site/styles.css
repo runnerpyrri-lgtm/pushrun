@@ -380,9 +380,10 @@ p {
 .filter-head h1::after {
   content: "";
   display: block;
-  width: min(150px, 58%);
-  height: 7px;
-  margin-top: 9px;
+  /* 제목(inline-block)의 전체 너비만큼 밑줄 — "대회 신청"까지만 어중간하게 끊기지 않게. */
+  width: 100%;
+  height: 6px;
+  margin-top: 10px;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--lime), rgba(30, 214, 163, 0.9));
   box-shadow: 0 8px 18px rgba(96, 143, 38, 0.18);
@@ -914,7 +915,10 @@ p {
   font-size: 0.84rem;
   font-weight: 950;
   line-height: 1;
+  /* 긴 장소명이 카드를 넘겨 깨지지 않도록 말줄임 처리(좁은 폰 대응). */
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .list-meta {
@@ -1861,7 +1865,9 @@ p {
   }
 
   .list-date strong {
-    font-size: clamp(1.28rem, 6vw, 1.55rem);
+    /* D-120(5자)·"일정 대기"까지 좁은 컬럼을 넘지 않도록 하한을 낮춘다. */
+    font-size: clamp(1.02rem, 5vw, 1.55rem);
+    white-space: nowrap;
   }
 
   .race-day-chip {

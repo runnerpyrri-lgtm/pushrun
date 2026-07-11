@@ -1,14 +1,17 @@
 // PushRun 앱 셸 캐시와 알림 클릭 처리를 담당하는 서비스워커.
-const CACHE_NAME = "pushrun-v0.6.9";
+const CACHE_NAME = "pushrun-v0.6.10";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260711-1",
-  "./alerts-core.js?v=20260711-1",
-  "./app.js?v=20260711-1",
-  "./races.json?v=20260711-1",
+  "./styles.css?v=20260711-2",
+  "./alerts-core.js?v=20260711-2",
+  "./app.js?v=20260711-2",
+  "./races.json?v=20260711-2",
   "./manifest.webmanifest",
-  "./icon.svg"
+  "./icon.svg",
+  "./apple-touch-icon.png",
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {

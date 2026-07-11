@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.9";
-const ASSET_VERSION = "20260711-1";
+const APP_VERSION = "0.6.10";
+const ASSET_VERSION = "20260711-2";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -516,14 +516,18 @@ function renderPermissionEntry() {
 
 function registrationButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "ghost-btn" : "mini-btn action-site";
-  if (!race.registrationUrl) {
+  // 외부(마라톤온라인) 유래 URL이므로 http/https 스킴만 허용한다(javascript:/data: 등 방어).
+  const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
+  if (!safeUrl) {
     return `<button class="${classes}" type="button" disabled aria-disabled="true">준비중</button>`;
   }
   const insecure = /^http:\/\//i.test(race.registrationUrl);
+  // 버튼 글자는 항상 "접수"만 — 좁은 폰 화면에서 라벨이 넘쳐 카드가 깨지지 않도록.
+  // HTTP 경고는 화면 폭을 차지하지 않는 툴팁/보조 라벨로만 유지한다.
   const warning = insecure
-    ? ' title="보안 연결을 지원하지 않는 외부 사이트입니다" aria-label="접수 사이트 열기, HTTP 연결 주의"'
-    : "";
-  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${warning}>접수${insecure ? " · HTTP" : ""}</a>`;
+    ? ' title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다" aria-label="접수 사이트 열기, HTTP 연결 주의"'
+    : ' aria-label="접수 사이트 열기"';
+  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${warning}>접수</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
