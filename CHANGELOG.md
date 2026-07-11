@@ -1,6 +1,12 @@
 # Changelog
 
-PushRun(러닝 대회 접수 알림)의 주요 변경 이력. [SemVer](https://semver.org/lang/ko/).
+러닝봄(러닝 대회 접수 알림)의 주요 변경 이력. [SemVer](https://semver.org/lang/ko/).
+
+## [Unreleased]
+
+- 로봄 포트폴리오 개편에 맞춰 서비스명을 PushRun에서 러닝봄으로 변경했다.
+- PWA 이름, 화면 문구, 배포 문서와 저장소 식별자를 새 브랜드로 통일했다.
+- 기존 `pushrun:*`, `PushRunAlertsCore`, `pushrun-v*` 식별자는 설치·알림 호환을 위해 유지한다.
 
 ## [0.6.10] - 2026-07-11
 정식 공개 준비 — 좁은 폰 화면 레이아웃 깨짐과 아이콘·보안을 손봤다.

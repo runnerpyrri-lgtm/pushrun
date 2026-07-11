@@ -1,5 +1,5 @@
-// PushRun 알림 핵심 로직 (순수 함수 모음).
-// 브라우저에서는 window.PushRunAlertsCore 로, Node 테스트에서는 require() 로 사용한다.
+// 러닝봄 알림 핵심 로직 (순수 함수 모음).
+// 기존 설치 호환을 위해 브라우저 전역 이름 window.PushRunAlertsCore 는 유지한다.
 // DOM·localStorage 를 건드리지 않으므로 node:test 로 그대로 검증할 수 있다.
 (function (global) {
   "use strict";
