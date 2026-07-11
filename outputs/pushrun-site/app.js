@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.10";
-const ASSET_VERSION = "20260711-2";
+const APP_VERSION = "0.6.11";
+const ASSET_VERSION = "20260711-3";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -23,7 +23,9 @@ const state = {
   alerts: loadJson(ALERT_STORAGE_KEY, {}),
   timers: [],
   rearmScheduled: false,
-  lastFocusedElement: null
+  lastFocusedElement: null,
+  loadStatus: "loading",
+  mobileFiltersExpanded: !window.matchMedia("(max-width: 520px)").matches
 };
 
 function loadJson(key, fallback) {
@@ -36,7 +38,21 @@ function loadJson(key, fallback) {
 }
 
 function saveJson(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function saveText(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function loadRaceData() {
@@ -55,7 +71,8 @@ function parseScheduleFeed(feed) {
     const now = Date.now();
     const opensAt = entry.registrationOpenAt ? new Date(entry.registrationOpenAt).getTime() : null;
     const closesAt = entry.registrationCloseAt ? new Date(entry.registrationCloseAt).getTime() : null;
-    const isOpen = entry.status === "open" || Boolean(opensAt && opensAt <= now && (!closesAt || now <= closesAt));
+    const isBeforeClose = !closesAt || now <= closesAt;
+    const isOpen = isBeforeClose && (entry.status === "open" || Boolean(opensAt && opensAt <= now));
     const hasUpcomingOpen = Boolean(opensAt && opensAt > now);
     // 방어: venue/time/distances 가 빠진 항목 1개 때문에 앱 전체가 하얗게 죽지 않게 한다.
     // (validate-static.mjs 가 배포 전에 FAIL 시키지만, 런타임에서도 한 번 더 방어한다.)
@@ -101,7 +118,8 @@ function normalizeFeaturedRace(race) {
   const now = Date.now();
   const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
   const closesAt = race.registrationCloseAt ? new Date(race.registrationCloseAt).getTime() : null;
-  const isAccepting = race.status === "open" || (opensAt && opensAt <= now && (!closesAt || now <= closesAt));
+  const isBeforeClose = !closesAt || now <= closesAt;
+  const isAccepting = isBeforeClose && (race.status === "open" || Boolean(opensAt && opensAt <= now));
   const hasUpcomingOpen = opensAt && opensAt > now && !["closed", "sold_out", "cancelled"].includes(race.status);
   return {
     ...race,
@@ -505,7 +523,7 @@ function openPermissionGuide() {
 
 function closePermissionGuide() {
   closeModal("permissionModal");
-  localStorage.setItem(PERMISSION_GUIDE_KEY, "seen");
+  saveText(PERMISSION_GUIDE_KEY, "seen");
   renderPermissionEntry();
 }
 
@@ -516,27 +534,29 @@ function renderPermissionEntry() {
 
 function registrationButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "ghost-btn" : "mini-btn action-site";
+  const raceName = escapeHtml(race.name);
   // 외부(마라톤온라인) 유래 URL이므로 http/https 스킴만 허용한다(javascript:/data: 등 방어).
   const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
   if (!safeUrl) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">준비중</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true" aria-label="${raceName} 접수 사이트 준비중">준비중</button>`;
   }
   const insecure = /^http:\/\//i.test(race.registrationUrl);
   // 버튼 글자는 항상 "접수"만 — 좁은 폰 화면에서 라벨이 넘쳐 카드가 깨지지 않도록.
   // HTTP 경고는 화면 폭을 차지하지 않는 툴팁/보조 라벨로만 유지한다.
   const warning = insecure
-    ? ' title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다" aria-label="접수 사이트 열기, HTTP 연결 주의"'
-    : ' aria-label="접수 사이트 열기"';
+    ? ` title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다" aria-label="${raceName} 접수 사이트 새 창으로 열기, HTTP 연결 주의"`
+    : ` aria-label="${raceName} 접수 사이트 새 창으로 열기"`;
   return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${warning}>접수</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "primary-btn" : "mini-btn strong action-alert";
   const target = getAlertTarget(race);
+  const label = `${escapeHtml(race.name)} 알림 설정`;
   if (!target) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true">알림</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true" aria-label="${label} 불가">알림</button>`;
   }
-  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}">알림</button>`;
+  return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}" aria-label="${label}">알림</button>`;
 }
 
 function renderDistanceFilters() {
@@ -549,7 +569,10 @@ function renderDistanceFilters() {
     ["Trail", "트레일"]
   ];
   document.getElementById("distanceFilters").innerHTML = items
-    .map(([value, label]) => `<button class="filter-chip ${state.draftDistanceFilter === value ? "active" : ""}" type="button" data-distance-filter="${value}">${label}</button>`)
+    .map(([value, label]) => {
+      const active = state.draftDistanceFilter === value;
+      return `<button class="filter-chip ${active ? "active" : ""}" type="button" data-distance-filter="${value}" aria-pressed="${active}">${label}</button>`;
+    })
     .join("");
 }
 
@@ -566,6 +589,23 @@ function syncDraftFilters() {
   state.draftQuery = state.query;
 }
 
+function mobileFilterSummary() {
+  const region = state.regionFilter === "all" ? "전체" : state.regionFilter;
+  const query = state.query.trim();
+  return query ? `${region} · ${query}` : region;
+}
+
+function setMobileFiltersExpanded(expanded) {
+  state.mobileFiltersExpanded = expanded;
+  const home = document.getElementById("view-home");
+  const button = document.getElementById("mobileFilterToggleButton");
+  if (home) home.classList.toggle("mobile-filters-collapsed", !expanded);
+  if (button) {
+    button.setAttribute("aria-expanded", String(expanded));
+    button.textContent = expanded ? "지역·검색 필터 닫기" : `지역·검색 필터 · ${mobileFilterSummary()}`;
+  }
+}
+
 function applyFilters() {
   const searchInput = document.getElementById("searchInput");
   const regionSelect = document.getElementById("regionFilter");
@@ -575,6 +615,7 @@ function applyFilters() {
   state.regionFilter = state.draftRegionFilter;
   state.query = state.draftQuery;
   state.selectedRaceId = null;
+  if (window.matchMedia("(max-width: 520px)").matches) setMobileFiltersExpanded(false);
   renderRaceList();
   renderCategoryTabs();
   showToast("선택한 조건으로 대회를 찾았어요.");
@@ -582,6 +623,15 @@ function applyFilters() {
 
 function renderRaceList() {
   const list = document.getElementById("raceList");
+  list.setAttribute("aria-busy", String(state.loadStatus === "loading"));
+  if (state.loadStatus === "loading") {
+    list.innerHTML = `<div class="focus-empty" role="status"><h3>대회 정보를 불러오는 중이에요.</h3><p>잠시만 기다려주세요.</p></div>`;
+    return;
+  }
+  if (state.loadStatus === "error") {
+    list.innerHTML = `<div class="focus-empty" role="alert"><h3>대회 정보를 불러오지 못했어요.</h3><p>네트워크를 확인한 뒤 다시 시도해주세요.</p><button class="primary-btn" type="button" id="retryRaceDataButton">다시 불러오기</button></div>`;
+    return;
+  }
   const races = getCategoryRaces();
   const copy = getCategoryCopy();
   if (!races.length) {
@@ -730,11 +780,14 @@ function renderCategoryTabs() {
     ["confirmed", "접수 예정"],
     ["open", "현재 접수중"]
   ]
-    .map(([value, label]) => `
-      <button class="category-tab ${state.activeCategory === value ? "active" : ""}" type="button" data-category="${value}">
+    .map(([value, label]) => {
+      const active = state.activeCategory === value;
+      return `
+      <button class="category-tab ${active ? "active" : ""}" type="button" data-category="${value}" aria-pressed="${active}">
         <span>${escapeHtml(label)}</span>
       </button>
-    `)
+    `;
+    })
     .join("");
 }
 
@@ -862,12 +915,19 @@ async function enableAlertFromModal() {
     showToast("알림 시간을 하나 이상 선택하세요.");
     return;
   }
-  const permission = await ensureNotificationPermission();
+  let permission = "default";
+  try {
+    permission = await ensureNotificationPermission();
+  } catch {
+    showToast("브라우저 알림 권한을 확인하지 못했어요.");
+    return;
+  }
   const scheduledAlerts = buildRegistrationAlerts(race, offsets);
   if (!scheduledAlerts.length) {
     showToast("지금은 알림을 켤 시간이 없어요.");
     return;
   }
+  const previous = state.alerts[race.id];
   state.alerts[race.id] = {
     enabled: true,
     raceId: race.id,
@@ -878,17 +938,30 @@ async function enableAlertFromModal() {
     scheduledAlerts,
     createdAt: new Date().toISOString()
   };
-  saveJson(ALERT_STORAGE_KEY, state.alerts);
+  if (!saveJson(ALERT_STORAGE_KEY, state.alerts)) {
+    if (previous) state.alerts[race.id] = previous;
+    else delete state.alerts[race.id];
+    showToast("알림을 기기에 저장하지 못했어요. 브라우저 저장 설정을 확인해주세요.");
+    return;
+  }
   scheduleAllBrowserTimers();
+  closeAlertModal();
   render();
-  renderModal();
+  Array.from(document.querySelectorAll("[data-open-alert]"))
+    .find((button) => button.dataset.openAlert === race.id)
+    ?.focus();
   showToast(permission === "granted" ? "알림을 켰어요." : "알림은 저장했지만 브라우저 권한이 꺼져 있어요.");
 }
 
 function cancelAlert(raceId) {
   if (state.alerts[raceId]) {
+    const previous = state.alerts[raceId];
     delete state.alerts[raceId];
-    saveJson(ALERT_STORAGE_KEY, state.alerts);
+    if (!saveJson(ALERT_STORAGE_KEY, state.alerts)) {
+      state.alerts[raceId] = previous;
+      showToast("알림 변경을 기기에 저장하지 못했어요.");
+      return;
+    }
     scheduleAllBrowserTimers();
     render();
     if (state.modalRaceId === raceId) renderModal();
@@ -897,16 +970,31 @@ function cancelAlert(raceId) {
 }
 
 async function refreshRaceData() {
+  const syncButton = document.getElementById("syncButton");
+  state.loadStatus = "loading";
+  if (syncButton) {
+    syncButton.disabled = true;
+    syncButton.setAttribute("aria-busy", "true");
+  }
+  renderRaceList();
   try {
     await loadRaceData();
-    localStorage.setItem(SYNC_STORAGE_KEY, new Date().toISOString());
+    saveText(SYNC_STORAGE_KEY, new Date().toISOString());
+    state.loadStatus = "ready";
     reconcileStoredAlerts();
     scheduleAllBrowserTimers();
     state.selectedRaceId = null;
     render();
     showToast("최신 대회 데이터를 다시 불러왔어요.");
   } catch {
+    state.loadStatus = "error";
+    renderRaceList();
     showToast("대회 데이터를 다시 불러오지 못했어요.");
+  } finally {
+    if (syncButton) {
+      syncButton.disabled = false;
+      syncButton.removeAttribute("aria-busy");
+    }
   }
 }
 
@@ -928,7 +1016,14 @@ function showToast(message) {
 
 function setView(viewName) {
   document.querySelectorAll(".view").forEach((view) => view.classList.toggle("active", view.id === `view-${viewName}`));
-  document.querySelectorAll("[data-view]").forEach((button) => button.classList.toggle("active", button.dataset.view === viewName));
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    const active = button.dataset.view === viewName;
+    button.classList.toggle("active", active);
+    if (button.matches(".nav-pill, .mobile-tab")) {
+      if (active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    }
+  });
   renderAlerts();
   renderSyncStatus();
 }
@@ -939,14 +1034,22 @@ function bindEvents() {
     categoryTabs.addEventListener("click", (event) => {
       const categoryButton = event.target.closest("[data-category]");
       if (!categoryButton) return;
-      state.activeCategory = categoryButton.dataset.category;
+      const category = categoryButton.dataset.category;
+      state.activeCategory = category;
       state.selectedRaceId = null;
       renderCategoryTabs();
       renderRaceList();
+      document.querySelector(`[data-category="${category}"]`)?.focus();
     });
   }
 
   document.addEventListener("click", (event) => {
+    const retryButton = event.target.closest("#retryRaceDataButton");
+    if (retryButton) {
+      void refreshRaceData();
+      return;
+    }
+
     const alertButton = event.target.closest("[data-open-alert]");
     if (alertButton) {
       openAlertModal(alertButton.dataset.openAlert);
@@ -985,12 +1088,14 @@ function bindEvents() {
   document.addEventListener("click", (event) => {
     const distanceButton = event.target.closest("[data-distance-filter]");
     if (distanceButton) {
-      state.draftDistanceFilter = distanceButton.dataset.distanceFilter;
+      const distance = distanceButton.dataset.distanceFilter;
+      state.draftDistanceFilter = distance;
       state.distanceFilter = state.draftDistanceFilter;
       state.selectedRaceId = null;
       renderDistanceFilters();
       renderRaceList();
       renderCategoryTabs();
+      document.querySelector(`[data-distance-filter="${distance}"]`)?.focus();
     }
   });
 
@@ -999,6 +1104,9 @@ function bindEvents() {
   });
 
   document.getElementById("applyFiltersButton").addEventListener("click", applyFilters);
+  document.getElementById("mobileFilterToggleButton").addEventListener("click", () => {
+    setMobileFiltersExpanded(!state.mobileFiltersExpanded);
+  });
   document.getElementById("syncButton").addEventListener("click", refreshRaceData);
   const permissionEntryButton = document.getElementById("openPermissionGuideButton");
   if (permissionEntryButton) permissionEntryButton.addEventListener("click", openPermissionGuide);
@@ -1062,6 +1170,8 @@ function render() {
   renderSyncStatus();
   renderPermissionEntry();
   updatePermissionText();
+  setMobileFiltersExpanded(state.mobileFiltersExpanded);
+  setView(document.querySelector(".view.active")?.id.replace("view-", "") || "home");
 }
 
 function startTicker() {
@@ -1080,14 +1190,16 @@ async function initApp() {
   }
   bindEvents();
   syncDraftFilters();
+  render();
   try {
     await loadRaceData();
+    state.loadStatus = "ready";
     reconcileStoredAlerts();
   } catch {
     state.races = [];
+    state.loadStatus = "error";
   }
   render();
-  if (!state.races.length) showToast("대회 데이터를 불러오지 못했어요. 잠시 후 새로고침해주세요.");
   startTicker();
   scheduleAllBrowserTimers();
 }

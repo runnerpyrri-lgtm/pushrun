@@ -96,6 +96,18 @@ test("발사 시각이 이미 지난(만료) 알림은 정리된다", () => {
   assert.equal(result.alerts[race.id], undefined);
 });
 
+test("status가 open이어도 마감 시각이 지났으면 접수중으로 보지 않는다", () => {
+  const closedRace = makeRace({
+    status: "open",
+    registrationStatus: "open",
+    registrationOpenAt: iso(NOW - 10 * DAY),
+    registrationCloseAt: iso(NOW - DAY)
+  });
+
+  assert.equal(core.isAcceptingNow(closedRace, NOW), false);
+  assert.equal(core.getAlertTarget(closedRace, NOW)?.type, "race_day");
+});
+
 test("알림 종류(targetType)가 더 이상 유효하지 않으면 만료 처리된다", () => {
   const race = makeRace();
   const stored = { [race.id]: makeSubscription(race) };

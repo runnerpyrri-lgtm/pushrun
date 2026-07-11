@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260711-2" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-3" />
   </head>
   <body>
     <div class="app-shell">
@@ -47,9 +47,18 @@
                 <span class="section-kicker">러닝봄</span>
                 <h1>대회 신청 접수 알리미</h1>
               </div>
+              <button
+                class="ghost-btn mobile-filter-toggle"
+                type="button"
+                id="mobileFilterToggleButton"
+                aria-expanded="true"
+                aria-controls="filterRow"
+              >
+                지역·검색 필터 · 전체
+              </button>
             </div>
 
-            <div class="filter-row">
+            <div class="filter-row" id="filterRow">
               <label class="select-box">
                 <span>지역</span>
                 <select id="regionFilter"></select>
@@ -72,7 +81,7 @@
           </section>
 
           <section class="content-grid">
-            <div class="race-list" id="raceList"></div>
+            <div class="race-list" id="raceList" aria-live="polite" aria-busy="true"></div>
           </section>
         </section>
 
@@ -196,7 +205,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./alerts-core.js?v=20260711-2"></script>
-    <script src="./app.js?v=20260711-2"></script>
+    <script src="./alerts-core.js?v=20260711-3"></script>
+    <script src="./app.js?v=20260711-3"></script>
   </body>
 </html>

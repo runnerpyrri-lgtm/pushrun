@@ -141,6 +141,9 @@ if (swBustVersions.length === 0 || swBustVersions.some((version) => version !== 
 if (!sw.includes(`./alerts-core.js?v=${assetVersion}`)) {
   errors.push("sw.js APP_SHELL 에 alerts-core.js 가 없습니다 (오프라인 셸에서 앱이 깨집니다).");
 }
+if (!sw.includes('request.mode === "navigate"')) {
+  errors.push("sw.js의 HTML 셸 폴백이 탐색 요청으로 제한되지 않았습니다.");
+}
 
 if (errors.length > 0) {
   console.error(errors.join("\n"));
