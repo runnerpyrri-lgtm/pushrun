@@ -11,9 +11,11 @@
   // 지금 접수중인지(오픈 시각이 지났고 마감 전) 판단한다.
   function isAcceptingNow(race, now) {
     if (!race) return false;
-    if (race.registrationStatus === "open") return true;
     const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
     const closesAt = race.registrationCloseAt ? new Date(race.registrationCloseAt).getTime() : null;
+    if (closesAt && now > closesAt) return false;
+    if (opensAt && now < opensAt) return false;
+    if (race.registrationStatus === "open") return true;
     return Boolean(opensAt && opensAt <= now && (!closesAt || now <= closesAt));
   }
 
