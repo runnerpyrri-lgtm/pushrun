@@ -4,7 +4,6 @@ const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const APP_VERSION = "0.6.12";
 const ASSET_VERSION = "20260711-4";
 const DEFAULT_OFFSETS = [20, 10, 0];
-const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
 
@@ -180,22 +179,8 @@ function formatDateTime(value) {
   }).format(new Date(value));
 }
 
-function formatDate(value) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "short"
-  }).format(new Date(value));
-}
-
 function formatWeekday(value) {
   return new Intl.DateTimeFormat("ko-KR", { weekday: "short" }).format(new Date(value));
-}
-
-function formatShortDateTime(value) {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)}) ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 function formatShortDate(value) {
@@ -338,11 +323,6 @@ function isVisibleRace(race) {
   return raceAt >= now && !["cancelled", "postponed"].includes(race.status);
 }
 
-function isWithinDays(value, days) {
-  const diff = new Date(value).getTime() - Date.now();
-  return diff > 0 && diff <= days * 24 * 60 * 60 * 1000;
-}
-
 function statusLabel(status) {
   return {
     scheduled: "접수 예정",
@@ -353,19 +333,6 @@ function statusLabel(status) {
     postponed: "일정 확인",
     changed: "시간 변경"
   }[status] || "확인중";
-}
-
-function displayStatusLabel(race) {
-  if (canUseRegistrationTimer(race)) return "접수 예정";
-  if (isAcceptingNow(race)) return "현재 접수중";
-  if (race.registrationStatus === "closed" || race.status === "closed") return "접수 마감";
-  return "확인중";
-}
-
-function registrationActionText(race) {
-  if (canUseRegistrationTimer(race)) return `접수 시작 ${formatDday(race.registrationOpenAt)}`;
-  if (isAcceptingNow(race)) return race.registrationCloseAt ? `접수 마감 ${formatDday(race.registrationCloseAt)}` : "현재 접수중";
-  return displayStatusLabel(race);
 }
 
 function courseTokens(race) {
@@ -452,10 +419,6 @@ function getSelectedModalOffsets() {
   return Array.from(document.querySelectorAll("#modalPresetGrid input:checked"))
     .map((input) => Number(input.value))
     .sort((a, b) => b - a);
-}
-
-function nextRace() {
-  return getRaces().find((race) => race.registrationOpenAt && new Date(race.registrationOpenAt).getTime() > Date.now() && race.status !== "cancelled");
 }
 
 function selectRace(id) {
