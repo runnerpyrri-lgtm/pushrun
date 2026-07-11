@@ -1,4 +1,4 @@
-name: Deploy PushRun Pages
+name: Deploy runningbom Pages
 
 on:
   pull_request:

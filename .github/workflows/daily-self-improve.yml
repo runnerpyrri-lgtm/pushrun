@@ -1,4 +1,4 @@
-name: PushRun 자가개선 (하루 2회)
+name: 러닝봄 자가개선 (하루 2회)
 
 # [예비용 — 스케줄 없음] 하루 2회 자가개선은 유료 API 키 대신 회장 Claude 구독 기반의
 # 본부장 루틴(Claude Code Remote Routine)이 수행한다(Zoop-holdings D20 — 추가 비용 0원).
@@ -41,7 +41,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_args: "--max-turns 25"
           prompt: |
-            너는 PushRun(러닝 대회 접수 알림 PWA)의 자가개선 담당이다. 아래 규칙을 반드시 지켜라.
+            너는 러닝봄(runningbom, 러닝 대회 접수 알림 PWA)의 자가개선 담당이다. 아래 규칙을 반드시 지켜라.
 
             ## 이번 실행에서 할 일
             - 실행당 딱 1개의 작은 개선만 한다. 우선순위:

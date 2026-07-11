@@ -1,4 +1,4 @@
-// PushRun 로컬 미리보기용 정적 서버 (의존성 없음, 크로스플랫폼).
+// 러닝봄 로컬 미리보기용 정적 서버 (의존성 없음, 크로스플랫폼).
 // 사용법: npm start  →  http://localhost:4173
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -40,5 +40,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`PushRun 미리보기: http://localhost:${port} (중지: Ctrl+C)`);
+  console.log(`러닝봄 미리보기: http://localhost:${port} (중지: Ctrl+C)`);
 });

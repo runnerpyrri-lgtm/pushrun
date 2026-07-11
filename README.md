@@ -1,6 +1,7 @@
-# PushRun
+# 러닝봄
 
-러닝 대회 접수 시작 시간을 놓치지 않도록 알림을 설정하는 PushRun 웹 앱입니다.
+러닝 대회 접수 시작 시간을 놓치지 않도록 알림을 설정하는 로봄의 러닝 대회 앱입니다.
+기존 PushRun의 기능과 알림 설정을 그대로 이어받습니다.
 
 ## 편집 위치
 
@@ -21,7 +22,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File outputs/serve-pushrun.ps1 -P
 
 GitHub Pages 배포 주소:
 
-https://runnerpyrri-lgtm.github.io/pushrun/
+https://robom-labs.github.io/runningbom/
 
 현재 공개 사이트는 `gh-pages` 브랜치의 정적 파일로 배포합니다. `outputs/pushrun-site`를 수정한 뒤 `main`에 커밋하고, 같은 파일을 `gh-pages` 브랜치에도 반영하면 위 주소가 갱신됩니다.
 
