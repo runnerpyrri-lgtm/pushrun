@@ -77,10 +77,13 @@ for (const race of all) {
     if (!Array.isArray(race.registrationWindows) || race.registrationWindows.length === 0) {
       errors.push(`registrationWindows 형식 오류: ${race.name}`);
     } else {
+      const windowIds = new Set();
       for (const window of race.registrationWindows) {
-        if (!window?.label || !window?.opensAt || Number.isNaN(Date.parse(window.opensAt))) {
+        if (!window?.id || !window?.label || !window?.opensAt || Number.isNaN(Date.parse(window.opensAt))) {
           errors.push(`종목별 접수 시각 오류: ${race.name}`);
         }
+        if (windowIds.has(window?.id)) errors.push(`종목별 접수 ID 중복: ${race.name} / ${window.id}`);
+        windowIds.add(window?.id);
       }
     }
   }

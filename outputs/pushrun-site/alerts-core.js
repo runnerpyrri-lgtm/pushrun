@@ -10,11 +10,78 @@
   const DAY = 24 * 60 * 60 * 1000;
   const KST_OFFSET = 9 * 60 * 60 * 1000;
 
+  function registrationWindowId(window) {
+    if (window?.id) return String(window.id);
+    const label = String(window?.label || "course").toLowerCase().replace(/[^0-9a-z가-힣]+/g, "-").replace(/^-|-$/g, "");
+    return `${label}-${String(window?.opensAt || "").slice(0, 16)}`;
+  }
+
   function getNextRegistrationWindow(race, now) {
     const windows = Array.isArray(race?.registrationWindows) ? race.registrationWindows : [];
     return windows
       .filter((window) => window?.opensAt && window.timeConfirmed !== false && new Date(window.opensAt).getTime() > now)
       .sort((a, b) => new Date(a.opensAt).getTime() - new Date(b.opensAt).getTime())[0] || null;
+  }
+
+  function getRegistrationTargets(race, now) {
+    if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return [];
+    const windows = Array.isArray(race.registrationWindows) ? race.registrationWindows : [];
+    if (windows.length) {
+      return windows
+        .filter((window) => window?.opensAt && window.timeConfirmed !== false && new Date(window.opensAt).getTime() > now)
+        .sort((a, b) => new Date(a.opensAt).getTime() - new Date(b.opensAt).getTime())
+        .map((window) => {
+          const windowId = registrationWindowId(window);
+          const course = window.label ? `${window.label} ` : "";
+          return {
+            type: "registration_open",
+            key: `window:${windowId}`,
+            windowId,
+            at: window.opensAt,
+            label: `${course}접수 시작`,
+            ticketLabel: `${course}접수`,
+            shortLabel: `${course}시작 알림`,
+            statusLabel: `${course}접수 시작 알림`
+          };
+        });
+    }
+
+    const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
+    if (!opensAt || opensAt <= now || race.registrationOpenTimeConfirmed === false) return [];
+    return [{
+      type: "registration_open",
+      key: "registration",
+      at: race.registrationOpenAt,
+      label: "접수 시작",
+      ticketLabel: "접수",
+      shortLabel: "시작 알림",
+      statusLabel: "접수 시작 알림"
+    }];
+  }
+
+  function getAlertTargets(race, now) {
+    const registrationTargets = getRegistrationTargets(race, now);
+    if (registrationTargets.length) return registrationTargets;
+    if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return [];
+    const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
+    if (opensAt && opensAt > now) return [];
+    const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
+    if (!isAcceptingNow(race, now) && raceAt && raceAt > now) {
+      return [{
+        type: "race_day",
+        key: "race_day",
+        at: race.raceDate,
+        label: "대회일",
+        ticketLabel: "대회",
+        shortLabel: "대회 알림",
+        statusLabel: "대회일 알림"
+      }];
+    }
+    return [];
+  }
+
+  function subscriptionStorageKey(raceId, target) {
+    return target?.key?.startsWith("window:") ? `${raceId}::${target.key}` : String(raceId);
   }
 
   // 한국 대회 기준 날짜로 D-day를 계산하고, 이미 지난 대상에는 D+를 노출하지 않는다.
@@ -41,46 +108,10 @@
 
   // 이 대회에서 지금 알림을 걸 수 있는 대상(접수 시작 or 대회일)을 계산한다.
   // 걸 수 있는 대상이 없으면 null (마감·매진·취소, 또는 모든 시각이 지난 경우).
-  function getAlertTarget(race, now) {
-    if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return null;
-    const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
-    const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
-
-    const nextWindow = getNextRegistrationWindow(race, now);
-    if (nextWindow) {
-      const course = nextWindow.label ? `${nextWindow.label} ` : "";
-      return {
-        type: "registration_open",
-        at: nextWindow.opensAt,
-        label: `${course}접수 시작`,
-        ticketLabel: `${course}접수`,
-        shortLabel: `${course}시작 알림`,
-        statusLabel: `${course}접수 시작 알림`
-      };
-    }
-
-    if (opensAt && opensAt > now) {
-      if (race.registrationOpenTimeConfirmed === false) return null;
-      return {
-        type: "registration_open",
-        at: race.registrationOpenAt,
-        label: "접수 시작",
-        shortLabel: "시작 알림",
-        statusLabel: "접수 시작 알림"
-      };
-    }
-
-    if (!isAcceptingNow(race, now) && raceAt && raceAt > now) {
-      return {
-        type: "race_day",
-        at: race.raceDate,
-        label: "대회일",
-        shortLabel: "대회 알림",
-        statusLabel: "대회일 알림"
-      };
-    }
-
-    return null;
+  function getAlertTarget(race, now, targetKey) {
+    const targets = getAlertTargets(race, now);
+    if (targetKey) return targets.find((target) => target.key === targetKey) || null;
+    return targets[0] || null;
   }
 
   // 대상 시각(targetAt)에서 offset(분) 전의 발사 시각을 ISO 문자열로 계산한다.
@@ -136,23 +167,30 @@
     });
 
     const result = { alerts: {}, kept: [], updated: [], dropped: [], expired: [] };
-    for (const [raceId, subscription] of Object.entries(storedAlerts || {})) {
+    const entries = Object.entries(storedAlerts || {}).sort((a, b) => Number(Boolean(b[1]?.targetKey)) - Number(Boolean(a[1]?.targetKey)));
+    for (const [storedKey, subscription] of entries) {
       if (!subscription || typeof subscription !== "object") {
-        result.dropped.push(raceId);
+        result.dropped.push(storedKey);
         continue;
       }
+      const raceId = subscription.raceId || storedKey;
       const race = racesById.get(raceId);
       if (!race) {
-        result.dropped.push(raceId); // 고아: 대회가 데이터에서 사라짐
+        result.dropped.push(storedKey); // 고아: 대회가 데이터에서 사라짐
         continue;
       }
-      const target = getAlertTarget(race, now);
+      const availableTargets = getAlertTargets(race, now);
+      const legacyMatch = !subscription.targetKey
+        ? availableTargets.find((target) => target.type === subscription.targetType && target.at === subscription.targetAt)
+        : null;
+      const targetKey = subscription.targetKey || legacyMatch?.key || availableTargets[0]?.key;
+      const target = getAlertTarget(race, now, targetKey);
       if (!target) {
-        result.expired.push(raceId); // 만료: 더 이상 알림을 걸 수 있는 시각이 없음
+        result.expired.push(storedKey); // 만료: 선택한 종목의 알림 시각이 더 이상 유효하지 않음
         continue;
       }
       if (subscription.targetType && subscription.targetType !== target.type) {
-        result.expired.push(raceId); // 원래 구독한 종류(예: 접수 시작)의 시각이 지나감
+        result.expired.push(storedKey); // 원래 구독한 종류(예: 접수 시작)의 시각이 지나감
         continue;
       }
 
@@ -166,11 +204,12 @@
             ...item,
             raceId: race.id,
             targetType: target.type,
+            targetKey: target.key,
             targetAt: target.at,
             targetLabel: target.label
           }));
       if (!scheduledAlerts.length) {
-        result.expired.push(raceId); // 남은 미래 발사 시각이 하나도 없음
+        result.expired.push(storedKey); // 남은 미래 발사 시각이 하나도 없음
         continue;
       }
 
@@ -178,15 +217,21 @@
       const changed =
         subscription.targetAt !== target.at ||
         fireKey(subscription.scheduledAlerts || []) !== fireKey(scheduledAlerts);
-      result.alerts[raceId] = {
+      const nextKey = subscriptionStorageKey(raceId, target);
+      if (result.alerts[nextKey]) {
+        result.dropped.push(storedKey); // legacy와 신규 구독이 겹치면 targetKey가 있는 신규 구독을 유지
+        continue;
+      }
+      result.alerts[nextKey] = {
         ...subscription,
         raceId,
         targetType: target.type,
+        targetKey: target.key,
         targetAt: target.at,
         targetLabel: target.label,
         scheduledAlerts
       };
-      (changed ? result.updated : result.kept).push(raceId);
+      (changed || nextKey !== storedKey ? result.updated : result.kept).push(nextKey);
     }
     return result;
   }
@@ -196,6 +241,9 @@
     DEFAULT_OFFSETS,
     formatDday,
     getNextRegistrationWindow,
+    getRegistrationTargets,
+    getAlertTargets,
+    subscriptionStorageKey,
     isAcceptingNow,
     getAlertTarget,
     computeFireAt,

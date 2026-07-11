@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.12-race-data-9",
+  "version": "2026.07.12-race-data-10",
   "sources": [
     "마라톤온라인",
     "마라톤GO",
@@ -84,10 +84,12 @@
       "registrationOpenTimeConfirmed": true,
       "registrationWindows": [
         {
+          "id": "full",
           "label": "Full",
           "opensAt": "2026-07-14T14:00:00+09:00"
         },
         {
+          "id": "10k",
           "label": "10K",
           "opensAt": "2026-07-16T14:00:00+09:00"
         }
