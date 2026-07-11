@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.8";
-const ASSET_VERSION = "20260710-1";
+const APP_VERSION = "0.6.9";
+const ASSET_VERSION = "20260711-1";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -57,6 +57,10 @@ function parseScheduleFeed(feed) {
     const closesAt = entry.registrationCloseAt ? new Date(entry.registrationCloseAt).getTime() : null;
     const isOpen = entry.status === "open" || Boolean(opensAt && opensAt <= now && (!closesAt || now <= closesAt));
     const hasUpcomingOpen = Boolean(opensAt && opensAt > now);
+    // 방어: venue/time/distances 가 빠진 항목 1개 때문에 앱 전체가 하얗게 죽지 않게 한다.
+    // (validate-static.mjs 가 배포 전에 FAIL 시키지만, 런타임에서도 한 번 더 방어한다.)
+    const venue = entry.venue || "";
+    const distances = Array.isArray(entry.distances) ? entry.distances : [];
     return {
       // ★ 내용 기반 안정 ID. 예전엔 배열 index(`schedule-${index}-...`)라 피드가
       // 재정렬·삽입되면 ID가 바뀌어 localStorage 에 저장된 알림이 전부 고아가 됐다.
@@ -64,8 +68,8 @@ function parseScheduleFeed(feed) {
       id: `schedule-${normalizeRaceName(entry.name)}-${entry.date}`,
       name: entry.name,
       region: entry.region,
-      city: entry.venue.split(" ")[0] || entry.region,
-      venue: entry.venue,
+      city: venue.split(" ")[0] || entry.region || "",
+      venue,
       raceDate: `${entry.date}T${normalizeRaceTime(entry.time)}+09:00`,
       registrationOpenAt: entry.registrationOpenAt || null,
       registrationCloseAt: entry.registrationCloseAt || null,
@@ -73,8 +77,8 @@ function parseScheduleFeed(feed) {
       registrationUrl: entry.registrationUrl || entry.sourceDetailUrl || MARATHON_ONLINE_LIST_URL,
       sourceDetailUrl: entry.sourceDetailUrl || null,
       linkVerifiedFrom: entry.linkVerifiedFrom || "마라톤온라인 목록",
-      distances: entry.distances,
-      courseLabel: entry.courseLabel || entry.distances.join(","),
+      distances,
+      courseLabel: entry.courseLabel || distances.join(","),
       organizer: entry.organizer || null,
       status: isOpen ? "open" : hasUpcomingOpen ? "scheduled" : entry.status,
       registrationStatus: isOpen ? "open" : hasUpcomingOpen ? "scheduled" : entry.status || "unknown",
@@ -101,7 +105,7 @@ function normalizeFeaturedRace(race) {
   const hasUpcomingOpen = opensAt && opensAt > now && !["closed", "sold_out", "cancelled"].includes(race.status);
   return {
     ...race,
-    courseLabel: race.courseLabel || race.distances.join(","),
+    courseLabel: race.courseLabel || (Array.isArray(race.distances) ? race.distances : []).join(","),
     registrationStatus: isAccepting ? "open" : hasUpcomingOpen ? "scheduled" : race.status || "unknown",
     sourceStatus: isAccepting ? "접수중" : hasUpcomingOpen ? "접수 예정" : statusLabel(race.status),
     alertCapabilities: [
@@ -113,9 +117,10 @@ function normalizeFeaturedRace(race) {
 }
 
 function normalizeRaceTime(value) {
-  const match = value.match(/(\d{1,2}):(\d{2})/);
+  const text = String(value || "");
+  const match = text.match(/(\d{1,2}):(\d{2})/);
   if (match) return `${pad(Number(match[1]))}:${match[2]}:00`;
-  const hourMatch = value.match(/(\d{1,2})시/);
+  const hourMatch = text.match(/(\d{1,2})시/);
   if (hourMatch) return `${pad(Number(hourMatch[1]))}:00:00`;
   return "09:00:00";
 }
@@ -223,33 +228,9 @@ function canUseRegistrationTimer(race) {
   return race.alertCapabilities?.includes("registration_time") && new Date(race.registrationOpenAt).getTime() > Date.now();
 }
 
+// 알림 대상 계산은 순수 로직이라 alerts-core.js 로 옮겼다 (Node 테스트 공유).
 function getAlertTarget(race) {
-  if (!race || ["closed", "sold_out", "cancelled"].includes(race.status)) return null;
-  const now = Date.now();
-  const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
-  const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
-
-  if (opensAt && opensAt > now) {
-    return {
-      type: "registration_open",
-      at: race.registrationOpenAt,
-      label: "접수 시작",
-      shortLabel: "시작 알림",
-      statusLabel: "접수 시작 알림"
-    };
-  }
-
-  if (!isAcceptingNow(race) && raceAt && raceAt > now) {
-    return {
-      type: "race_day",
-      at: race.raceDate,
-      label: "대회일",
-      shortLabel: "대회 알림",
-      statusLabel: "대회일 알림"
-    };
-  }
-
-  return null;
+  return window.PushRunAlertsCore.getAlertTarget(race, Date.now());
 }
 
 function canUseAlert(race) {
@@ -257,12 +238,7 @@ function canUseAlert(race) {
 }
 
 function isAcceptingNow(race) {
-  if (!race) return false;
-  if (race.registrationStatus === "open") return true;
-  const now = Date.now();
-  const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
-  const closesAt = race.registrationCloseAt ? new Date(race.registrationCloseAt).getTime() : null;
-  return Boolean(opensAt && opensAt <= now && (!closesAt || now <= closesAt));
+  return window.PushRunAlertsCore.isAcceptingNow(race, Date.now());
 }
 
 function raceSortGroup(race) {
@@ -420,9 +396,10 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
   const target = getAlertTarget(race);
   if (!target) return [];
   const targetAt = new Date(target.at);
-  return offsets
-    .map((offset) => {
-      const fireAt = new Date(targetAt.getTime() - offset * 60 * 1000);
+  // 발사 시각 계산·만료 필터는 alerts-core.js 의 순수 함수를 쓰고, 문구만 여기서 채운다.
+  return window.PushRunAlertsCore
+    .computeFireTimes(target.at, offsets, Date.now())
+    .map(({ offset, fireAt }) => {
       const when = offset === 0 ? "정각" : `${offset}분 전`;
       let title = `[${race.name}] ${target.label} ${when}`;
       let body = `${formatRegistrationPoint(target.at)} ${target.label} 예정입니다.`;
@@ -442,7 +419,7 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
 
       return {
         offset,
-        fireAt: fireAt.toISOString(),
+        fireAt,
         title,
         body,
         raceId: race.id,
@@ -450,8 +427,7 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
         targetAt: target.at,
         targetLabel: target.label
       };
-    })
-    .filter((alert) => new Date(alert.fireAt).getTime() > Date.now());
+    });
 }
 
 function getSelectedModalOffsets() {
@@ -597,7 +573,6 @@ function applyFilters() {
   state.selectedRaceId = null;
   renderRaceList();
   renderCategoryTabs();
-  renderDetail();
   showToast("선택한 조건으로 대회를 찾았어요.");
 }
 
@@ -605,8 +580,6 @@ function renderRaceList() {
   const list = document.getElementById("raceList");
   const races = getCategoryRaces();
   const copy = getCategoryCopy();
-  const raceCountLabel = document.getElementById("raceCountLabel");
-  if (raceCountLabel) raceCountLabel.textContent = "";
   if (!races.length) {
     list.innerHTML = `<div class="focus-empty"><h3>${copy.empty}</h3><p>검색어를 지우거나 거리·지역 필터를 전체로 바꿔보세요.</p></div>`;
     return;
@@ -615,23 +588,6 @@ function renderRaceList() {
     <section class="focus-board ${state.activeCategory}">
       <div class="race-list-list">
         ${races.map(raceCardHtml).join("")}
-      </div>
-    </section>
-  `;
-}
-
-function raceSectionHtml(title, description, races, kind) {
-  return `
-    <section class="race-board-section ${kind}">
-      <div class="section-title-row compact-row">
-        <div>
-          <span class="section-kicker">${kind === "confirmed" ? "Confirmed" : "Open Now"}</span>
-          <h2>${title}</h2>
-          <p class="meta-line">${description}</p>
-        </div>
-      </div>
-      <div class="race-list">
-        ${races.length ? races.map(raceCardHtml).join("") : `<div class="alert-card"><h3>${title} 대회가 없어요.</h3><p class="meta-line">새 데이터가 들어오면 이 영역에 자동으로 정리됩니다.</p></div>`}
       </div>
     </section>
   `;
@@ -676,53 +632,6 @@ function raceCardHtml(race) {
       </div>
       ${enabled ? `<p class="focus-enabled">알림이 켜져 있어요.</p>` : ""}
     </article>
-  `;
-}
-
-function renderDetail() {
-  const panel = document.getElementById("raceDetail");
-  if (!panel) return;
-  const race = getRaces().find((item) => item.id === state.selectedRaceId);
-  if (!race) {
-    panel.innerHTML = `
-      <div class="empty-detail">
-        <span class="mini-logo">PR</span>
-        <h2>대회를 선택하세요</h2>
-        <p>접수 시간과 알림 설정을 바로 확인합니다.</p>
-      </div>
-    `;
-    return;
-  }
-  const isConfirmed = canUseRegistrationTimer(race);
-  const alertTarget = getAlertTarget(race);
-  const actionButtons = isAcceptingNow(race) && !isConfirmed
-    ? registrationButtonHtml(race, "detail")
-    : `${alertButtonHtml(race, "detail")}${registrationButtonHtml(race, "detail")}`;
-  panel.innerHTML = `
-    <div class="detail-head">
-      <div>
-        <span class="section-kicker">${escapeHtml(race.region)} · ${escapeHtml(race.city)}</span>
-        <h2>${escapeHtml(race.name)}</h2>
-        <p class="meta-line">${escapeHtml(race.note)}</p>
-      </div>
-      <span class="status-pill ${isConfirmed ? "scheduled" : isAcceptingNow(race) ? "open" : escapeHtml(race.status)}">${escapeHtml(displayStatusLabel(race))}</span>
-    </div>
-    <div class="detail-block date-callout">
-      <span>${isConfirmed ? "알림 받을 접수" : isAcceptingNow(race) ? "지금 확인할 접수" : "접수 상태"}</span>
-      <strong>${escapeHtml(formatRegistrationRange(race))}</strong>
-    </div>
-    <div class="detail-block field-list">
-      <div class="field-row"><span>접수 기간</span><strong>${escapeHtml(formatRegistrationRange(race))}</strong></div>
-      <div class="field-row"><span>알림 기준</span><strong>${alertTarget ? `${escapeHtml(alertTarget.label)} ${escapeHtml(formatDday(alertTarget.at))}` : "알림 불가"}</strong></div>
-      <div class="field-row"><span>대회일</span><strong>${escapeHtml(formatShortDateTime(race.raceDate))}</strong></div>
-      <div class="field-row"><span>대회까지</span><strong>${escapeHtml(formatDday(race.raceDate))}</strong></div>
-      <div class="field-row"><span>장소</span><strong>${escapeHtml(race.venue)}</strong></div>
-      <div class="field-row"><span>코스</span><strong>${escapeHtml(courseTokens(race).join(" · "))}</strong></div>
-      <div class="field-row"><span>확인처</span><strong>${escapeHtml(race.sourceName)}</strong></div>
-    </div>
-    <div class="detail-block detail-actions">
-      ${actionButtons}
-    </div>
   `;
 }
 
@@ -793,8 +702,8 @@ function renderAlerts() {
             ${visibleOffsets.map((offset) => `<span class="chip highlight">${offset === 0 ? "정각" : `${offset}분 전`}</span>`).join("")}
           </div>
           <div class="detail-actions" style="margin-top:14px">
-            <button class="ghost-btn" type="button" data-focus-race="${race.id}">상세</button>
-            <button class="danger-btn" type="button" data-cancel-race="${race.id}">알림 끄기</button>
+            <button class="ghost-btn" type="button" data-focus-race="${escapeHtml(race.id)}">상세</button>
+            <button class="danger-btn" type="button" data-cancel-race="${escapeHtml(race.id)}">알림 끄기</button>
           </div>
         </div>
       `;
@@ -889,23 +798,21 @@ function clearBrowserTimers() {
   state.timers = [];
 }
 
-// setTimeout 의 최대 지연은 약 24.8일(2^31-1 ms). 이보다 먼 알림을 그냥 버리면 영영 안 울린다.
-const MAX_TIMER_DELAY = 2147483647;
-
 function scheduleBrowserTimers(alerts) {
   alerts.forEach((alert) => {
-    const delay = new Date(alert.fireAt).getTime() - Date.now();
-    if (delay <= 0) return;
-    if (delay > MAX_TIMER_DELAY) {
+    // setTimeout 24.8일(2^31-1 ms) 클램프 판정은 alerts-core.js 의 classifyTimerDelay 로 일원화.
+    const timing = window.PushRunAlertsCore.classifyTimerDelay(alert.fireAt, Date.now());
+    if (timing.isPast) return;
+    if (timing.needsRearm) {
       // ★ 24.8일 넘는 알림(예: 8·9월 대회)은 드롭하지 않고, 상한만큼 잔 뒤 전체 스케줄을
       // 다시 건다(재무장). 한 번의 스케줄 패스에 재무장 타이머는 하나만 둔다.
       if (!state.rearmScheduled) {
         state.rearmScheduled = true;
-        state.timers.push(setTimeout(scheduleAllBrowserTimers, MAX_TIMER_DELAY));
+        state.timers.push(setTimeout(scheduleAllBrowserTimers, window.PushRunAlertsCore.MAX_TIMER_DELAY));
       }
       return;
     }
-    state.timers.push(setTimeout(() => void fireWebAlert(alert), delay));
+    state.timers.push(setTimeout(() => void fireWebAlert(alert), timing.delay));
   });
 }
 
@@ -915,6 +822,23 @@ function scheduleAllBrowserTimers() {
   Object.values(state.alerts).forEach((subscription) => {
     if (subscription.enabled && subscription.targetType !== "registration_close") scheduleBrowserTimers(subscription.scheduledAlerts || []);
   });
+}
+
+// ★ 핵심 신뢰 수정: 저장된 알림의 발사 시각(fireAt)을 "최신 대회 데이터" 기준으로 다시 계산한다.
+// races.json 에서 접수 시각이 바뀌면 바뀐 시각으로 알림을 다시 걸고,
+// 데이터에서 사라진 대회의 알림(고아)과 발사 시각이 이미 지난 알림(만료)은 즉시 제거한다.
+// UX 결정: 만료 알림은 유예 기간 없이 리로드 시점에 바로 지운다 — '내 알림'에는
+// 실제로 울릴 알림만 남겨서 "켜져 있는데 안 울리는" 상태를 없앤다.
+function reconcileStoredAlerts() {
+  if (!state.races.length) return; // 데이터 로드 실패 시에는 판단 근거가 없으므로 건드리지 않는다.
+  const result = window.PushRunAlertsCore.reconcileSubscriptions(state.alerts, state.races, {
+    now: Date.now(),
+    buildScheduledAlerts: (race, offsets) => buildRegistrationAlerts(race, offsets)
+  });
+  state.alerts = result.alerts;
+  if (result.updated.length || result.dropped.length || result.expired.length) {
+    saveJson(ALERT_STORAGE_KEY, state.alerts);
+  }
 }
 
 async function enableAlertFromModal() {
@@ -972,6 +896,8 @@ async function refreshRaceData() {
   try {
     await loadRaceData();
     localStorage.setItem(SYNC_STORAGE_KEY, new Date().toISOString());
+    reconcileStoredAlerts();
+    scheduleAllBrowserTimers();
     state.selectedRaceId = null;
     render();
     showToast("최신 대회 데이터를 다시 불러왔어요.");
@@ -1061,7 +987,6 @@ function bindEvents() {
       renderDistanceFilters();
       renderRaceList();
       renderCategoryTabs();
-      renderDetail();
     }
   });
 
@@ -1129,7 +1054,6 @@ function render() {
   if (searchInput) searchInput.value = state.draftQuery;
   renderCategoryTabs();
   renderRaceList();
-  renderDetail();
   renderAlerts();
   renderSyncStatus();
   renderPermissionEntry();
@@ -1137,10 +1061,11 @@ function render() {
 }
 
 function startTicker() {
+  // 매초 타이머는 알림 모달의 카운트다운 갱신에만 쓴다.
+  // (예전의 renderDetail 은 존재하지 않는 #raceDetail 을 그리던 죽은 코드라 제거했다.)
+  // 전체 renderModal 을 매초 부르면 체크박스 그리드가 재생성되며
+  // 사용자가 방금 바꾼 오프셋 선택이 매초 defaults 로 되돌아가므로 카운트다운만 갱신한다.
   setInterval(() => {
-    renderDetail();
-    // 모달이 열려 있으면 카운트다운만 갱신한다. 전체 renderModal 을 매초 부르면
-    // 체크박스 그리드가 재생성되며 사용자가 방금 바꾼 오프셋 선택이 매초 defaults 로 되돌아간다.
     if (!document.getElementById("alertModal").hidden) renderModalCountdown();
   }, 1000);
 }
@@ -1153,6 +1078,7 @@ async function initApp() {
   syncDraftFilters();
   try {
     await loadRaceData();
+    reconcileStoredAlerts();
   } catch {
     state.races = [];
   }

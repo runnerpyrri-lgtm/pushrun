@@ -11,7 +11,7 @@
     <title>PushRun - 러닝 대회 접수 알림</title>
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css?v=20260710-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -89,7 +89,10 @@
             <section class="settings-panel">
               <h2>알림 권한</h2>
               <p id="permissionText">확인 중</p>
-              <button class="primary-btn" type="button" id="requestPermissionButton">알림 켜기</button>
+              <div class="settings-actions">
+                <button class="primary-btn" type="button" id="requestPermissionButton">알림 켜기</button>
+                <button class="ghost-btn" type="button" id="openPermissionGuideButton">알림 권한 안내</button>
+              </div>
             </section>
             <section class="settings-panel">
               <h2>알림 동작 조건</h2>
@@ -158,6 +161,7 @@
           <button class="primary-btn" type="button" id="permissionEnableButton">알림 허용하기</button>
           <button class="ghost-btn" type="button" id="permissionLaterButton">나중에</button>
         </div>
+        <p class="meta-line tiny-copy">알림을 이미 "차단"했다면 브라우저 주소창 옆 사이트 설정(자물쇠 아이콘)에서 알림을 "허용"으로 바꿔야 다시 받을 수 있어요.</p>
         <p class="meta-line tiny-copy">중요한 접수 일정은 대회 공식 사이트와 휴대폰 캘린더에도 함께 저장해 주세요.</p>
       </section>
     </div>
@@ -186,6 +190,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=20260710-1"></script>
+    <script src="./alerts-core.js?v=20260711-1"></script>
+    <script src="./app.js?v=20260711-1"></script>
   </body>
 </html>
