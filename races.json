@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.08-race-data-8",
+  "version": "2026.07.12-race-data-9",
   "sources": [
     "마라톤온라인",
     "마라톤GO",
@@ -16,6 +16,7 @@
       "raceDate": "2026-11-01T08:00:00+09:00",
       "registrationOpenAt": "2026-07-01T00:00:00+09:00",
       "registrationCloseAt": "2026-07-31T23:59:00+09:00",
+      "registrationOpenTimeConfirmed": false,
       "registrationUrl": "https://runable.me/",
       "distances": [
         "Full",
@@ -34,19 +35,20 @@
       "city": "서울광장",
       "venue": "서울광장",
       "raceDate": "2026-09-06T07:30:00+09:00",
-      "registrationOpenAt": "2026-06-17T10:00:00+09:00",
-      "registrationCloseAt": "2026-07-15T23:59:00+09:00",
+      "registrationOpenAt": "2026-06-17T14:00:00+09:00",
+      "registrationCloseAt": "2026-07-10T17:00:00+09:00",
+      "registrationOpenTimeConfirmed": true,
       "registrationUrl": "https://run.ytn.co.kr/",
       "distances": [
         "Half",
         "11K"
       ],
-      "status": "open",
+      "status": "sold_out",
       "capacity": 5000,
       "popularity": 86,
-      "sourceName": "마라톤GO",
-      "note": "접수 기간은 6월 17일부터 7월 15일까지로 확인됩니다.",
-      "sourceDetailUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-ytn-seoul-tour-marathon"
+      "sourceName": "YTN 서울투어마라톤 공식",
+      "note": "공식 일정은 6월 17일 14시부터 7월 10일 17시까지이며, 6월 26일 전 종목 선착순 마감 공지가 게시됐습니다.",
+      "sourceDetailUrl": "https://run.ytn.co.kr/community/index01.php?abmode=view&bfsort=&bsort=&category=&code=B5&group=basic&no=8124&sno=0"
     },
     {
       "id": "cheongju-jeonmahyeop",
@@ -57,6 +59,7 @@
       "raceDate": "2026-09-06T07:30:00+09:00",
       "registrationOpenAt": "2026-06-10T10:00:00+09:00",
       "registrationCloseAt": "2026-08-06T23:59:00+09:00",
+      "registrationOpenTimeConfirmed": false,
       "registrationUrl": "http://mara1080.com/event/a9780087-8fc3-4849-a234-7659978f6792",
       "distances": [
         "10K",
@@ -78,6 +81,17 @@
       "raceDate": "2026-10-25T09:00:00+09:00",
       "registrationOpenAt": "2026-07-14T14:00:00+09:00",
       "registrationCloseAt": "2026-07-23T18:00:00+09:00",
+      "registrationOpenTimeConfirmed": true,
+      "registrationWindows": [
+        {
+          "label": "Full",
+          "opensAt": "2026-07-14T14:00:00+09:00"
+        },
+        {
+          "label": "10K",
+          "opensAt": "2026-07-16T14:00:00+09:00"
+        }
+      ],
       "registrationUrl": "https://www.chuncheonmarathon.com/apply/part-application.html",
       "distances": [
         "Full",
@@ -87,7 +101,8 @@
       "capacity": 12000,
       "popularity": 96,
       "sourceName": "공식 · 마라톤GO",
-      "note": "Full 일반접수는 7월 14일 14시, 10km 일반접수는 7월 16일 14시에 열립니다."
+      "note": "공식 사이트 기준 Full 일반접수는 7월 14일 14시, 10km 일반접수는 7월 16일 14시에 열립니다.",
+      "sourceDetailUrl": "https://www.chuncheonmarathon.com/apply/part-application.html"
     },
     {
       "id": "daegu-marathon",

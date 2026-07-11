@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.13";
-const ASSET_VERSION = "20260711-5";
+const APP_VERSION = "0.6.14";
+const ASSET_VERSION = "20260712-1";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
@@ -73,6 +73,7 @@ function parseScheduleFeed(feed) {
     const isBeforeClose = !closesAt || now <= closesAt;
     const isOpen = isBeforeClose && (entry.status === "open" || Boolean(opensAt && opensAt <= now));
     const hasUpcomingOpen = Boolean(opensAt && opensAt > now);
+    const openTimeConfirmed = entry.registrationOpenTimeConfirmed === true;
     // 방어: venue/time/distances 가 빠진 항목 1개 때문에 앱 전체가 하얗게 죽지 않게 한다.
     // (validate-static.mjs 가 배포 전에 FAIL 시키지만, 런타임에서도 한 번 더 방어한다.)
     const venue = entry.venue || "";
@@ -89,6 +90,7 @@ function parseScheduleFeed(feed) {
       raceDate: `${entry.date}T${normalizeRaceTime(entry.time)}+09:00`,
       registrationOpenAt: entry.registrationOpenAt || null,
       registrationCloseAt: entry.registrationCloseAt || null,
+      registrationOpenTimeConfirmed: openTimeConfirmed,
       registrationPeriodLabel: entry.registrationPeriodLabel || null,
       registrationUrl: entry.registrationUrl || entry.sourceDetailUrl || MARATHON_ONLINE_LIST_URL,
       sourceDetailUrl: entry.sourceDetailUrl || null,
@@ -100,7 +102,7 @@ function parseScheduleFeed(feed) {
       registrationStatus: isOpen ? "open" : hasUpcomingOpen ? "scheduled" : entry.status || "unknown",
       sourceStatus: isOpen ? "접수중" : hasUpcomingOpen ? "접수 예정" : statusLabel(entry.status),
       alertCapabilities: [
-        ...(hasUpcomingOpen ? ["registration_time"] : []),
+        ...(hasUpcomingOpen && openTimeConfirmed ? ["registration_time"] : []),
         ...(isOpen ? ["open_now"] : []),
         "race_day"
       ],
@@ -120,13 +122,15 @@ function normalizeFeaturedRace(race) {
   const isBeforeClose = !closesAt || now <= closesAt;
   const isAccepting = isBeforeClose && (race.status === "open" || Boolean(opensAt && opensAt <= now));
   const hasUpcomingOpen = opensAt && opensAt > now && !["closed", "sold_out", "cancelled"].includes(race.status);
+  const openTimeConfirmed = hasConfirmedRegistrationOpenTime(race);
   return {
     ...race,
+    registrationOpenTimeConfirmed: openTimeConfirmed,
     courseLabel: race.courseLabel || (Array.isArray(race.distances) ? race.distances : []).join(","),
     registrationStatus: isAccepting ? "open" : hasUpcomingOpen ? "scheduled" : race.status || "unknown",
     sourceStatus: isAccepting ? "접수중" : hasUpcomingOpen ? "접수 예정" : statusLabel(race.status),
     alertCapabilities: [
-      ...(hasUpcomingOpen ? ["registration_time"] : []),
+      ...(hasUpcomingOpen && openTimeConfirmed ? ["registration_time"] : []),
       ...(isAccepting ? ["open_now"] : []),
       "race_day"
     ]
@@ -196,6 +200,29 @@ function formatRegistrationPoint(value) {
   return isPlainDate ? dateLabel : `${dateLabel} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+function formatRegistrationDate(value) {
+  const date = new Date(value);
+  const yearPrefix = date.getFullYear() === new Date().getFullYear() ? "" : `${String(date.getFullYear()).slice(2)}.`;
+  return `${yearPrefix}${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)})`;
+}
+
+function hasConfirmedRegistrationOpenTime(race) {
+  if (typeof race.registrationOpenTimeConfirmed === "boolean") return race.registrationOpenTimeConfirmed;
+  if (!race.registrationOpenAt) return false;
+  const date = new Date(race.registrationOpenAt);
+  return !((date.getHours() === 0 && date.getMinutes() === 0) || (date.getHours() === 23 && date.getMinutes() === 59));
+}
+
+function formatRegistrationStart(race) {
+  const windows = Array.isArray(race.registrationWindows) ? race.registrationWindows : [];
+  if (windows.length) {
+    return windows.map((window) => `${window.label || "접수"} ${formatRegistrationPoint(window.opensAt)}`).join(" · ");
+  }
+  if (!race.registrationOpenAt) return "확인중";
+  if (!hasConfirmedRegistrationOpenTime(race)) return `${formatRegistrationDate(race.registrationOpenAt)} 시간 미확인`;
+  return formatRegistrationPoint(race.registrationOpenAt);
+}
+
 function formatRegistrationRange(race) {
   if (!race.registrationOpenAt) return race.registrationLabel || "접수 일정 준비중";
   if (race.registrationPeriodLabel) return race.registrationPeriodLabel;
@@ -204,14 +231,7 @@ function formatRegistrationRange(race) {
 }
 
 function formatDday(value, fallback = "일정 대기") {
-  if (!value) return fallback;
-  const target = new Date(value);
-  const today = new Date();
-  target.setHours(0, 0, 0, 0);
-  today.setHours(0, 0, 0, 0);
-  const days = Math.ceil((target - today) / 86400000);
-  if (days === 0) return "D-Day";
-  return days > 0 ? `D-${days}` : `D+${Math.abs(days)}`;
+  return window.PushRunAlertsCore.formatDday(value, Date.now(), fallback);
 }
 
 function pad(value) {
@@ -228,7 +248,7 @@ function escapeHtml(value) {
 }
 
 function canUseRegistrationTimer(race) {
-  return race.alertCapabilities?.includes("registration_time") && new Date(race.registrationOpenAt).getTime() > Date.now();
+  return getAlertTarget(race)?.type === "registration_open";
 }
 
 // 알림 대상 계산은 순수 로직이라 alerts-core.js 로 옮겼다 (Node 테스트 공유).
@@ -277,8 +297,15 @@ function getActionRaces() {
 
 function getConfirmedRegistrationRaces() {
   return getActionRaces()
-    .filter((race) => canUseRegistrationTimer(race))
-    .sort((a, b) => new Date(a.registrationOpenAt).getTime() - new Date(b.registrationOpenAt).getTime());
+    .filter((race) => getUpcomingRegistrationAt(race))
+    .sort((a, b) => getUpcomingRegistrationAt(a) - getUpcomingRegistrationAt(b));
+}
+
+function getUpcomingRegistrationAt(race) {
+  const candidates = [race.registrationOpenAt, ...(race.registrationWindows || []).map((window) => window.opensAt)]
+    .map((value) => new Date(value).getTime())
+    .filter((value) => Number.isFinite(value) && value > Date.now());
+  return candidates.length ? Math.min(...candidates) : null;
 }
 
 function getOpenRegistrationRaces() {
@@ -292,14 +319,16 @@ function getCategoryRaces() {
 }
 
 function ticketDdayInfo(race) {
+  const target = getAlertTarget(race);
+  if (target?.type === "registration_open") return { label: target.ticketLabel || "접수", at: target.at };
+  const upcomingAt = getUpcomingRegistrationAt(race);
+  if (upcomingAt) return { label: "접수", at: new Date(upcomingAt).toISOString() };
   if (state.activeCategory === "open" && isAcceptingNow(race)) {
     return {
       label: race.registrationCloseAt ? "마감" : "접수중",
       at: race.registrationCloseAt || race.raceDate
     };
   }
-  const target = getAlertTarget(race);
-  if (target?.type === "registration_open") return { label: "접수", at: target.at };
   return { label: "대회", at: race.raceDate };
 }
 
@@ -313,7 +342,7 @@ function getCategoryCopy() {
     : {
         title: "접수 예정",
         description: "",
-        empty: "접수 시간이 확정된 대회가 없어요."
+        empty: "접수 예정 대회가 없어요."
       };
 }
 
@@ -615,7 +644,7 @@ function raceCardHtml(race) {
   const enabled = state.alerts[race.id]?.enabled;
   const ticketInfo = ticketDdayInfo(race);
   const safeId = escapeHtml(race.id);
-  const startLabel = race.registrationOpenAt ? formatRegistrationPoint(race.registrationOpenAt) : "확인중";
+  const startLabel = formatRegistrationStart(race);
   const raceDateLabel = formatShortDate(race.raceDate);
   const ticketDday = formatDday(ticketInfo.at);
   const actionButtons = `<div class="list-action-row ticket-actions">${registrationButtonHtml(race)}${alertButtonHtml(race)}</div>`;
@@ -624,7 +653,7 @@ function raceCardHtml(race) {
       <div class="list-card-grid">
         <div class="list-date">
           <span>${escapeHtml(ticketInfo.label)}</span>
-          <strong>${escapeHtml(ticketDday)}</strong>
+          ${ticketDday ? `<strong>${escapeHtml(ticketDday)}</strong>` : ""}
         </div>
         <div class="list-body">
           <div class="list-title-row">

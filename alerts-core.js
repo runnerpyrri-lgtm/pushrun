@@ -7,6 +7,26 @@
   // setTimeout 의 최대 지연은 약 24.8일(2^31-1 ms). 이보다 먼 알림을 그냥 버리면 영영 안 울린다.
   const MAX_TIMER_DELAY = 2147483647;
   const DEFAULT_OFFSETS = [20, 10, 0];
+  const DAY = 24 * 60 * 60 * 1000;
+  const KST_OFFSET = 9 * 60 * 60 * 1000;
+
+  function getNextRegistrationWindow(race, now) {
+    const windows = Array.isArray(race?.registrationWindows) ? race.registrationWindows : [];
+    return windows
+      .filter((window) => window?.opensAt && window.timeConfirmed !== false && new Date(window.opensAt).getTime() > now)
+      .sort((a, b) => new Date(a.opensAt).getTime() - new Date(b.opensAt).getTime())[0] || null;
+  }
+
+  // 한국 대회 기준 날짜로 D-day를 계산하고, 이미 지난 대상에는 D+를 노출하지 않는다.
+  function formatDday(value, now, fallback = "일정 대기") {
+    const targetAt = value ? new Date(value).getTime() : NaN;
+    if (!Number.isFinite(targetAt)) return fallback;
+    const targetDay = Math.floor((targetAt + KST_OFFSET) / DAY);
+    const today = Math.floor((now + KST_OFFSET) / DAY);
+    const days = targetDay - today;
+    if (days < 0) return "";
+    return days === 0 ? "D-Day" : `D-${days}`;
+  }
 
   // 지금 접수중인지(오픈 시각이 지났고 마감 전) 판단한다.
   function isAcceptingNow(race, now) {
@@ -26,7 +46,21 @@
     const opensAt = race.registrationOpenAt ? new Date(race.registrationOpenAt).getTime() : null;
     const raceAt = race.raceDate ? new Date(race.raceDate).getTime() : null;
 
+    const nextWindow = getNextRegistrationWindow(race, now);
+    if (nextWindow) {
+      const course = nextWindow.label ? `${nextWindow.label} ` : "";
+      return {
+        type: "registration_open",
+        at: nextWindow.opensAt,
+        label: `${course}접수 시작`,
+        ticketLabel: `${course}접수`,
+        shortLabel: `${course}시작 알림`,
+        statusLabel: `${course}접수 시작 알림`
+      };
+    }
+
     if (opensAt && opensAt > now) {
+      if (race.registrationOpenTimeConfirmed === false) return null;
       return {
         type: "registration_open",
         at: race.registrationOpenAt,
@@ -160,6 +194,8 @@
   const PushRunAlertsCore = {
     MAX_TIMER_DELAY,
     DEFAULT_OFFSETS,
+    formatDday,
+    getNextRegistrationWindow,
     isAcceptingNow,
     getAlertTarget,
     computeFireAt,
