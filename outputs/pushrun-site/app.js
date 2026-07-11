@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.11";
-const ASSET_VERSION = "20260711-3";
+const APP_VERSION = "0.6.12";
+const ASSET_VERSION = "20260711-4";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const SOON_DAYS = 14;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -1145,6 +1145,10 @@ function bindEvents() {
     if (event.target.id === "batteryModal") closeBatteryGuide();
   });
 
+  // 포그라운드 복귀 시 알림 재계산·재예약. pageshow 는 iOS bfcache 복원까지 커버한다.
+  document.addEventListener("visibilitychange", resyncOnForeground);
+  window.addEventListener("pageshow", resyncOnForeground);
+
   document.addEventListener("keydown", (event) => {
     const modal = getOpenModal();
     if (!modal) return;
@@ -1172,6 +1176,17 @@ function render() {
   updatePermissionText();
   setMobileFiltersExpanded(state.mobileFiltersExpanded);
   setView(document.querySelector(".view.active")?.id.replace("view-", "") || "home");
+}
+
+// 백그라운드/절전에서 포그라운드로 돌아오면 알림을 다시 맞춘다.
+// 이유: setTimeout 예약 알림은 탭이 오래 숨겨지거나 기기가 절전되면 브라우저가
+// throttle·정지시켜 발사가 밀리거나 유실될 수 있다. 복귀 시 최신 시각 기준으로
+// 만료 알림을 정리하고(reconcile) 타이머를 다시 건다(reschedule).
+function resyncOnForeground() {
+  if (document.visibilityState !== "visible") return;
+  reconcileStoredAlerts();
+  scheduleAllBrowserTimers();
+  render();
 }
 
 function startTicker() {
