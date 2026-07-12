@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.9.2";
-const ASSET_VERSION = "20260712-10";
+const APP_VERSION = "0.9.3";
+const ASSET_VERSION = "20260712-11";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";

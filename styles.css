@@ -3328,3 +3328,183 @@ select:focus-visible {
 }
 
 :root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --coral-strong: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
+
+/* 러닝봄의 밝은 정보 구조는 유지하면서 코랄 단일색 대신 숲·라임 중심 팔레트로 정돈한다. */
+:root {
+  color-scheme: light;
+  --bg: #f4f7f2;
+  --surface: #ffffff;
+  --surface-2: #eaf1ed;
+  --ink: #132720;
+  --muted: #62736a;
+  --line: #d7e3db;
+  --coral: #139c76;
+  --coral-deep: #0b6a50;
+  --coral-soft: #e1f6ed;
+  --coral-strong: #143b32;
+  --lime: #c8f14b;
+  --mint: #2cbe96;
+  --amber: #f6c858;
+  --shadow: 0 18px 42px rgba(18, 54, 43, 0.09);
+}
+
+body {
+  background:
+    radial-gradient(circle at 100% -8%, rgba(200, 241, 75, 0.2), transparent 29%),
+    linear-gradient(180deg, #f8faf7 0%, var(--bg) 58%, #edf4ef 100%);
+}
+
+.brand-mark,
+.mini-logo {
+  border-color: #bfe5d4;
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+.brand-title i {
+  background: var(--lime);
+}
+
+.nav-pill.active,
+.segment.active,
+.mobile-tab.active,
+.filter-chip.active,
+.quick-filters .category-tab.active,
+.quick-filters .filter-chip.active {
+  border-color: transparent;
+  background: var(--ink);
+  color: var(--lime);
+}
+
+.quick-filters .category-tab,
+.quick-filters .filter-chip,
+.topnav,
+.icon-btn {
+  background: var(--surface-2);
+}
+
+.permission-entry {
+  border-color: #cfe2d7;
+  background: linear-gradient(100deg, #ffffff 0%, #f2faf5 100%);
+}
+
+.permission-entry span {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.registration-calendar {
+  border-color: #d4e4d9;
+  background: linear-gradient(135deg, #f8fcf9, #ffffff);
+}
+
+.calendar-title span,
+.calendar-nav {
+  color: var(--coral-deep);
+}
+
+.calendar-nav {
+  border-color: #d4e4d9;
+}
+
+.calendar-nav:hover,
+.calendar-cell.today {
+  background: var(--coral-soft);
+}
+
+.calendar-cell.has-races {
+  background: linear-gradient(180deg, #ffffff, #edf8f1);
+  box-shadow: 0 4px 11px rgba(18, 89, 66, 0.12);
+}
+
+.calendar-cell .cal-dot,
+.calendar-cell.active {
+  background: var(--coral-strong);
+}
+
+.calendar-cell.today {
+  outline-color: var(--coral);
+}
+
+.hero-race {
+  border-color: #c6e5d5;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200, 241, 75, 0.36), transparent 33%),
+    linear-gradient(135deg, #effaf4, #dff3e8);
+}
+
+.hero-accent {
+  background: var(--lime);
+}
+
+.hero-status,
+.weekly-date {
+  background: #d8f26b;
+  color: var(--ink);
+}
+
+.hero-date {
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.hero-metrics {
+  border-color: #c7e4d6;
+}
+
+.primary-btn,
+.race-card .list-action-wrap .strong {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--lime);
+}
+
+.ghost-btn,
+.race-card .list-action-wrap .mini-btn:not(.strong) {
+  border-color: #cddfd5;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.race-card,
+.alert-card,
+.settings-panel {
+  box-shadow: 0 8px 22px rgba(18, 54, 43, 0.045);
+}
+
+.race-card .race-location {
+  color: var(--muted);
+}
+
+.course-chips span,
+.registration-window-row span {
+  background: #edf7e4;
+  color: #28452e;
+}
+
+.race-list-list .list-card:nth-child(4n + 1) .list-date {
+  background: #e1f6ed;
+  color: #0b6a50;
+}
+
+.race-list-list .list-card:nth-child(4n + 2) .list-date {
+  background: #edf5d5;
+  color: #54731d;
+}
+
+.race-list-list .list-card:nth-child(4n + 3) .list-date {
+  background: #fff0d7;
+  color: #9a5c0c;
+}
+
+.race-list-list .list-card:nth-child(4n) .list-date {
+  background: #e7f0ff;
+  color: #2d65aa;
+}
+
+.status-pill.open,
+.status-pill.scheduled,
+.chip.highlight,
+.focus-enabled,
+.hero-enabled {
+  color: var(--coral-deep);
+}
