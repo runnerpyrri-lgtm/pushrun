@@ -2311,6 +2311,10 @@ select:focus-visible {
   background: var(--coral);
 }
 
+/* 로봄 패밀리 공통 "봄" 마크 — 마지막 봄만 커스텀 로고, 꽃은 패밀리 톤(러닝=코랄) */
+.brand-wordmark { display: inline-flex; align-items: center; gap: 2px; }
+.brand-bom { height: .9em; width: auto; overflow: visible; }
+
 .brand small {
   color: var(--muted);
   font-size: 1rem;
