@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260712-9" />
+    <link rel="stylesheet" href="./styles.css?v=20260712-10" />
   </head>
   <body>
     <div class="app-shell">
@@ -54,20 +54,14 @@
 
           <section class="hero-race" id="homeHero" aria-live="polite" aria-busy="true"></section>
 
-          <section class="weekly-section" aria-labelledby="weeklyTitle">
-            <div class="section-heading">
-              <div>
-                <p class="section-kicker">이번 주 접수</p>
-                <h1 id="weeklyTitle">놓치기 쉬운 접수 일정</h1>
-              </div>
-              <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">대회 찾기</button>
-            </div>
-            <div class="weekly-list" id="weeklyList" aria-live="polite"></div>
-          </section>
-
           <section class="ad-slot" aria-label="광고 자리" aria-disabled="true">
             <span>광고</span><p>러닝화·대회 준비 추천</p><strong>현재 비활성</strong>
           </section>
+
+          <div class="results-toolbar">
+            <p class="section-kicker">전체 대회</p>
+            <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">대회 찾기</button>
+          </div>
 
           <section class="filters-panel" id="filtersPanel" aria-label="전체 대회 찾기" hidden>
             <div class="filter-head">
@@ -239,7 +233,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./alerts-core.js?v=20260712-9"></script>
-    <script src="./app.js?v=20260712-9"></script>
+    <script src="./alerts-core.js?v=20260712-10"></script>
+    <script src="./app.js?v=20260712-10"></script>
   </body>
 </html>

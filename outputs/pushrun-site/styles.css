@@ -1007,24 +1007,24 @@ p {
 }
 
 .registration-window-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 7px;
   align-items: baseline;
   min-width: 0;
 }
 
-.registration-window-row.compact {
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-
 .registration-window-row span {
+  flex: 0 0 auto;
+  min-width: 34px;
   border-radius: 999px;
   background: #e9f5d6;
   color: #243c20;
   padding: 2px 6px;
   font-size: 0.72rem;
+  font-weight: 900;
   line-height: 1.2;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -1039,6 +1039,25 @@ p {
   font-style: normal;
   font-weight: 950;
   white-space: nowrap;
+}
+
+.results-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 22px 0 12px;
+}
+
+.results-toolbar .section-kicker {
+  margin: 0;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.results-toolbar .mobile-filter-toggle {
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .course-chips {
