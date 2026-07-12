@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.7.1";
-const ASSET_VERSION = "20260712-6";
+const APP_VERSION = "0.8.0";
+const ASSET_VERSION = "20260712-7";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
@@ -19,6 +19,7 @@ const state = {
   draftRegionFilter: "all",
   draftQuery: "",
   activeCategory: "confirmed",
+  selectedCalendarDate: null,
   races: [],
   dataVersion: "",
   alerts: loadJson(ALERT_STORAGE_KEY, {}),
@@ -517,14 +518,15 @@ function renderRegistrationCalendar() {
   const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const days = Array.from({ length: 7 }, (_, index) => new Date(start.getTime() + index * 86_400_000));
   const races = getRaces();
+  const activeKey = state.selectedCalendarDate ?? KST_DATE_KEY.format(start);
   target.innerHTML = `
     <div class="calendar-head"><div><span>이번 주 접수</span><h2>날짜부터 확인하세요.</h2></div><small>대회 선택</small></div>
     <div class="calendar-days">${days.map((day) => {
       const key = KST_DATE_KEY.format(day);
       const dayRaces = races.filter((race) => KST_DATE_KEY.format(new Date(race.registrationOpenAt || race.registrationCloseAt || 0)) === key);
-      const first = dayRaces[0];
-      const isToday = day.getTime() === start.getTime();
-      return `<button type="button" class="calendar-day${isToday ? " active" : ""}"${first ? ` data-race-id="${escapeHtml(first.id)}"` : ""} aria-label="${day.getMonth() + 1}월 ${day.getDate()}일${dayRaces.length ? `, 접수 일정 ${dayRaces.length}개` : ", 접수 일정 없음"}"><small>${day.toLocaleDateString("ko-KR", { weekday: "short" })}</small><strong>${day.getDate()}</strong><span>${dayRaces.length ? `접수 ${dayRaces.length}` : "·"}</span></button>`;
+      const hasRaces = dayRaces.length > 0;
+      const isActive = key === activeKey;
+      return `<button type="button" class="calendar-day${isActive ? " active" : ""}"${hasRaces ? ` data-calendar-date="${escapeHtml(key)}"` : ""}${state.selectedCalendarDate === key ? ' aria-pressed="true"' : ""} aria-label="${day.getMonth() + 1}월 ${day.getDate()}일${dayRaces.length ? `, 접수 일정 ${dayRaces.length}개` : ", 접수 일정 없음"}"><small>${day.toLocaleDateString("ko-KR", { weekday: "short" })}</small><strong>${day.getDate()}</strong><span>${dayRaces.length ? `접수 ${dayRaces.length}` : "·"}</span></button>`;
     }).join("")}</div>`;
 }
 
@@ -596,14 +598,30 @@ function weeklyRaceHtml(race) {
 function renderWeeklyList() {
   const target = document.getElementById("weeklyList");
   if (!target) return;
+  const title = document.getElementById("weeklyTitle");
   if (state.loadStatus === "loading") {
+    if (title) title.textContent = "놓치기 쉬운 접수 일정";
     target.innerHTML = `<p class="quiet-note" role="status">접수 일정을 불러오는 중이에요.</p>`;
     return;
   }
-  const races = getWeeklyRaces();
-  target.innerHTML = races.length
+  const selectedKey = state.selectedCalendarDate;
+  let races;
+  let clearHtml = "";
+  if (selectedKey) {
+    races = getRaces()
+      .filter((race) => KST_DATE_KEY.format(new Date(race.registrationOpenAt || race.registrationCloseAt || 0)) === selectedKey)
+      .sort((a, b) => registrationActionAt(a) - registrationActionAt(b));
+    const [, month, dayNum] = selectedKey.split("-").map(Number);
+    if (title) title.textContent = `${month}월 ${dayNum}일 접수 일정`;
+    clearHtml = `<button class="text-btn calendar-filter-clear" type="button" data-clear-calendar-date>전체 일정 보기</button>`;
+  } else {
+    races = getWeeklyRaces();
+    if (title) title.textContent = "놓치기 쉬운 접수 일정";
+  }
+  const listHtml = races.length
     ? races.map(weeklyRaceHtml).join("")
-    : `<p class="quiet-note">이번 주에 확인할 접수 일정이 없어요.</p>`;
+    : `<p class="quiet-note">${selectedKey ? "이 날짜에는 접수 일정이 없어요." : "이번 주에 확인할 접수 일정이 없어요."}</p>`;
+  target.innerHTML = clearHtml + listHtml;
 }
 
 function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS, selectedTarget = null, checkTimes = []) {
@@ -900,7 +918,8 @@ function raceCardHtml(race) {
         </div>
         <div class="list-body">
           <h3>${escapeHtml(race.name)}</h3>
-          <p class="race-location">${escapeHtml(race.region)} · ${escapeHtml(race.city)} · ${escapeHtml(courseTokens(race).slice(0, 2).join("/"))}</p>
+          <p class="race-location">${escapeHtml(race.region)} · ${escapeHtml(race.city)}</p>
+          ${courseChipsHtml(race)}
         </div>
         <div class="list-action-wrap">
           ${registrationButtonHtml(race)}
@@ -1372,8 +1391,28 @@ function bindEvents() {
       return;
     }
 
+    const clearDateButton = event.target.closest("[data-clear-calendar-date]");
+    if (clearDateButton) {
+      state.selectedCalendarDate = null;
+      render();
+      document.querySelector(".weekly-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    const dayButton = event.target.closest("[data-calendar-date]");
+    if (dayButton) {
+      const key = dayButton.dataset.calendarDate;
+      state.selectedCalendarDate = state.selectedCalendarDate === key ? null : key;
+      render();
+      document.querySelector(".weekly-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
     const raceCard = event.target.closest("[data-race-id]");
     if (raceCard) {
+      // 접수·알림 버튼/링크 클릭은 카드 선택으로 전파하지 않아 전체 재렌더 깜빡임을 막는다.
+      const interactive = event.target.closest("a, button");
+      if (interactive && interactive !== raceCard) return;
       selectRace(raceCard.dataset.raceId);
       return;
     }

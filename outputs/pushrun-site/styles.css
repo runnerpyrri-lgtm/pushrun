@@ -2193,7 +2193,7 @@ fieldset.modal-section legend {
 
 /* 운영체제 설정과 무관하게 유지되는 밝고 따뜻한 러닝봄 테마다. */
 :root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
-.registration-calendar { margin: 18px 0 16px; border: 1px solid #f0dfd1; border-radius: 24px; background: linear-gradient(135deg, #fff8ee, #fffdf9); padding: 17px; }.calendar-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }.calendar-head span { color: var(--coral-deep); font-size: 12px; font-weight: 900; }.calendar-head h2 { margin: 4px 0 0; font-size: 20px; letter-spacing: -.04em; }.calendar-head small { border-radius: 999px; background: var(--coral-soft); padding: 7px 10px; color: var(--coral-deep); font-weight: 900; }.calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }.calendar-day { display: grid; min-height: 76px; place-items: center; align-content: center; gap: 3px; border: 0; border-radius: 15px; background: #fff; color: var(--muted); }.calendar-day strong { color: var(--ink); font-size: 17px; }.calendar-day small, .calendar-day span { font-size: 10px; font-weight: 850; }.calendar-day span { color: var(--coral-deep); }.calendar-day.active { background: var(--coral); color: #fff; }.calendar-day.active strong, .calendar-day.active span { color: #fff; }.calendar-day:not([data-race-id]) { cursor: default; }
+.registration-calendar { margin: 18px 0 16px; border: 1px solid #f0dfd1; border-radius: 24px; background: linear-gradient(135deg, #fff8ee, #fffdf9); padding: 17px; }.calendar-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 14px; }.calendar-head span { color: var(--coral-deep); font-size: 12px; font-weight: 900; }.calendar-head h2 { margin: 4px 0 0; font-size: 20px; letter-spacing: -.04em; }.calendar-head small { border-radius: 999px; background: var(--coral-soft); padding: 7px 10px; color: var(--coral-deep); font-weight: 900; }.calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }.calendar-day { display: grid; min-height: 76px; place-items: center; align-content: center; gap: 3px; border: 0; border-radius: 15px; background: #fff; color: var(--muted); }.calendar-day strong { color: var(--ink); font-size: 17px; }.calendar-day small, .calendar-day span { font-size: 10px; font-weight: 850; }.calendar-day span { color: var(--coral-deep); }.calendar-day.active { background: var(--coral-strong); color: #fff; }.calendar-day.active strong, .calendar-day.active span { color: #fff; }.calendar-day:not([data-calendar-date]) { cursor: default; }
 .ghost-btn { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }.race-card .list-action-wrap .mini-btn:not(.strong) { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }
 @media (prefers-color-scheme: dark) { :root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }.hero-race { border-color: #f0cdb9; }.hero-status, .weekly-date { background: #ffe5d6; }.hero-metrics { border-color: #f0d8ca; }.alert-modal, .permission-steps > div { background: var(--surface); }.modal-backdrop { background: rgba(67, 46, 31, .38); } }
 @media (max-width: 420px) { .registration-calendar { padding: 14px 10px; }.calendar-days { gap: 4px; }.calendar-day { min-height: 66px; border-radius: 12px; }.calendar-day strong { font-size: 15px; }.calendar-day small, .calendar-day span { font-size: 9px; } }
@@ -2524,7 +2524,7 @@ select:focus-visible {
 }
 
 .primary-btn {
-  background: var(--coral);
+  background: var(--coral-strong);
   color: #fff;
   box-shadow: none;
 }
@@ -2826,8 +2826,8 @@ select:focus-visible {
 }
 
 .race-card .list-action-wrap .strong {
-  border-color: var(--coral);
-  background: var(--coral);
+  border-color: var(--coral-strong);
+  background: var(--coral-strong);
   color: #fff;
 }
 
@@ -3293,4 +3293,4 @@ select:focus-visible {
   .hero-race { border-color: #f0cdb9; }.hero-status, .weekly-date { background: #ffe5d6; }.hero-metrics { border-color: #f0d8ca; }.alert-modal, .permission-steps > div { background: var(--surface); }.modal-backdrop { background: rgba(67, 46, 31, .38); }
 }
 
-:root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
+:root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --coral-strong: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
