@@ -1,11 +1,12 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.7.0";
-const ASSET_VERSION = "20260712-5";
+const APP_VERSION = "0.7.1";
+const ASSET_VERSION = "20260712-6";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
+const KST_DATE_KEY = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" });
 
 const state = {
   selectedRaceId: null,
@@ -509,6 +510,24 @@ function heroAlertButtonHtml(race) {
   return `<button class="primary-btn" type="button" data-open-alert="${escapeHtml(race.id)}" aria-label="${escapeHtml(race.name)} 알림 설정">접수 알림 켜기</button>`;
 }
 
+function renderRegistrationCalendar() {
+  const target = document.getElementById("registrationCalendar");
+  if (!target) return;
+  const today = new Date();
+  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const days = Array.from({ length: 7 }, (_, index) => new Date(start.getTime() + index * 86_400_000));
+  const races = getRaces();
+  target.innerHTML = `
+    <div class="calendar-head"><div><span>이번 주 접수</span><h2>날짜부터 확인하세요.</h2></div><small>대회 선택</small></div>
+    <div class="calendar-days">${days.map((day) => {
+      const key = KST_DATE_KEY.format(day);
+      const dayRaces = races.filter((race) => KST_DATE_KEY.format(new Date(race.registrationOpenAt || race.registrationCloseAt || 0)) === key);
+      const first = dayRaces[0];
+      const isToday = day.getTime() === start.getTime();
+      return `<button type="button" class="calendar-day${isToday ? " active" : ""}"${first ? ` data-race-id="${escapeHtml(first.id)}"` : ""} aria-label="${day.getMonth() + 1}월 ${day.getDate()}일${dayRaces.length ? `, 접수 일정 ${dayRaces.length}개` : ", 접수 일정 없음"}"><small>${day.toLocaleDateString("ko-KR", { weekday: "short" })}</small><strong>${day.getDate()}</strong><span>${dayRaces.length ? `접수 ${dayRaces.length}` : "·"}</span></button>`;
+    }).join("")}</div>`;
+}
+
 function renderHomeHero() {
   const target = document.getElementById("homeHero");
   if (!target) return;
@@ -834,6 +853,7 @@ function applyFilters() {
   if (window.matchMedia("(max-width: 520px)").matches) setMobileFiltersExpanded(false);
   renderRaceList();
   renderCategoryTabs();
+  renderRegistrationCalendar();
   renderHomeHero();
   showToast("선택한 조건으로 대회를 찾았어요.");
 }
@@ -1472,6 +1492,7 @@ function render() {
   const searchInput = document.getElementById("searchInput");
   if (searchInput) searchInput.value = state.draftQuery;
   renderCategoryTabs();
+  renderRegistrationCalendar();
   renderHomeHero();
   renderWeeklyList();
   renderRaceList();

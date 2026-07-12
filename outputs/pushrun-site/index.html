@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#f7f8f6" />
+    <meta name="theme-color" content="#fff7ed" />
     <meta
       name="description"
       content="러닝 대회 접수 예정과 현재 접수중인 대회를 빠르게 확인하는 러닝봄."
@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260712-5" />
+    <link rel="stylesheet" href="./styles.css?v=20260712-6" />
   </head>
   <body>
     <div class="app-shell">
@@ -45,6 +45,8 @@
             <div class="category-tabs" id="categoryTabs" aria-label="접수 상태"></div>
             <div class="chip-row distance-chips" id="distanceFilters" aria-label="거리"></div>
           </section>
+
+          <section class="registration-calendar" id="registrationCalendar" aria-label="이번 주 접수 캘린더"></section>
 
           <button class="permission-entry" id="permissionEntry" type="button" data-view="settings">
             <span>알림 준비</span><strong>브라우저 권한을 확인하면 접수 시간을 놓치지 않아요.</strong><i aria-hidden="true">›</i>
@@ -237,7 +239,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./alerts-core.js?v=20260712-5"></script>
-    <script src="./app.js?v=20260712-5"></script>
+    <script src="./alerts-core.js?v=20260712-6"></script>
+    <script src="./app.js?v=20260712-6"></script>
   </body>
 </html>
