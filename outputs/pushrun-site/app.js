@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.9.3";
-const ASSET_VERSION = "20260712-11";
+const APP_VERSION = "0.9.4";
+const ASSET_VERSION = "20260712-12";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
@@ -903,8 +903,15 @@ function raceCardHtml(race) {
   const ticketInfo = ticketDdayInfo(race);
   const safeId = escapeHtml(race.id);
   const ticketDday = formatDday(ticketInfo.at);
+  const tone = isAcceptingNow(race)
+    ? " tone-open"
+    : race.registrationStatus === "scheduled" && hasConfirmedRegistrationOpenTime(race)
+      ? " tone-scheduled"
+      : race.registrationStatus === "scheduled"
+        ? " tone-unconfirmed"
+        : " tone-neutral";
   return `
-    <article class="race-card list-card${selected}" data-race-id="${safeId}">
+    <article class="race-card list-card${selected}${tone}" data-race-id="${safeId}">
       <div class="list-card-grid">
         <div class="list-date">
           <span>${escapeHtml(ticketInfo.label)}</span>

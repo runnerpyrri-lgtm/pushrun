@@ -3513,3 +3513,201 @@ body {
 .hero-enabled {
   color: var(--coral-deep);
 }
+
+/* 러닝봄 홈을 위한 Dawn Track 색상 체계. 카드 색은 화면 순서가 아니라 접수 상태를 뜻한다. */
+:root {
+  color-scheme: light;
+  --bg: #eef7ff;
+  --surface: #ffffff;
+  --surface-2: #e8f3fc;
+  --ink: #172c43;
+  --muted: #62758a;
+  --line: #d3e2ef;
+  --coral: #ef6b5b;
+  --coral-deep: #b9473c;
+  --coral-soft: #fff0ed;
+  --coral-strong: #173f5f;
+  --lime: #d9f46f;
+  --mint: #33c7a5;
+  --amber: #ffc85a;
+  --shadow: 0 16px 36px rgba(32, 82, 122, 0.11);
+}
+
+body {
+  background:
+    radial-gradient(circle at 100% -6%, rgba(217, 244, 111, 0.58), transparent 30%),
+    radial-gradient(circle at -8% 26%, rgba(110, 184, 255, 0.19), transparent 28%),
+    linear-gradient(180deg, #f8fcff 0%, var(--bg) 56%, #e7f2fb 100%);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline-color: color-mix(in srgb, var(--coral) 62%, transparent);
+}
+
+.brand-mark,
+.mini-logo {
+  border-color: #badff0;
+  background: #e4f4ff;
+  color: var(--coral-strong);
+}
+
+.brand-title i,
+.hero-accent {
+  background: var(--lime);
+}
+
+.nav-pill.active,
+.segment.active,
+.mobile-tab.active,
+.filter-chip.active,
+.quick-filters .category-tab.active,
+.quick-filters .filter-chip.active {
+  background: var(--coral-strong);
+  color: var(--lime);
+}
+
+.registration-calendar {
+  border-color: #cfe2ef;
+  background: linear-gradient(135deg, #f4fbff, #ffffff 72%);
+}
+
+.calendar-title span,
+.calendar-nav {
+  color: var(--coral-strong);
+}
+
+.calendar-nav {
+  border-color: #cfe2ef;
+}
+
+.calendar-nav:hover,
+.calendar-cell.today {
+  background: #e4f4ff;
+}
+
+.calendar-cell.has-races {
+  background: linear-gradient(180deg, #ffffff, #edf8ff);
+  box-shadow: 0 4px 12px rgba(47, 118, 170, 0.13);
+}
+
+.calendar-cell .cal-dot,
+.calendar-cell.active {
+  background: var(--coral-strong);
+}
+
+.calendar-cell.today {
+  outline-color: #5baaf1;
+}
+
+.hero-race {
+  border-color: #bddff1;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(217, 244, 111, 0.65), transparent 34%),
+    linear-gradient(135deg, #eef9ff, #dceffc);
+}
+
+.hero-status,
+.weekly-date {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.hero-metrics {
+  border-color: #c9e2f0;
+}
+
+.primary-btn,
+.race-card .list-action-wrap .strong {
+  border-color: var(--coral-strong);
+  background: var(--coral-strong);
+  color: #ffffff;
+}
+
+.primary-btn:hover,
+.race-card .list-action-wrap .strong:hover {
+  background: #245b83;
+}
+
+.ghost-btn,
+.race-card .list-action-wrap .mini-btn:not(.strong) {
+  border-color: #c8ddea;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.course-chips span,
+.registration-window-row span {
+  background: #eaf9ef;
+  color: #23745f;
+}
+
+.race-card,
+.alert-card,
+.settings-panel {
+  box-shadow: 0 9px 24px rgba(32, 82, 122, 0.07);
+}
+
+.race-card.list-card {
+  --card-accent: #33c7a5;
+  --card-tint: #f0fcf8;
+  --card-line: #bfe8dc;
+  overflow: hidden;
+  border-width: 1px;
+  border-left-width: 1px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, var(--card-tint) 156%);
+}
+
+.race-card.list-card.tone-open {
+  --card-accent: #ef6b5b;
+  --card-tint: #fff5f2;
+  --card-line: #f2c7bf;
+}
+
+.race-card.list-card.tone-scheduled {
+  --card-accent: #5baaf1;
+  --card-tint: #f2f9ff;
+  --card-line: #c3e0f5;
+}
+
+.race-card.list-card.tone-unconfirmed {
+  --card-accent: #e6a62d;
+  --card-tint: #fff9eb;
+  --card-line: #f0d291;
+}
+
+.race-card.list-card.tone-neutral {
+  --card-accent: #33c7a5;
+  --card-tint: #f0fcf8;
+  --card-line: #bfe8dc;
+}
+
+.race-list-list .race-card.list-card .list-date {
+  border-radius: 15px;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--card-accent) 86%, #ffffff), var(--card-accent));
+  color: #ffffff;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.race-card .list-date span,
+.race-card .list-date strong {
+  color: inherit;
+}
+
+.race-card .list-action-wrap .mini-btn {
+  min-height: 50px;
+}
+
+.status-pill.open,
+.chip.highlight,
+.focus-enabled,
+.hero-enabled {
+  color: var(--coral-deep);
+}
+
+.status-pill.scheduled {
+  color: #317bbf;
+}
