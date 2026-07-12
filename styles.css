@@ -817,7 +817,7 @@ p {
 
 .list-card-grid {
   display: grid;
-  grid-template-columns: 68px minmax(0, 1fr) 54px;
+  grid-template-columns: 92px minmax(0, 1fr) 54px;
   grid-template-rows: auto auto;
   gap: 0 10px;
   align-items: stretch;
@@ -840,7 +840,7 @@ p {
 
 .list-date strong {
   color: #fff;
-  font-size: clamp(1.38rem, 4vw, 1.68rem);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
   line-height: 1;
   white-space: nowrap;
 }
@@ -1002,6 +1002,10 @@ p {
   gap: 5px;
   align-items: baseline;
   min-width: 0;
+}
+
+.registration-window-row.compact {
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .registration-window-row span {
@@ -1774,7 +1778,7 @@ fieldset.modal-section legend {
   }
 
   .list-card-grid {
-    grid-template-columns: 68px minmax(0, 1fr) 54px;
+    grid-template-columns: 92px minmax(0, 1fr) 54px;
     align-items: stretch;
   }
 
@@ -1852,15 +1856,10 @@ fieldset.modal-section legend {
   }
 
   .distance-panel .chip-row {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-
-  .distance-panel .chip-row::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .filter-head {
@@ -1947,11 +1946,9 @@ fieldset.modal-section legend {
 
   .filter-chip {
     min-height: 44px;
-    flex: 0 0 auto;
-    min-width: 78px;
-    padding: 0 10px;
+    min-width: 0;
+    padding: 0 4px;
     font-size: 0.92rem;
-    scroll-snap-align: start;
   }
 
   .alert-card,

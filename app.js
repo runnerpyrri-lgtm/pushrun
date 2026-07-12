@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.15";
-const ASSET_VERSION = "20260712-2";
+const APP_VERSION = "0.6.16";
+const ASSET_VERSION = "20260712-3";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
@@ -219,26 +219,48 @@ function formatRegistrationTime(value) {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-function registrationScheduleHtml(race) {
+function registrationScheduleRows(race) {
   const windows = Array.isArray(race.registrationWindows) ? race.registrationWindows : [];
-  const rows = windows.length
-    ? windows.map((window) => ({
+  const hasSeparateSchedules = windows.length > 1 && new Set(
+    windows.map((window) => `${window.opensAt}|${window.timeConfirmed !== false}`)
+  ).size > 1;
+
+  if (hasSeparateSchedules) {
+    return {
+      separate: true,
+      rows: windows.map((window) => ({
         label: window.label || "종목",
         at: window.opensAt,
         confirmed: window.timeConfirmed !== false
       }))
-    : [{
-        label: "전체",
-        at: race.registrationOpenAt,
-        confirmed: hasConfirmedRegistrationOpenTime(race)
-      }];
+    };
+  }
+
+  const commonWindow = windows[0];
+  return {
+    separate: false,
+    rows: [{
+      at: race.registrationOpenAt || commonWindow?.opensAt || null,
+      confirmed: race.registrationOpenAt
+        ? hasConfirmedRegistrationOpenTime(race)
+        : commonWindow?.timeConfirmed !== false
+    }]
+  };
+}
+
+function registrationScheduleHtml(race) {
+  const { separate, rows } = registrationScheduleRows(race);
 
   return `<div class="registration-schedule" aria-label="접수 일정">${rows.map((row) => {
+    const rowClass = `registration-window-row${separate ? "" : " compact"}`;
     if (!row.at) {
-      return `<div class="registration-window-row"><span>${escapeHtml(row.label)}</span><strong>일정 확인중</strong></div>`;
+      return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>일정 확인중</strong></div>`;
+    }
+    if (isAcceptingNow(race) && new Date(row.at).getTime() <= Date.now()) {
+      return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>진행중</strong></div>`;
     }
     const timeLabel = row.confirmed ? formatRegistrationTime(row.at) : "시간 미확인";
-    return `<div class="registration-window-row"><span>${escapeHtml(row.label)}</span><strong>${escapeHtml(formatRegistrationDate(row.at))}</strong><em>${escapeHtml(timeLabel)}</em></div>`;
+    return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>${escapeHtml(formatRegistrationDate(row.at))}</strong><em>${escapeHtml(timeLabel)}</em></div>`;
   }).join("")}</div>`;
 }
 
