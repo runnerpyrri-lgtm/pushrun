@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.6.14";
-const ASSET_VERSION = "20260712-1";
+const APP_VERSION = "0.6.15";
+const ASSET_VERSION = "20260712-2";
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
@@ -10,6 +10,7 @@ const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
 const state = {
   selectedRaceId: null,
   modalRaceId: null,
+  modalTargetKeys: [],
   distanceFilter: "all",
   regionFilter: "all",
   query: "",
@@ -213,14 +214,32 @@ function hasConfirmedRegistrationOpenTime(race) {
   return !((date.getHours() === 0 && date.getMinutes() === 0) || (date.getHours() === 23 && date.getMinutes() === 59));
 }
 
-function formatRegistrationStart(race) {
+function formatRegistrationTime(value) {
+  const date = new Date(value);
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function registrationScheduleHtml(race) {
   const windows = Array.isArray(race.registrationWindows) ? race.registrationWindows : [];
-  if (windows.length) {
-    return windows.map((window) => `${window.label || "접수"} ${formatRegistrationPoint(window.opensAt)}`).join(" · ");
-  }
-  if (!race.registrationOpenAt) return "확인중";
-  if (!hasConfirmedRegistrationOpenTime(race)) return `${formatRegistrationDate(race.registrationOpenAt)} 시간 미확인`;
-  return formatRegistrationPoint(race.registrationOpenAt);
+  const rows = windows.length
+    ? windows.map((window) => ({
+        label: window.label || "종목",
+        at: window.opensAt,
+        confirmed: window.timeConfirmed !== false
+      }))
+    : [{
+        label: "전체",
+        at: race.registrationOpenAt,
+        confirmed: hasConfirmedRegistrationOpenTime(race)
+      }];
+
+  return `<div class="registration-schedule" aria-label="접수 일정">${rows.map((row) => {
+    if (!row.at) {
+      return `<div class="registration-window-row"><span>${escapeHtml(row.label)}</span><strong>일정 확인중</strong></div>`;
+    }
+    const timeLabel = row.confirmed ? formatRegistrationTime(row.at) : "시간 미확인";
+    return `<div class="registration-window-row"><span>${escapeHtml(row.label)}</span><strong>${escapeHtml(formatRegistrationDate(row.at))}</strong><em>${escapeHtml(timeLabel)}</em></div>`;
+  }).join("")}</div>`;
 }
 
 function formatRegistrationRange(race) {
@@ -254,6 +273,22 @@ function canUseRegistrationTimer(race) {
 // 알림 대상 계산은 순수 로직이라 alerts-core.js 로 옮겼다 (Node 테스트 공유).
 function getAlertTarget(race) {
   return window.PushRunAlertsCore.getAlertTarget(race, Date.now());
+}
+
+function getAlertTargets(race) {
+  return window.PushRunAlertsCore.getAlertTargets(race, Date.now());
+}
+
+function getTargetByKey(race, targetKey) {
+  return window.PushRunAlertsCore.getAlertTarget(race, Date.now(), targetKey);
+}
+
+function subscriptionKey(raceId, target) {
+  return window.PushRunAlertsCore.subscriptionStorageKey(raceId, target);
+}
+
+function subscriptionsForRace(raceId) {
+  return Object.entries(state.alerts).filter(([, subscription]) => subscription?.enabled && subscription.raceId === raceId);
 }
 
 function canUseAlert(race) {
@@ -406,8 +441,8 @@ function filteredRaces() {
   });
 }
 
-function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
-  const target = getAlertTarget(race);
+function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS, selectedTarget = null) {
+  const target = selectedTarget || getAlertTarget(race);
   if (!target) return [];
   const targetAt = new Date(target.at);
   // 발사 시각 계산·만료 필터는 alerts-core.js 의 순수 함수를 쓰고, 문구만 여기서 채운다.
@@ -419,11 +454,11 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
       let body = `${formatRegistrationPoint(target.at)} ${target.label} 예정입니다.`;
 
       if (target.type === "registration_open") {
-        title = offset === 0 ? `[${race.name}] 접수 시작!` : `[${race.name}] 접수 시작 ${offset}분 전`;
+        title = offset === 0 ? `[${race.name}] ${target.label}!` : `[${race.name}] ${target.label} ${offset}분 전`;
         body =
           offset === 0
-            ? "지금 접수가 열렸어요. 대회 사이트에서 바로 확인하세요."
-            : `${pad(targetAt.getHours())}:${pad(targetAt.getMinutes())} 접수 시작. 로그인과 결제 정보를 준비하세요.`;
+            ? `${target.ticketLabel || "접수"}가 열렸어요. 대회 사이트에서 바로 확인하세요.`
+            : `${pad(targetAt.getHours())}:${pad(targetAt.getMinutes())} ${target.label}. 로그인과 결제 정보를 준비하세요.`;
       }
 
       if (target.type === "race_day") {
@@ -438,6 +473,7 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS) {
         body,
         raceId: race.id,
         targetType: target.type,
+        targetKey: target.key,
         targetAt: target.at,
         targetLabel: target.label
       };
@@ -496,17 +532,22 @@ function trapModalFocus(event, modal) {
 
 function openAlertModal(raceId) {
   const race = getRaces().find((item) => item.id === raceId);
-  if (!race || !canUseAlert(race)) {
+  const targets = race ? getAlertTargets(race) : [];
+  if (!race || !targets.length) {
     showToast("지금은 알림을 켤 시간이 없어요. 대회 사이트에서 확인해 주세요.");
     return;
   }
   state.modalRaceId = raceId;
+  const savedTargetKeys = subscriptionsForRace(raceId).map(([, subscription]) => subscription.targetKey).filter(Boolean);
+  state.modalTargetKeys = targets.filter((target) => savedTargetKeys.includes(target.key)).map((target) => target.key);
+  if (!state.modalTargetKeys.length) state.modalTargetKeys = [targets[0].key];
   renderModal();
   openModal("alertModal");
 }
 
 function closeAlertModal() {
   closeModal("alertModal");
+  state.modalTargetKeys = [];
 }
 
 function openPermissionGuide() {
@@ -641,10 +682,9 @@ function renderRaceList() {
 
 function raceCardHtml(race) {
   const selected = state.selectedRaceId === race.id ? " selected" : "";
-  const enabled = state.alerts[race.id]?.enabled;
+  const enabled = subscriptionsForRace(race.id).length > 0;
   const ticketInfo = ticketDdayInfo(race);
   const safeId = escapeHtml(race.id);
-  const startLabel = formatRegistrationStart(race);
   const raceDateLabel = formatShortDate(race.raceDate);
   const ticketDday = formatDday(ticketInfo.at);
   const actionButtons = `<div class="list-action-row ticket-actions">${registrationButtonHtml(race)}${alertButtonHtml(race)}</div>`;
@@ -663,12 +703,12 @@ function raceCardHtml(race) {
           ${courseChipsHtml(race)}
         </div>
         <div class="registration-strip">
-          <div>
-            <span>접수</span>
-            <strong>${escapeHtml(startLabel)}</strong>
+          <div class="registration-schedule-row">
+            <span class="registration-label">접수</span>
+            ${registrationScheduleHtml(race)}
           </div>
-          <div>
-            <span>대회</span>
+          <div class="race-schedule-row">
+            <span class="registration-label">대회</span>
             <strong>${escapeHtml(raceDateLabel)}</strong>
           </div>
         </div>
@@ -676,7 +716,7 @@ function raceCardHtml(race) {
           ${actionButtons}
         </div>
       </div>
-      ${enabled ? `<p class="focus-enabled">알림이 켜져 있어요.</p>` : ""}
+      ${enabled ? `<p class="focus-enabled">종목 알림 ${subscriptionsForRace(race.id).length}개가 켜져 있어요.</p>` : ""}
     </article>
   `;
 }
@@ -685,7 +725,8 @@ function raceCardHtml(race) {
 function renderModalCountdown() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
-  const target = getAlertTarget(race);
+  const targets = getAlertTargets(race);
+  const target = targets.find((item) => state.modalTargetKeys.includes(item.key)) || targets[0];
   if (!target) return;
   document.getElementById("modalCountdown").innerHTML = `
     <span>${escapeHtml(target.label)}</span>
@@ -697,13 +738,30 @@ function renderModalCountdown() {
 function renderModal() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
-  const target = getAlertTarget(race);
+  const targets = getAlertTargets(race);
+  const target = targets.find((item) => state.modalTargetKeys.includes(item.key)) || targets[0];
   if (!target) return;
-  const subscription = state.alerts[race.id];
+  const selectedSubscriptions = targets
+    .filter((item) => state.modalTargetKeys.includes(item.key))
+    .map((item) => state.alerts[subscriptionKey(race.id, item)])
+    .filter(Boolean);
+  const subscription = selectedSubscriptions[0];
   const selectedOffsets = subscription?.offsets || DEFAULT_OFFSETS;
   document.getElementById("modalRaceName").textContent = race.name;
-  document.getElementById("modalRaceMeta").textContent = `${target.label} ${formatDateTime(target.at)} · ${race.region} ${race.city}`;
+  document.getElementById("modalRaceMeta").textContent = state.modalTargetKeys.length > 1
+    ? `${state.modalTargetKeys.length}개 종목 접수 알림 · ${race.region} ${race.city}`
+    : `${target.label} ${formatDateTime(target.at)} · ${race.region} ${race.city}`;
   renderModalCountdown();
+  document.getElementById("modalTargetGrid").innerHTML = targets.map((item) => `
+    <label>
+      <input type="checkbox" value="${escapeHtml(item.key)}" ${state.modalTargetKeys.includes(item.key) ? "checked" : ""} />
+      <span>
+        <strong>${escapeHtml(item.ticketLabel || item.label)}</strong>
+        <small>${escapeHtml(formatDateTime(item.at))}</small>
+      </span>
+    </label>
+  `).join("");
+  document.getElementById("modalTargetTitle").textContent = targets.length > 1 ? "알림 받을 종목" : "알림 대상";
   document.getElementById("modalPresetGrid").innerHTML = DEFAULT_OFFSETS.map(
     (offset) => `
       <label>
@@ -713,28 +771,34 @@ function renderModal() {
     `
   ).join("");
   const activeLabels = selectedOffsets.map((offset) => offset === 0 ? "정각" : `${offset}분 전`).join(", ");
-  document.getElementById("modalAlertHint").textContent = `${activeLabels}에 접수 시간을 알려드려요.`;
-  document.getElementById("modalCancelAlertButton").hidden = !subscription?.enabled;
+  document.getElementById("modalAlertHint").textContent = `${state.modalTargetKeys.length || 0}개 종목에 ${activeLabels} 알림을 함께 적용해요.`;
+  const savedCount = subscriptionsForRace(race.id).length;
+  const cancelButton = document.getElementById("modalCancelAlertButton");
+  cancelButton.hidden = savedCount === 0;
+  cancelButton.textContent = "전체 끄기";
+  cancelButton.setAttribute("aria-label", `${race.name} 알림 ${savedCount}개 모두 끄기`);
 }
 
 function renderAlerts() {
   const list = document.getElementById("alertList");
   const racesById = Object.fromEntries(getRaces().map((race) => [race.id, race]));
-  const active = Object.values(state.alerts).filter((alert) => alert.enabled && alert.targetType !== "registration_close");
+  const active = Object.entries(state.alerts)
+    .filter(([, alert]) => alert.enabled && alert.targetType !== "registration_close")
+    .sort((a, b) => new Date(a[1].targetAt).getTime() - new Date(b[1].targetAt).getTime());
   if (!active.length) {
     list.innerHTML = `<div class="alert-card"><h3>켜진 알림이 없어요.</h3><p class="meta-line">대회 카드의 알림 설정을 눌러 추가하세요.</p></div>`;
     return;
   }
   list.innerHTML = active
-    .map((subscription) => {
+    .map(([subscriptionId, subscription]) => {
       const race = racesById[subscription.raceId];
       if (!race) return "";
       const targetLabel = subscription.targetLabel || "접수 시작";
       const targetAt = subscription.targetAt || race.registrationOpenAt || race.raceDate;
-      const visibleOffsets = (subscription.scheduledAlerts?.length
+      const visibleOffsets = [...(subscription.scheduledAlerts?.length
         ? subscription.scheduledAlerts.map((alert) => alert.offset)
         : subscription.offsets
-      ).sort((a, b) => b - a);
+      )].sort((a, b) => b - a);
       return `
         <div class="alert-card">
           <div class="alert-head">
@@ -749,7 +813,7 @@ function renderAlerts() {
           </div>
           <div class="detail-actions" style="margin-top:14px">
             <button class="ghost-btn" type="button" data-focus-race="${escapeHtml(race.id)}">상세</button>
-            <button class="danger-btn" type="button" data-cancel-race="${escapeHtml(race.id)}">알림 끄기</button>
+            <button class="danger-btn" type="button" data-cancel-subscription="${escapeHtml(subscriptionId)}" aria-label="${escapeHtml(race.name)} ${escapeHtml(targetLabel)} 알림 끄기">알림 끄기</button>
           </div>
         </div>
       `;
@@ -811,7 +875,7 @@ async function fireWebAlert(alert) {
   if ("Notification" in window && Notification.permission === "granted") {
     const options = {
       body: alert.body,
-      tag: `${alert.raceId}-${alert.targetType || "alert"}-${alert.offset}`,
+      tag: `${alert.raceId}-${alert.targetKey || alert.targetType || "alert"}-${alert.offset}`,
       icon: "./icon.svg",
       data: { url: "./" }
     };
@@ -882,7 +946,7 @@ function reconcileStoredAlerts() {
   if (!state.races.length) return; // 데이터 로드 실패 시에는 판단 근거가 없으므로 건드리지 않는다.
   const result = window.PushRunAlertsCore.reconcileSubscriptions(state.alerts, state.races, {
     now: Date.now(),
-    buildScheduledAlerts: (race, offsets) => buildRegistrationAlerts(race, offsets)
+    buildScheduledAlerts: (race, offsets, target) => buildRegistrationAlerts(race, offsets, target)
   });
   state.alerts = result.alerts;
   if (result.updated.length || result.dropped.length || result.expired.length) {
@@ -893,13 +957,13 @@ function reconcileStoredAlerts() {
 async function enableAlertFromModal() {
   const race = getRaces().find((item) => item.id === state.modalRaceId);
   if (!race) return;
-  const target = getAlertTarget(race);
-  if (!target) {
-    showToast("지금은 알림을 켤 시간이 없어요.");
-    return;
-  }
   if (race.status === "cancelled") {
     showToast("취소된 대회는 알림을 켤 수 없어요.");
+    return;
+  }
+  const targets = state.modalTargetKeys.map((targetKey) => getTargetByKey(race, targetKey)).filter(Boolean);
+  if (!targets.length) {
+    showToast("알림 받을 종목을 하나 이상 선택하세요.");
     return;
   }
   const offsets = getSelectedModalOffsets();
@@ -914,25 +978,29 @@ async function enableAlertFromModal() {
     showToast("브라우저 알림 권한을 확인하지 못했어요.");
     return;
   }
-  const scheduledAlerts = buildRegistrationAlerts(race, offsets);
-  if (!scheduledAlerts.length) {
+  const scheduledByTarget = targets.map((target) => ({ target, scheduledAlerts: buildRegistrationAlerts(race, offsets, target) }));
+  if (scheduledByTarget.some((item) => !item.scheduledAlerts.length)) {
     showToast("지금은 알림을 켤 시간이 없어요.");
     return;
   }
-  const previous = state.alerts[race.id];
-  state.alerts[race.id] = {
-    enabled: true,
-    raceId: race.id,
-    targetType: target.type,
-    targetAt: target.at,
-    targetLabel: target.label,
-    offsets,
-    scheduledAlerts,
-    createdAt: new Date().toISOString()
-  };
+  const previousAlerts = state.alerts;
+  const nextAlerts = Object.fromEntries(Object.entries(state.alerts).filter(([, subscription]) => subscription?.raceId !== race.id));
+  for (const { target, scheduledAlerts } of scheduledByTarget) {
+    nextAlerts[subscriptionKey(race.id, target)] = {
+      enabled: true,
+      raceId: race.id,
+      targetType: target.type,
+      targetKey: target.key,
+      targetAt: target.at,
+      targetLabel: target.label,
+      offsets,
+      scheduledAlerts,
+      createdAt: new Date().toISOString()
+    };
+  }
+  state.alerts = nextAlerts;
   if (!saveJson(ALERT_STORAGE_KEY, state.alerts)) {
-    if (previous) state.alerts[race.id] = previous;
-    else delete state.alerts[race.id];
+    state.alerts = previousAlerts;
     showToast("알림을 기기에 저장하지 못했어요. 브라우저 저장 설정을 확인해주세요.");
     return;
   }
@@ -942,23 +1010,40 @@ async function enableAlertFromModal() {
   Array.from(document.querySelectorAll("[data-open-alert]"))
     .find((button) => button.dataset.openAlert === race.id)
     ?.focus();
-  showToast(permission === "granted" ? "알림을 켰어요." : "알림은 저장했지만 브라우저 권한이 꺼져 있어요.");
+  const savedMessage = targets.length > 1 ? `${targets.length}개 종목 알림을 켰어요.` : `${targets[0].ticketLabel || "접수"} 알림을 켰어요.`;
+  showToast(permission === "granted" ? savedMessage : `${savedMessage} 브라우저 권한은 꺼져 있어요.`);
 }
 
-function cancelAlert(raceId) {
-  if (state.alerts[raceId]) {
-    const previous = state.alerts[raceId];
-    delete state.alerts[raceId];
+function cancelAlert(subscriptionId) {
+  if (state.alerts[subscriptionId]) {
+    const previous = state.alerts[subscriptionId];
+    delete state.alerts[subscriptionId];
     if (!saveJson(ALERT_STORAGE_KEY, state.alerts)) {
-      state.alerts[raceId] = previous;
+      state.alerts[subscriptionId] = previous;
       showToast("알림 변경을 기기에 저장하지 못했어요.");
       return;
     }
     scheduleAllBrowserTimers();
     render();
-    if (state.modalRaceId === raceId) renderModal();
+    if (state.modalRaceId === previous.raceId) renderModal();
     showToast("알림을 껐어요.");
   }
+}
+
+function cancelAlertsForRace(raceId) {
+  const entries = subscriptionsForRace(raceId);
+  if (!entries.length) return;
+  const previousAlerts = state.alerts;
+  state.alerts = Object.fromEntries(Object.entries(state.alerts).filter(([, subscription]) => subscription?.raceId !== raceId));
+  if (!saveJson(ALERT_STORAGE_KEY, state.alerts)) {
+    state.alerts = previousAlerts;
+    showToast("알림 변경을 기기에 저장하지 못했어요.");
+    return;
+  }
+  scheduleAllBrowserTimers();
+  closeAlertModal();
+  render();
+  showToast(`이 대회의 알림 ${entries.length}개를 껐어요.`);
 }
 
 async function refreshRaceData() {
@@ -1048,9 +1133,9 @@ function bindEvents() {
       return;
     }
 
-    const cancelButton = event.target.closest("[data-cancel-race]");
+    const cancelButton = event.target.closest("[data-cancel-subscription]");
     if (cancelButton) {
-      cancelAlert(cancelButton.dataset.cancelRace);
+      cancelAlert(cancelButton.dataset.cancelSubscription);
       return;
     }
 
@@ -1115,7 +1200,19 @@ function bindEvents() {
     if (event.target.id === "alertModal") closeAlertModal();
   });
   document.getElementById("modalSaveButton").addEventListener("click", enableAlertFromModal);
-  document.getElementById("modalCancelAlertButton").addEventListener("click", () => cancelAlert(state.modalRaceId));
+  document.getElementById("modalCancelAlertButton").addEventListener("click", () => cancelAlertsForRace(state.modalRaceId));
+  document.getElementById("modalTargetGrid").addEventListener("change", (event) => {
+    const focusKey = event.target.value;
+    state.modalTargetKeys = Array.from(document.querySelectorAll("#modalTargetGrid input:checked")).map((input) => input.value);
+    const selectedOffsets = getSelectedModalOffsets();
+    renderModal();
+    if (selectedOffsets.length) {
+      document.querySelectorAll("#modalPresetGrid input").forEach((input) => {
+        input.checked = selectedOffsets.includes(Number(input.value));
+      });
+    }
+    Array.from(document.querySelectorAll("#modalTargetGrid input")).find((input) => input.value === focusKey)?.focus();
+  });
 
   document.getElementById("permissionCloseButton").addEventListener("click", closePermissionGuide);
   document.getElementById("permissionLaterButton").addEventListener("click", closePermissionGuide);

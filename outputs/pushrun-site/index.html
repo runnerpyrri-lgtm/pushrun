@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260712-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260712-2" />
   </head>
   <body>
     <div class="app-shell">
@@ -144,6 +144,10 @@
         <h2 id="modalRaceName">알림 설정</h2>
         <p class="meta-line" id="modalRaceMeta"></p>
         <div class="modal-countdown" id="modalCountdown">--:--:--</div>
+        <fieldset class="modal-section target-section">
+          <legend id="modalTargetTitle">알림 받을 종목</legend>
+          <div class="target-grid" id="modalTargetGrid"></div>
+        </fieldset>
         <div class="modal-section">
           <strong>알림 받을 시간</strong>
           <div class="preset-grid" id="modalPresetGrid"></div>
@@ -205,7 +209,7 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./alerts-core.js?v=20260712-1"></script>
-    <script src="./app.js?v=20260712-1"></script>
+    <script src="./alerts-core.js?v=20260712-2"></script>
+    <script src="./app.js?v=20260712-2"></script>
   </body>
 </html>
