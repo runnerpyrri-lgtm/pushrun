@@ -43,3 +43,23 @@ test("월·연도 경계 날짜도 KST 키로 집계한다", () => {
   assert.equal(counts.get("2026-12-31"), 1);
   assert.equal(counts.get("2027-01-01"), 1);
 });
+
+test("표시 시각과 날짜는 실행 환경 TZ와 무관하게 KST로 고정된다", () => {
+  const instant = "2026-07-10T16:30:00Z";
+  assert.equal(core.formatKstTime(instant), "01:30");
+  assert.match(core.formatKstShortDate(instant), /^7\/11\(/);
+  assert.equal(core.formatKstRegistrationPoint("2026-07-10T15:00:00Z"), "7/11(토)");
+  assert.equal(core.formatKstRegistrationPoint(instant), "7/11(토) 01:30");
+});
+
+test("KST 월 이동과 월·연도 경계 캘린더를 안정적으로 계산한다", () => {
+  assert.equal(core.currentKstMonth("2026-07-10T16:30:00Z"), "2026-07");
+  assert.equal(core.shiftCalendarMonth("2026-12", 1), "2027-01");
+  assert.deepEqual(core.calendarMonthInfo("2027-02"), {
+    year: 2027,
+    month: 2,
+    firstWeekday: 1,
+    daysInMonth: 28,
+  });
+  assert.equal(core.calendarDateKey(2027, 2, 3), "2027-02-03");
+});

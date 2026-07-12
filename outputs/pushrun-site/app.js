@@ -1,13 +1,23 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.9.5";
-const ASSET_VERSION = "20260713-13";
+const APP_VERSION = "0.9.6";
+const ASSET_VERSION = "20260713-14";
 const {
   normalizeRaceName,
   raceIdentity,
   racesForDate: calendarRacesForDate,
-  eventCountsByDate
+  eventCountsByDate,
+  formatKstDateTime: formatDateTime,
+  formatKstShortDate: formatShortDate,
+  formatKstRegistrationDate: formatRegistrationDate,
+  formatKstRegistrationPoint: formatRegistrationPoint,
+  formatKstTime: formatRegistrationTime,
+  isKstPlainDateTime,
+  currentKstMonth,
+  shiftCalendarMonth,
+  calendarMonthInfo,
+  calendarDateKey
 } = globalThis.RunningBomRaceCore;
 const DEFAULT_OFFSETS = [20, 10, 0];
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
@@ -110,7 +120,7 @@ function parseScheduleFeed(feed) {
       organizer: entry.organizer || null,
       status: isOpen ? "open" : hasUpcomingOpen ? "scheduled" : entry.status,
       registrationStatus: isOpen ? "open" : hasUpcomingOpen ? "scheduled" : entry.status || "unknown",
-      sourceStatus: isOpen ? "접수중" : hasUpcomingOpen ? "접수 예정" : statusLabel(entry.status),
+      sourceStatus: isOpen ? "접수 중" : hasUpcomingOpen ? "접수 예정" : statusLabel(entry.status),
       alertCapabilities: [
         ...(hasUpcomingOpen && openTimeConfirmed ? ["registration_time"] : []),
         ...(isOpen ? ["open_now"] : []),
@@ -120,7 +130,7 @@ function parseScheduleFeed(feed) {
       popularity: 50,
       sourceName: entry.sourceName || "마라톤온라인",
       note: `${entry.time} 출발. 접수기간은 마라톤온라인 상세 페이지 기준입니다.`,
-      registrationLabel: entry.registrationPeriodLabel || (isOpen ? "접수중" : entry.status === "closed" ? "접수 마감" : "접수 일정 준비중")
+      registrationLabel: entry.registrationPeriodLabel || (isOpen ? "접수 중" : entry.status === "closed" ? "접수 마감" : "접수 일정 준비 중")
     };
   });
 }
@@ -138,7 +148,7 @@ function normalizeFeaturedRace(race) {
     registrationOpenTimeConfirmed: openTimeConfirmed,
     courseLabel: race.courseLabel || (Array.isArray(race.distances) ? race.distances : []).join(","),
     registrationStatus: isAccepting ? "open" : hasUpcomingOpen ? "scheduled" : race.status || "unknown",
-    sourceStatus: isAccepting ? "접수중" : hasUpcomingOpen ? "접수 예정" : statusLabel(race.status),
+    sourceStatus: isAccepting ? "접수 중" : hasUpcomingOpen ? "접수 예정" : statusLabel(race.status),
     alertCapabilities: [
       ...(hasUpcomingOpen && openTimeConfirmed ? ["registration_time"] : []),
       ...(isAccepting ? ["open_now"] : []),
@@ -169,49 +179,10 @@ function mergeRaces(primary, secondary) {
   ];
 }
 
-function formatDateTime(value) {
-  return new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric",
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit"
-  }).format(new Date(value));
-}
-
-function formatWeekday(value) {
-  return new Intl.DateTimeFormat("ko-KR", { weekday: "short" }).format(new Date(value));
-}
-
-function formatShortDate(value) {
-  const date = new Date(value);
-  return `${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)})`;
-}
-
-function formatRegistrationPoint(value) {
-  const date = new Date(value);
-  const isPlainDate = (date.getHours() === 0 && date.getMinutes() === 0) || (date.getHours() === 23 && date.getMinutes() === 59);
-  const yearPrefix = date.getFullYear() === new Date().getFullYear() ? "" : `${String(date.getFullYear()).slice(2)}.`;
-  const dateLabel = `${yearPrefix}${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)})`;
-  return isPlainDate ? dateLabel : `${dateLabel} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function formatRegistrationDate(value) {
-  const date = new Date(value);
-  const yearPrefix = date.getFullYear() === new Date().getFullYear() ? "" : `${String(date.getFullYear()).slice(2)}.`;
-  return `${yearPrefix}${date.getMonth() + 1}/${date.getDate()}(${formatWeekday(value)})`;
-}
-
 function hasConfirmedRegistrationOpenTime(race) {
   if (typeof race.registrationOpenTimeConfirmed === "boolean") return race.registrationOpenTimeConfirmed;
   if (!race.registrationOpenAt) return false;
-  const date = new Date(race.registrationOpenAt);
-  return !((date.getHours() === 0 && date.getMinutes() === 0) || (date.getHours() === 23 && date.getMinutes() === 59));
-}
-
-function formatRegistrationTime(value) {
-  const date = new Date(value);
-  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return !isKstPlainDateTime(race.registrationOpenAt);
 }
 
 function registrationScheduleRows(race) {
@@ -249,7 +220,7 @@ function registrationScheduleHtml(race) {
   return `<div class="registration-schedule" aria-label="접수 일정">${rows.map((row) => {
     const rowClass = `registration-window-row${separate ? "" : " compact"}`;
     if (!row.at) {
-      return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>일정 확인중</strong></div>`;
+      return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>일정 확인 중</strong></div>`;
     }
     if (isAcceptingNow(race) && new Date(row.at).getTime() <= Date.now()) {
       return `<div class="${rowClass}">${separate ? `<span>${escapeHtml(row.label)}</span>` : ""}<strong>진행중</strong></div>`;
@@ -260,7 +231,7 @@ function registrationScheduleHtml(race) {
 }
 
 function formatRegistrationRange(race) {
-  if (!race.registrationOpenAt) return race.registrationLabel || "접수 일정 준비중";
+  if (!race.registrationOpenAt) return race.registrationLabel || "접수 일정 준비 중";
   if (race.registrationPeriodLabel) return race.registrationPeriodLabel;
   if (!race.registrationCloseAt) return formatRegistrationPoint(race.registrationOpenAt);
   return `${formatRegistrationPoint(race.registrationOpenAt)} - ${formatRegistrationPoint(race.registrationCloseAt)}`;
@@ -377,7 +348,7 @@ function ticketDdayInfo(race) {
   if (upcomingAt) return { label: "접수", at: new Date(upcomingAt).toISOString() };
   if (state.activeCategory === "open" && isAcceptingNow(race)) {
     return {
-      label: race.registrationCloseAt ? "마감" : "접수중",
+      label: race.registrationCloseAt ? "마감" : "접수 중",
       at: race.registrationCloseAt || race.raceDate
     };
   }
@@ -387,9 +358,9 @@ function ticketDdayInfo(race) {
 function getCategoryCopy() {
   return state.activeCategory === "open"
     ? {
-        title: "현재 접수중",
+        title: "현재 접수 중",
         description: "",
-        empty: "현재 접수중인 대회가 없어요."
+        empty: "현재 접수 중인 대회가 없어요."
       }
     : {
         title: "접수 예정",
@@ -407,13 +378,13 @@ function isVisibleRace(race) {
 function statusLabel(status) {
   return {
     scheduled: "접수 예정",
-    open: "접수중",
+    open: "접수 중",
     closed: "마감",
     sold_out: "매진",
     cancelled: "취소",
     postponed: "일정 확인",
     changed: "시간 변경"
-  }[status] || "확인중";
+  }[status] || "확인 중";
 }
 
 function courseTokens(race) {
@@ -477,16 +448,14 @@ function racesForSelectedDate(key) {
 function heroAlertButtonHtml(race) {
   const target = getAlertTarget(race);
   if (!target) {
-    return `<button class="primary-btn" type="button" disabled aria-disabled="true">알림 준비중</button>`;
+    return `<button class="primary-btn" type="button" disabled aria-disabled="true">알림 준비 중</button>`;
   }
   return `<button class="primary-btn" type="button" data-open-alert="${escapeHtml(race.id)}" aria-label="${escapeHtml(race.name)} 알림 설정">접수 알림 켜기</button>`;
 }
 
-// 표시 중인 달의 1일(로컬)을 돌려준다. state.calendarMonth 가 없으면 오늘이 속한 달.
+// 표시 중인 KST 달 키(YYYY-MM). state.calendarMonth 가 없으면 KST 오늘이 속한 달.
 function calendarMonthStart() {
-  if (state.calendarMonth instanceof Date) return state.calendarMonth;
-  const today = new Date();
-  return new Date(today.getFullYear(), today.getMonth(), 1);
+  return typeof state.calendarMonth === "string" ? state.calendarMonth : currentKstMonth();
 }
 
 // 접수 시작·종목별 시작·접수 마감·대회일을 각각 KST 날짜키로 집계한다.
@@ -500,10 +469,7 @@ function renderRegistrationCalendar() {
   const target = document.getElementById("registrationCalendar");
   if (!target) return;
   const monthStart = calendarMonthStart();
-  const year = monthStart.getFullYear();
-  const month = monthStart.getMonth();
-  const firstWeekday = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const { year, month, firstWeekday, daysInMonth } = calendarMonthInfo(monthStart);
   const todayKey = KST_DATE_KEY.format(new Date());
   const counts = registrationCountByDate();
 
@@ -512,17 +478,16 @@ function renderRegistrationCalendar() {
     cells.push(`<div class="calendar-cell blank" aria-hidden="true"></div>`);
   }
   for (let day = 1; day <= daysInMonth; day += 1) {
-    const dayDate = new Date(year, month, day);
-    const key = KST_DATE_KEY.format(dayDate);
+    const key = calendarDateKey(year, month, day);
     const count = counts.get(key) || 0;
-    const dow = dayDate.getDay();
+    const dow = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
     const classes = ["calendar-cell"];
     if (count) classes.push("has-races");
     if (key === todayKey) classes.push("today");
     if (state.selectedCalendarDate === key) classes.push("active");
     if (dow === 0) classes.push("sun");
     if (dow === 6) classes.push("sat");
-    const aria = `${month + 1}월 ${day}일${count ? `, 대회 일정 ${count}개` : ", 대회 일정 없음"}${key === todayKey ? ", 오늘" : ""}`;
+    const aria = `${month}월 ${day}일${count ? `, 대회 일정 ${count}개` : ", 대회 일정 없음"}${key === todayKey ? ", 오늘" : ""}`;
     cells.push(
       `<button type="button" class="${classes.join(" ")}"${count ? ` data-calendar-date="${escapeHtml(key)}"` : " disabled"}${state.selectedCalendarDate === key ? ' aria-pressed="true"' : ""} aria-label="${aria}"><strong>${day}</strong>${count ? `<span class="cal-dot">${count}</span>` : ""}</button>`
     );
@@ -534,7 +499,7 @@ function renderRegistrationCalendar() {
   target.innerHTML = `
     <div class="calendar-head">
       <button type="button" class="calendar-nav" data-calendar-nav="prev" aria-label="이전 달">‹</button>
-      <div class="calendar-title"><span>대회 일정 캘린더</span><h2>${year}년 ${month + 1}월</h2></div>
+      <div class="calendar-title"><span>대회 일정 캘린더</span><h2>${year}년 ${month}월</h2></div>
       <button type="button" class="calendar-nav" data-calendar-nav="next" aria-label="다음 달">›</button>
     </div>
     <div class="calendar-weekdays">${CALENDAR_WEEKDAYS.map((label, index) => `<span class="${index === 0 ? "sun" : index === 6 ? "sat" : ""}">${label}</span>`).join("")}</div>
@@ -561,7 +526,7 @@ function renderHomeHero() {
   const ticket = ticketDdayInfo(race);
   const targetAt = ticket.at ? new Date(ticket.at) : null;
   const timeConfirmed = race.registrationOpenAt && hasConfirmedRegistrationOpenTime(race);
-  const status = isAcceptingNow(race) ? "현재 접수중" : "접수 예정";
+  const status = isAcceptingNow(race) ? "현재 접수 중" : "접수 예정";
   const dday = formatDday(ticket.at, "일정 확인");
   const distance = courseTokens(race).slice(0, 2).join(" · ") || "종목 확인";
   const openTime = isAcceptingNow(race)
@@ -609,7 +574,6 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS, selectedTarget
         targetLabel: target.label
       }));
   }
-  const targetAt = new Date(target.at);
   // 발사 시각 계산·만료 필터는 alerts-core.js 의 순수 함수를 쓰고, 문구만 여기서 채운다.
   return window.PushRunAlertsCore
     .computeFireTimes(target.at, offsets, Date.now())
@@ -623,7 +587,7 @@ function buildRegistrationAlerts(race, offsets = DEFAULT_OFFSETS, selectedTarget
         body =
           offset === 0
             ? `${target.ticketLabel || "접수"}가 열렸어요. 대회 사이트에서 바로 확인하세요.`
-            : `${pad(targetAt.getHours())}:${pad(targetAt.getMinutes())} ${target.label}. 로그인과 결제 정보를 준비하세요.`;
+            : `${formatRegistrationTime(target.at)} ${target.label}. 로그인과 결제 정보를 준비하세요.`;
       }
 
       if (target.type === "race_day") {
@@ -757,7 +721,7 @@ function registrationButtonHtml(race, variant = "mini") {
   // 외부(마라톤온라인) 유래 URL이므로 http/https 스킴만 허용한다(javascript:/data: 등 방어).
   const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
   if (!safeUrl) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true" aria-label="${raceName} 접수 사이트 준비중">준비중</button>`;
+    return `<button class="${classes}" type="button" disabled aria-disabled="true" aria-label="${raceName} 접수 사이트 준비 중">준비 중</button>`;
   }
   const insecure = /^http:\/\//i.test(race.registrationUrl);
   const buttonText = variant === "detail" ? "접수 페이지 보기" : "접수";
@@ -1067,7 +1031,7 @@ function renderCategoryTabs() {
   if (!target) return;
   target.innerHTML = [
     ["confirmed", "접수 예정", getConfirmedRegistrationRaces().length],
-    ["open", "현재 접수중", getOpenRegistrationRaces().length]
+    ["open", "현재 접수 중", getOpenRegistrationRaces().length]
   ]
     .map(([value, label, count]) => {
       const active = state.activeCategory === value;
@@ -1400,7 +1364,7 @@ function bindEvents() {
     if (navButton) {
       const base = calendarMonthStart();
       const step = navButton.dataset.calendarNav === "next" ? 1 : -1;
-      state.calendarMonth = new Date(base.getFullYear(), base.getMonth() + step, 1);
+      state.calendarMonth = shiftCalendarMonth(base, step);
       renderRegistrationCalendar();
       return;
     }

@@ -1,13 +1,13 @@
 // 러닝봄 앱 셸 캐시와 알림 클릭 처리를 담당하는 서비스워커. 캐시 키는 기존 설치 호환용으로 유지한다.
-const CACHE_NAME = "pushrun-v0.9.5";
+const CACHE_NAME = "pushrun-v0.9.6";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260713-13",
-  "./race-calendar-core.js?v=20260713-13",
-  "./alerts-core.js?v=20260713-13",
-  "./app.js?v=20260713-13",
-  "./races.json?v=20260713-13",
+  "./styles.css?v=20260713-14",
+  "./race-calendar-core.js?v=20260713-14",
+  "./alerts-core.js?v=20260713-14",
+  "./app.js?v=20260713-14",
+  "./races.json?v=20260713-14",
   "./manifest.webmanifest",
   "./icon-v2.svg",
   "./apple-touch-icon-v2.png",
@@ -58,7 +58,15 @@ self.addEventListener("fetch", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = new URL(event.notification.data?.url || "./", self.registration.scope).href;
+  let targetUrl = self.registration.scope;
+  try {
+    const candidate = new URL(event.notification.data?.url || "./", self.registration.scope);
+    if (candidate.origin === self.location.origin && candidate.href.startsWith(self.registration.scope)) {
+      targetUrl = candidate.href;
+    }
+  } catch {
+    // 잘못된 주소는 앱 홈으로 보낸다.
+  }
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(async (clients) => {
       const existing = clients.find((client) => client.url.startsWith(self.registration.scope));

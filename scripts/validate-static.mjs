@@ -169,6 +169,12 @@ if (!sw.includes(`./alerts-core.js?v=${assetVersion}`)) {
 if (!sw.includes(`./race-calendar-core.js?v=${assetVersion}`) || !calendarCore.includes("buildRaceCalendarEvents")) {
   errors.push("대회 일정 캘린더 core가 HTML·서비스워커에 일관되게 포함되지 않았습니다.");
 }
+if (app.includes(".getHours()") || app.includes(".getMonth()") || app.includes(".getDate()")) {
+  errors.push("화면 날짜·시각 계산에 브라우저 로컬 Date API가 남아 있습니다.");
+}
+if (!html.includes('name="theme-color" content="#173f5f"') || manifest.theme_color !== "#173f5f") {
+  errors.push("HTML과 manifest의 Dawn Track theme-color가 다릅니다.");
+}
 if (!sw.includes('request.mode === "navigate"')) {
   errors.push("sw.js의 HTML 셸 폴백이 탐색 요청으로 제한되지 않았습니다.");
 }

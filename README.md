@@ -24,7 +24,7 @@ GitHub Pages 배포 주소:
 
 https://robom-labs.github.io/runningbom/
 
-현재 공개 사이트는 `gh-pages` 브랜치의 정적 파일로 배포합니다. `outputs/pushrun-site`를 수정한 뒤 `main`에 커밋하고, 같은 파일을 `gh-pages` 브랜치에도 반영하면 위 주소가 갱신됩니다.
+현재 공개 사이트는 `main` 변경 시 GitHub Actions가 검증한 뒤 `gh-pages` 브랜치로 자동 배포합니다. 사람이 같은 파일을 별도로 복사하지 않습니다.
 
 `vercel.json`은 Vercel에서도 `outputs/pushrun-site`를 정적 사이트 출력 폴더로 사용하도록 설정되어 있습니다.
 
