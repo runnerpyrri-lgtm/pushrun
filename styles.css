@@ -1879,3 +1879,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+/* ── 로봄 패밀리 공통 하단 내비 시스템 (최종 승자 규칙) ──
+   탭 64px·라운드 18px·아이콘 24px 선 1.9·활성=브랜드 연배경+진한 글자. 청약봄 규격과 동일. */
+.mobile-tab { min-height: 64px; border-radius: 18px; gap: 3px; color: var(--muted); }
+.mobile-tab svg { width: 24px; height: 24px; }
+.mobile-tab strong { font-size: 12px; font-weight: 800; }
+.mobile-tab.active { background: var(--coral-soft); color: var(--coral-deep); }

@@ -19,7 +19,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-    <link rel="stylesheet" href="./styles.css?v=20260713-21" />
+    <link rel="stylesheet" href="./styles.css?v=20260713-22" />
   </head>
   <body>
     <div class="app-shell">
@@ -30,7 +30,7 @@
             <span class="brand-title">
               <span class="brand-wordmark" aria-hidden="true">
                 <strong class="brand-prefix">러닝</strong>
-                <img class="brand-bom" src="./bom-runningbom.svg?v=20260713-21" alt="" />
+                <img class="brand-bom" src="./bom-runningbom.svg?v=20260713-22" alt="" />
               </span>
             </span>
             <small>robom · 출발선에 서는 날</small>
@@ -116,10 +116,19 @@
         <section class="view" id="view-settings" aria-label="설정">
           <div class="page-heading">
             <span class="section-kicker">설정</span>
-            <h1>러닝봄을 내 방식대로</h1>
+            <h1>설정과 앱 정보</h1>
             <p>알림 권한과 로봄 패밀리 앱 정보를 한곳에서 확인합니다.</p>
           </div>
           <div class="settings-grid">
+            <section class="settings-panel">
+              <h2>러닝봄은</h2>
+              <p>전국 러닝 대회를 찾아보고 접수 시작·마감 시간을 놓치지 않게 챙기는 알림 서비스입니다.</p>
+              <ul class="check-list">
+                <li>접수 중·접수 예정 대회와 D-day를 한눈에 봅니다.</li>
+                <li>원하는 종목의 접수 시작 알림을 예약합니다.</li>
+                <li>접수는 각 대회 공식 페이지에서 직접 진행합니다.</li>
+              </ul>
+            </section>
             <section class="settings-panel">
               <h2>알림 권한</h2>
               <p id="permissionText">확인 중</p>
@@ -181,10 +190,20 @@
         </section>
       </main>
 
+      <!-- 로봄 패밀리 공통 내비: 아이콘은 청약봄 정본 선(1.9 라운드) 계열, 마지막 탭은 설정 -->
       <nav class="mobile-tabs" aria-label="주요 메뉴">
-        <button class="mobile-tab active" type="button" data-view="home"><span aria-hidden="true">⌂</span><strong>대회</strong></button>
-        <button class="mobile-tab" type="button" data-view="alerts"><span aria-hidden="true">♧</span><strong>알림</strong></button>
-        <button class="mobile-tab" type="button" data-view="settings"><span aria-hidden="true">⚙</span><strong>설정</strong></button>
+        <button class="mobile-tab active" type="button" data-view="home">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6v8.5a1 1 0 0 1-1 1h-4.7v-4.9a2.3 2.3 0 0 0-4.6 0v4.9H5a1 1 0 0 1-1-1Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          <strong>대회</strong>
+        </button>
+        <button class="mobile-tab" type="button" data-view="alerts">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v3.6l-1.6 3.2a.7.7 0 0 0 .63 1.02h13.94a.7.7 0 0 0 .63-1.02L18 12.6V9a6 6 0 0 0-6-6Zm-2.3 15.5a2.4 2.4 0 0 0 4.6 0" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></svg>
+          <strong>알림</strong>
+        </button>
+        <button class="mobile-tab" type="button" data-view="settings">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9.8 3.9 10.5 2h3l.7 1.9 1.8.8 1.9-.8 2.1 2.1-.8 1.9.8 1.8 2 .7v3l-2 .7-.8 1.8.8 1.9-2.1 2.1-1.9-.8-1.8.8-.7 2h-3l-.7-2-1.8-.8-1.9.8L4 17.8l.8-1.9-.8-1.8-2-.7v-3l2-.7.8-1.8L4 6l2.1-2.1 1.9.8 1.8-.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="11.9" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <strong>설정</strong>
+        </button>
       </nav>
     </div>
 
@@ -260,8 +279,8 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./race-calendar-core.js?v=20260713-21"></script>
-    <script src="./alerts-core.js?v=20260713-21"></script>
-    <script src="./app.js?v=20260713-21"></script>
+    <script src="./race-calendar-core.js?v=20260713-22"></script>
+    <script src="./alerts-core.js?v=20260713-22"></script>
+    <script src="./app.js?v=20260713-22"></script>
   </body>
 </html>
