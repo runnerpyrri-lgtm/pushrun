@@ -193,8 +193,13 @@ if (html.includes('id="homeHero"') || app.includes("renderHomeHero") || app.incl
 if (!html.includes('class="race-finder"') || !html.includes('placeholder="대회명·지역 검색"')) {
   errors.push("검색 우선 홈 구조가 없습니다.");
 }
-if (!html.includes('<strong class="brand-wordmark">러닝봄</strong>') || html.includes("bom-runningbom.svg")) {
-  errors.push("러닝봄 전체 이름 워드마크가 단일 텍스트로 렌더되지 않습니다.");
+if (
+  !html.includes('<strong class="brand-prefix">러닝</strong>') ||
+  !html.includes('class="brand-bom"') ||
+  !html.includes("bom-runningbom.svg") ||
+  !sw.includes(`./bom-runningbom.svg?v=${assetVersion}`)
+) {
+  errors.push("러닝봄의 기존 커스텀 봄 트레이드마크가 HTML·서비스워커에 일관되게 포함되지 않았습니다.");
 }
 if (!html.includes('id="buildShaText"') || !app.includes('const BUILD_SHA = "__BUILD_SHA__"')) {
   errors.push("설정 화면의 운영 빌드 식별자가 없습니다.");

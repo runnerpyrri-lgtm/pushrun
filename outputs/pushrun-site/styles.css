@@ -1,16 +1,25 @@
 :root {
-  --bg: #cdd9c4;
+  color-scheme: light;
+  --bg: #f5f7fa;
   --surface: #ffffff;
-  --surface-2: #edf3e6;
-  --ink: #101820;
-  --muted: #687065;
-  --line: #b8c8ad;
-  --lime: #c8ff2e;
-  --coral: #ff5a3d;
-  --mint: #1ed6a3;
-  --amber: #fff1bd;
-  --shadow: 0 16px 36px rgba(16, 24, 32, 0.1);
-  --r: 8px;
+  --surface-2: #eef3f7;
+  --ink: #172c43;
+  --muted: #66788a;
+  --line: #dbe4ec;
+  --coral: #e96557;
+  --coral-soft: #fff0ed;
+  --coral-deep: #b84439;
+  --coral-strong: #173f5f;
+  --sky: #65aee4;
+  --sky-soft: #eaf5fc;
+  --mint: #39aa8b;
+  --mint-soft: #eaf8f3;
+  --uncertain: #718091;
+  --navy: #173f5f;
+  --lime: #d9f46f;
+  --amber: #ffc85a;
+  --shadow: 0 12px 32px rgba(31, 58, 82, 0.08);
+  --r: 24px;
 }
 
 * {
@@ -20,11 +29,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, #e4ecdd 0%, #d1deca 48%, #c3d1bb 100%),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
-  font-family: Pretendard, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
@@ -1406,32 +1413,11 @@ fieldset.modal-section legend {
   }
 }
 
-/* 운영체제 설정과 무관하게 유지되는 밝고 따뜻한 러닝봄 테마다. */
-:root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
 .registration-calendar { margin: 18px 0 16px; border: 1px solid #f0dfd1; border-radius: 24px; background: linear-gradient(135deg, #fff8ee, #fffdf9); padding: 17px; }.calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }.calendar-title { text-align: center; flex: 1; }.calendar-title span { color: var(--coral-deep); font-size: 12px; font-weight: 900; }.calendar-title h2 { margin: 3px 0 0; font-size: 22px; font-weight: 950; letter-spacing: -.04em; }.calendar-nav { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #f0dfd1; border-radius: 12px; background: #fff; color: var(--coral-deep); font-size: 20px; font-weight: 900; line-height: 1; cursor: pointer; }.calendar-nav:hover { background: var(--coral-soft); }.calendar-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 6px; }.calendar-weekdays span { text-align: center; color: var(--muted); font-size: 11px; font-weight: 900; }.calendar-weekdays .sun { color: #d8564f; }.calendar-weekdays .sat { color: #3f73c4; }.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }.calendar-cell { position: relative; display: grid; min-height: 54px; place-items: center; align-content: center; gap: 3px; border: 0; border-radius: 14px; background: #fff; color: var(--ink); padding: 5px 2px; box-shadow: 0 1px 2px rgba(120, 80, 50, .05); transition: transform .05s ease; }.calendar-cell.blank { background: transparent; box-shadow: none; }.calendar-cell strong { color: var(--ink); font-size: 15px; font-weight: 850; line-height: 1; }.calendar-cell.sun strong { color: #d8564f; }.calendar-cell.sat strong { color: #3f73c4; }.calendar-cell .cal-dot { display: inline-flex; align-items: center; justify-content: center; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--coral-strong); color: #fff; font-size: 10px; font-weight: 950; line-height: 1; }.calendar-cell.has-races { cursor: pointer; background: linear-gradient(180deg, #fff, #fff6ef); box-shadow: 0 3px 9px rgba(216, 86, 79, .16); }.calendar-cell.has-races:active { transform: scale(.96); }.calendar-cell:not(.has-races):not(.blank) { color: var(--muted); }.calendar-cell:not(.has-races):not(.blank) strong { color: var(--muted); font-weight: 750; }.calendar-cell.today { outline: 2.5px solid var(--coral-strong); outline-offset: -2.5px; background: var(--coral-soft); }.calendar-cell.today strong { color: var(--coral-deep); font-weight: 950; }.calendar-cell.active { background: var(--coral-strong); box-shadow: 0 6px 16px rgba(216, 86, 79, .32); outline: 0; }.calendar-cell.active strong, .calendar-cell.active .cal-dot { color: #fff; }.calendar-cell.active .cal-dot { background: rgba(255, 255, 255, .3); }.calendar-cell[disabled] { cursor: default; }
 .ghost-btn { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }.race-card .list-action-wrap .mini-btn:not(.strong) { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }
-@media (prefers-color-scheme: dark) { :root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }.alert-modal, .permission-steps > div { background: var(--surface); }.modal-backdrop { background: rgba(67, 46, 31, .38); } }
 @media (max-width: 420px) { .registration-calendar { padding: 14px 11px; }.calendar-grid, .calendar-weekdays { gap: 5px; }.calendar-cell { min-height: 48px; border-radius: 12px; }.calendar-cell strong { font-size: 14px; }.calendar-cell .cal-dot { min-width: 16px; height: 16px; font-size: 9px; }.calendar-nav { width: 36px; height: 36px; }.calendar-title h2 { font-size: 20px; } }
 
 /* 로봄 패밀리 공통 문법을 러닝봄의 코랄 성격으로 재구성한다. */
-:root {
-  color-scheme: light dark;
-  --bg: #f6f8f6;
-  --surface: #ffffff;
-  --surface-2: #f0f4f1;
-  --ink: #18201d;
-  --muted: #65716b;
-  --line: #dce4df;
-  --coral: #ed7d3f;
-  --coral-deep: #bb5423;
-  --coral-soft: #fff0e7;
-  --lime: #ed7d3f;
-  --mint: #ed7d3f;
-  --amber: #fff2c8;
-  --shadow: 0 18px 40px rgba(41, 54, 47, 0.08);
-  --r: 24px;
-}
-
 html {
   background: var(--bg);
   scroll-padding-bottom: 110px;
@@ -1440,7 +1426,7 @@ html {
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: Pretendard, "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
   line-height: 1.5;
 }
 
@@ -1514,9 +1500,6 @@ select:focus-visible {
   border-radius: 50%;
   background: var(--coral);
 }
-
-/* 로봄 패밀리 공통 "봄" 마크 — 마지막 봄만 커스텀 로고, 꽃은 패밀리 톤(러닝=코랄) */
-.brand-wordmark { display: inline-flex; align-items: center; gap: 2px; }
 
 .brand small {
   color: var(--muted);
@@ -2128,18 +2111,6 @@ select:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121715;
-    --surface: #1b211e;
-    --surface-2: #252d29;
-    --ink: #f5f7f6;
-    --muted: #adb8b2;
-    --line: #354039;
-    --coral-soft: #3a241b;
-    --coral-deep: #ffb187;
-    --shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
-  }
-
   .alert-modal,
   .permission-steps > div {
     background: var(--surface);
@@ -2163,38 +2134,7 @@ select:focus-visible {
   }
 }
 
-/* 최종 토큰은 다크 환경에서도 라이트 스프링 팔레트를 유지한다. */
-@media (prefers-color-scheme: dark) {
-  :root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }.alert-modal, .permission-steps > div { background: var(--surface); }.modal-backdrop { background: rgba(67, 46, 31, .38); }
-}
-
-:root { color-scheme: light; --bg: #fff7ed; --surface: #ffffff; --surface-2: #fff0e3; --ink: #2d332d; --muted: #6f746d; --line: #eadfd2; --coral: #ef7e42; --coral-soft: #fff0e5; --coral-deep: #a84d23; --coral-strong: #a84d23; --shadow: 0 16px 36px rgba(96, 67, 45, .09); }
-
 /* 러닝봄의 밝은 정보 구조는 유지하면서 코랄 단일색 대신 숲·라임 중심 팔레트로 정돈한다. */
-:root {
-  color-scheme: light;
-  --bg: #f4f7f2;
-  --surface: #ffffff;
-  --surface-2: #eaf1ed;
-  --ink: #132720;
-  --muted: #62736a;
-  --line: #d7e3db;
-  --coral: #139c76;
-  --coral-deep: #0b6a50;
-  --coral-soft: #e1f6ed;
-  --coral-strong: #143b32;
-  --lime: #c8f14b;
-  --mint: #2cbe96;
-  --amber: #f6c858;
-  --shadow: 0 18px 42px rgba(18, 54, 43, 0.09);
-}
-
-body {
-  background:
-    radial-gradient(circle at 100% -8%, rgba(200, 241, 75, 0.2), transparent 29%),
-    linear-gradient(180deg, #f8faf7 0%, var(--bg) 58%, #edf4ef 100%);
-}
-
 .brand-mark {
   border-color: #bfe5d4;
   background: var(--coral-soft);
@@ -2303,31 +2243,6 @@ body {
 }
 
 /* 러닝봄 홈을 위한 Dawn Track 색상 체계. 카드 색은 화면 순서가 아니라 접수 상태를 뜻한다. */
-:root {
-  color-scheme: light;
-  --bg: #eef7ff;
-  --surface: #ffffff;
-  --surface-2: #e8f3fc;
-  --ink: #172c43;
-  --muted: #62758a;
-  --line: #d3e2ef;
-  --coral: #ef6b5b;
-  --coral-deep: #b9473c;
-  --coral-soft: #fff0ed;
-  --coral-strong: #173f5f;
-  --lime: #d9f46f;
-  --mint: #33c7a5;
-  --amber: #ffc85a;
-  --shadow: 0 16px 36px rgba(32, 82, 122, 0.11);
-}
-
-body {
-  background:
-    radial-gradient(circle at 100% -6%, rgba(217, 244, 111, 0.58), transparent 30%),
-    radial-gradient(circle at -8% 26%, rgba(110, 184, 255, 0.19), transparent 28%),
-    linear-gradient(180deg, #f8fcff 0%, var(--bg) 56%, #e7f2fb 100%);
-}
-
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -2595,31 +2510,11 @@ select:focus-visible {
   }
 }
 
-/* v0.11.0 검색 우선 레이아웃과 중립 카드 시스템. */
-:root {
-  --bg: #f5f7fa;
-  --surface: #ffffff;
-  --surface-2: #eef3f7;
-  --ink: #172c43;
-  --muted: #66788a;
-  --line: #dbe4ec;
-  --coral: #e96557;
-  --coral-soft: #fff0ed;
-  --coral-deep: #b84439;
-  --sky: #65aee4;
-  --sky-soft: #eaf5fc;
-  --mint: #39aa8b;
-  --mint-soft: #eaf8f3;
-  --uncertain: #718091;
-  --navy: #173f5f;
-  --shadow: 0 12px 32px rgba(31, 58, 82, .08);
-}
-
 html { background: var(--bg); }
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
 }
 
 button, input, select, a { font: inherit; }
@@ -2656,14 +2551,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .brand-mark { width: 48px; height: 48px; }
 .brand-title { display: inline-flex; align-items: center; gap: 6px; }
 .brand-wordmark {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
   color: var(--ink);
-  font-size: clamp(24px, 4vw, 30px);
-  font-weight: 760;
-  letter-spacing: -.045em;
   line-height: 1.05;
 }
-.brand-spark { color: var(--coral); font-size: 12px; }
+.brand-prefix {
+  font-size: clamp(24px, 4vw, 30px);
+  font-weight: 780;
+  letter-spacing: -.055em;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+.brand-bom {
+  display: block;
+  width: auto;
+  height: clamp(28px, 4.6vw, 35px);
+  transform: translateY(1px);
+}
 .brand-copy small { color: var(--muted); font-size: 13px; }
 .icon-btn { width: 48px; height: 48px; border: 1px solid var(--line); background: var(--surface); color: var(--navy); }
 
