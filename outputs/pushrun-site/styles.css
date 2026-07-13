@@ -1,23 +1,26 @@
 :root {
   color-scheme: light;
-  --bg: #f5f7fa;
+  --page: #f7f5f1;
+  --bg: var(--page);
   --surface: #ffffff;
-  --surface-2: #eef3f7;
-  --ink: #172c43;
+  --surface-2: #f3f6f8;
+  --soft: #f3f6f8;
+  --ink: #17324a;
   --muted: #66788a;
-  --line: #dbe4ec;
-  --coral: #e96557;
+  --line: #dbe3e8;
+  --coral: #ef6657;
   --coral-soft: #fff0ed;
   --coral-deep: #b84439;
   --coral-strong: #173f5f;
-  --sky: #65aee4;
+  --sky: #5aa9e6;
   --sky-soft: #eaf5fc;
   --mint: #39aa8b;
   --mint-soft: #eaf8f3;
-  --uncertain: #718091;
+  --slate: #758391;
+  --uncertain: var(--slate);
   --navy: #173f5f;
-  --lime: #d9f46f;
-  --amber: #ffc85a;
+  --lime: #dff08b;
+  --amber: #e6a62d;
   --shadow: 0 12px 32px rgba(31, 58, 82, 0.08);
   --r: 24px;
   --font: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
@@ -30,7 +33,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 12% -8%, rgba(90, 169, 230, 0.2), transparent 31rem),
+    radial-gradient(circle at 91% 2%, rgba(239, 102, 87, 0.14), transparent 27rem),
+    var(--page);
   color: var(--ink);
   font-family: var(--font);
   font-size: 16px;
@@ -1418,1105 +1424,7 @@ fieldset.modal-section legend {
 .ghost-btn { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }.race-card .list-action-wrap .mini-btn:not(.strong) { border: 1px solid #e5cdbd; background: #fffdf9; color: #62351e; }
 @media (max-width: 420px) { .registration-calendar { padding: 14px 11px; }.calendar-grid, .calendar-weekdays { gap: 5px; }.calendar-cell { min-height: 48px; border-radius: 12px; }.calendar-cell strong { font-size: 14px; }.calendar-cell .cal-dot { min-width: 16px; height: 16px; font-size: 9px; }.calendar-nav { width: 36px; height: 36px; }.calendar-title h2 { font-size: 20px; } }
 
-/* 로봄 패밀리 공통 문법을 러닝봄의 코랄 성격으로 재구성한다. */
-html {
-  background: var(--bg);
-  scroll-padding-bottom: 110px;
-}
-
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font);
-  line-height: 1.5;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-button,
-a,
-input,
-select {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--coral) 48%, transparent);
-  outline-offset: 3px;
-}
-
-.app-shell {
-  width: min(1080px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 28px 0 70px;
-}
-
-.topbar {
-  min-height: 84px;
-  margin-bottom: 22px;
-}
-
-.brand {
-  gap: 16px;
-  min-height: 64px;
-}
-
-.brand-mark {
-  width: 64px;
-  height: 64px;
-  border: 1px solid #f2c4aa;
-  border-radius: 22px;
-  background: var(--coral-soft);
-  color: var(--coral);
-  box-shadow: none;
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.brand-copy {
-  display: grid;
-  gap: 2px;
-}
-
-.brand-title {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.brand-title strong {
-  color: var(--ink);
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  line-height: 1.15;
-}
-
-.brand-title i {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--coral);
-}
-
-.brand small {
-  color: var(--muted);
-  font-size: 1rem;
-}
-
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border: 0;
-  border-radius: 50%;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: 1.75rem;
-}
-
-.topnav {
-  border: 0;
-  border-radius: 18px;
-  background: var(--surface-2);
-  padding: 4px;
-  backdrop-filter: none;
-}
-
-.nav-pill,
-.mobile-tab,
-.filter-chip {
-  min-height: 48px;
-  border-radius: 16px;
-}
-
-.nav-pill.active,
-.mobile-tab.active,
-.filter-chip.active {
-  background: var(--coral-soft);
-  color: var(--coral-deep);
-}
-
-.quick-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.quick-filters .category-tabs,
-.quick-filters .distance-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.quick-filters .category-tab,
-.quick-filters .filter-chip {
-  min-height: 48px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--muted);
-  padding: 0 18px;
-  box-shadow: none;
-  font-weight: 850;
-}
-
-.quick-filters .category-tab.active,
-.quick-filters .filter-chip.active {
-  border-color: #f2c4aa;
-  background: var(--coral-soft);
-  color: var(--coral);
-  box-shadow: none;
-}
-
-.permission-entry {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-  width: 100%;
-  min-height: 54px;
-  margin: 0 0 16px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: var(--surface);
-  color: var(--ink);
-  padding: 8px 14px;
-  text-align: left;
-}
-
-.permission-entry span {
-  border-radius: 999px;
-  background: var(--coral-soft);
-  color: var(--coral-deep);
-  padding: 5px 9px;
-  font-size: 0.78rem;
-  font-weight: 850;
-}
-
-.permission-entry strong {
-  font-size: 0.9rem;
-}
-
-.permission-entry i {
-  font-size: 1.5rem;
-  font-style: normal;
-}
-
-.category-tab span,
-.category-tab span b {
-  font-size: 0.98rem;
-  font-weight: 850;
-}
-
-.primary-btn {
-  background: var(--coral-strong);
-  color: #fff;
-  box-shadow: none;
-}
-
-.ghost-btn {
-  border-color: var(--line);
-  background: var(--surface-2);
-  color: var(--ink);
-}
-
-.danger-btn {
-  border-radius: 18px;
-  background: #ffe5df;
-}
-
-
-.all-results-head {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.section-kicker {
-  min-height: auto;
-  margin: 0 0 6px;
-  background: transparent;
-  color: var(--coral);
-  padding: 0;
-  font-size: 0.82rem;
-  letter-spacing: 0;
-}
-
-
-.all-results-head h2 {
-  margin: 0;
-  color: var(--ink);
-  font-size: clamp(1.55rem, 4vw, 2rem);
-  letter-spacing: -0.035em;
-}
-
-.text-btn {
-  min-height: 48px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--muted);
-  padding: 0 16px;
-  font-weight: 800;
-}
-
-.mobile-filter-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ad-slot {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
-  min-height: 86px;
-  margin: 24px 0;
-  border: 1px dashed #cfdad4;
-  border-radius: 24px;
-  background: transparent;
-  padding: 16px 20px;
-  color: var(--muted);
-}
-
-.ad-slot span {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 6px 10px;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.ad-slot p {
-  margin: 0;
-}
-
-.ad-slot strong {
-  font-size: 0.82rem;
-}
-
-.filters-panel {
-  margin: 28px 0 18px;
-  border: 1px solid var(--line);
-  border-radius: 26px;
-  background: var(--surface);
-  padding: 20px;
-  box-shadow: none;
-}
-
-.filter-head h2 {
-  margin: 0;
-  font-size: 1.45rem;
-}
-
-.filter-row {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  padding: 0;
-  box-shadow: none;
-}
-
-.search-box input,
-.select-box select {
-  min-height: 50px;
-  border-color: var(--line);
-  border-radius: 16px;
-  background: var(--bg);
-}
-
-.apply-btn {
-  min-height: 50px;
-  border-radius: 16px;
-}
-
-.content-grid {
-  margin-top: 22px;
-}
-
-.all-results-head {
-  align-items: center;
-}
-
-.all-results-head > strong {
-  color: var(--muted);
-}
-
-.race-list-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.race-card,
-.alert-card,
-.settings-panel {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: var(--surface);
-  box-shadow: none;
-}
-
-.race-card {
-  padding: 16px;
-}
-
-.race-card.list-card {
-  text-align: left;
-}
-
-.race-card .race-location {
-  margin: 5px 0 0;
-  background: transparent;
-  color: var(--muted);
-  padding: 0;
-  line-height: 1.4;
-  white-space: normal;
-}
-
-.race-card .list-action-wrap {
-  grid-column: 2;
-  grid-row: 2;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.race-card .list-action-wrap .mini-btn {
-  flex: 1;
-  min-height: 48px;
-  border-radius: 16px;
-}
-
-.race-card .list-action-wrap .strong {
-  border-color: var(--coral-strong);
-  background: var(--coral-strong);
-  color: #fff;
-}
-
-.race-card.selected {
-  border-color: var(--coral);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--coral) 20%, transparent);
-}
-
-.focus-enabled {
-  margin: 10px 0 0;
-  color: var(--coral-deep);
-}
-
-.page-heading {
-  margin: 28px 0 20px;
-}
-
-.page-heading h1 {
-  margin: 4px 0 6px;
-  font-size: clamp(2rem, 6vw, 3.4rem);
-  letter-spacing: -0.045em;
-}
-
-.alert-list {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.alert-card {
-  padding: 20px;
-}
-
-.status-pill.open,
-.status-pill.scheduled,
-.chip.highlight {
-  background: var(--coral-soft);
-  color: var(--coral-deep);
-}
-
-.settings-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.settings-panel {
-  padding: 22px;
-}
-
-.settings-panel h2 {
-  margin: 0 0 8px;
-  font-size: 1.2rem;
-}
-
-.settings-panel p {
-  margin-bottom: 0;
-}
-
-.settings-links {
-  display: grid;
-  margin-top: 14px;
-  border-top: 1px solid var(--line);
-}
-
-.settings-links a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 56px;
-  border-bottom: 1px solid var(--line);
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.settings-links span {
-  font-weight: 800;
-}
-
-.settings-links small {
-  color: var(--muted);
-  text-align: right;
-}
-
-.app-info-list {
-  display: grid;
-  gap: 0;
-  margin: 12px 0;
-}
-
-.app-info-list div {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 44px;
-  border-bottom: 1px solid var(--line);
-  align-items: center;
-}
-
-.app-info-list dt {
-  color: var(--muted);
-}
-
-.app-info-list dd {
-  margin: 0;
-  font-weight: 800;
-}
-
-.legal-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  margin-top: 14px;
-}
-
-.legal-links a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.alert-modal {
-  border-radius: 26px;
-  background: var(--surface);
-}
-
-.modal-countdown {
-  border-radius: 20px;
-  background: var(--coral-soft);
-  color: var(--ink);
-}
-
-.modal-countdown span,
-.modal-countdown strong,
-.modal-countdown small {
-  color: inherit;
-}
-
-.modal-countdown span {
-  color: var(--coral-deep);
-}
-
-.toast {
-  bottom: calc(28px + env(safe-area-inset-bottom));
-  border-radius: 18px;
-  background: var(--ink);
-}
-
-@media (max-width: 900px) {
-  .app-shell {
-    width: min(100% - 32px, 720px);
-    padding: 20px 0 calc(112px + env(safe-area-inset-bottom));
-  }
-
-  .topnav {
-    display: none;
-  }
-
-  .race-list-list,
-  .alert-list,
-  .settings-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .mobile-tabs {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    border: 0;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
-    padding: 7px max(12px, env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-    box-shadow: 0 -10px 30px rgba(41, 54, 47, 0.06);
-    backdrop-filter: blur(18px);
-  }
-
-  .mobile-tab {
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: 2px;
-    min-height: 58px;
-    border-radius: 18px;
-    padding: 4px;
-  }
-
-  .mobile-tab span {
-    font-size: 1.35rem;
-    line-height: 1;
-  }
-
-  .mobile-tab strong {
-    font-size: 0.78rem;
-  }
-
-  .toast {
-    bottom: calc(92px + env(safe-area-inset-bottom));
-  }
-}
-
-@media (max-width: 520px) {
-  .app-shell {
-    width: min(100% - 24px, 480px);
-    padding-top: 14px;
-  }
-
-  .topbar {
-    min-height: 66px;
-    margin-bottom: 14px;
-  }
-
-  .brand {
-    gap: 12px;
-  }
-
-  .brand-mark {
-    width: 54px;
-    height: 54px;
-    border-radius: 19px;
-    font-size: 1.7rem;
-  }
-
-  .brand-title strong {
-    font-size: 1.5rem;
-  }
-
-  .brand small {
-    font-size: 0.9rem;
-  }
-
-  .icon-btn {
-    width: 48px;
-    height: 48px;
-  }
-
-  .quick-filters,
-  .quick-filters .category-tabs,
-  .quick-filters .distance-chips {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .quick-filters::-webkit-scrollbar,
-  .quick-filters .category-tabs::-webkit-scrollbar,
-  .quick-filters .distance-chips::-webkit-scrollbar {
-    display: none;
-  }
-
-  .quick-filters .category-tab,
-  .quick-filters .filter-chip {
-    flex: 0 0 auto;
-    min-height: 48px;
-    padding: 0 16px;
-  }
-
-  .text-btn {
-    min-width: 48px;
-    padding: 0 12px;
-    font-size: 0.82rem;
-  }
-
-  .ad-slot {
-    grid-template-columns: auto minmax(0, 1fr);
-    border-radius: 20px;
-    padding: 14px;
-  }
-
-  .ad-slot strong {
-    display: none;
-  }
-
-  .filters-panel {
-    padding: 16px;
-  }
-
-  .filter-row {
-    grid-template-columns: 1fr;
-  }
-
-  .apply-btn {
-    grid-column: auto;
-  }
-
-  .race-card {
-    padding: 14px;
-  }
-
-  .race-card .list-action-wrap {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .settings-panel,
-  .alert-card,
-  .alert-modal {
-    padding: 18px;
-  }
-
-  .modal-actions {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .alert-modal,
-  .permission-steps > div {
-    background: var(--surface);
-  }
-
-  .modal-backdrop {
-    background: rgba(0, 0, 0, 0.68);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
-/* 러닝봄의 밝은 정보 구조는 유지하면서 코랄 단일색 대신 숲·라임 중심 팔레트로 정돈한다. */
-.brand-mark {
-  border-color: #bfe5d4;
-  background: var(--coral-soft);
-  color: var(--coral);
-}
-
-.brand-title i {
-  background: var(--lime);
-}
-
-.nav-pill.active,
-.mobile-tab.active,
-.filter-chip.active,
-.quick-filters .category-tab.active,
-.quick-filters .filter-chip.active {
-  border-color: transparent;
-  background: var(--ink);
-  color: var(--lime);
-}
-
-.quick-filters .category-tab,
-.quick-filters .filter-chip,
-.topnav,
-.icon-btn {
-  background: var(--surface-2);
-}
-
-.permission-entry {
-  border-color: #cfe2d7;
-  background: linear-gradient(100deg, #ffffff 0%, #f2faf5 100%);
-}
-
-.permission-entry span {
-  background: var(--lime);
-  color: var(--ink);
-}
-
-.registration-calendar {
-  border-color: #d4e4d9;
-  background: linear-gradient(135deg, #f8fcf9, #ffffff);
-}
-
-.calendar-title span,
-.calendar-nav {
-  color: var(--coral-deep);
-}
-
-.calendar-nav {
-  border-color: #d4e4d9;
-}
-
-.calendar-nav:hover,
-.calendar-cell.today {
-  background: var(--coral-soft);
-}
-
-.calendar-cell.has-races {
-  background: linear-gradient(180deg, #ffffff, #edf8f1);
-  box-shadow: 0 4px 11px rgba(18, 89, 66, 0.12);
-}
-
-.calendar-cell .cal-dot,
-.calendar-cell.active {
-  background: var(--coral-strong);
-}
-
-.calendar-cell.today {
-  outline-color: var(--coral);
-}
-
-.primary-btn,
-.race-card .list-action-wrap .strong {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--lime);
-}
-
-.ghost-btn,
-.race-card .list-action-wrap .mini-btn:not(.strong) {
-  border-color: #cddfd5;
-  background: #ffffff;
-  color: var(--ink);
-}
-
-.race-card,
-.alert-card,
-.settings-panel {
-  box-shadow: 0 8px 22px rgba(18, 54, 43, 0.045);
-}
-
-.race-card .race-location {
-  color: var(--muted);
-}
-
-.course-chips span,
-.registration-window-row span {
-  background: #edf7e4;
-  color: #28452e;
-}
-
-.status-pill.open,
-.status-pill.scheduled,
-.chip.highlight,
-.focus-enabled {
-  color: var(--coral-deep);
-}
-
-/* 러닝봄 홈을 위한 Dawn Track 색상 체계. 카드 색은 화면 순서가 아니라 접수 상태를 뜻한다. */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline-color: color-mix(in srgb, var(--coral) 62%, transparent);
-}
-
-.brand-mark {
-  border-color: #badff0;
-  background: #e4f4ff;
-  color: var(--coral-strong);
-}
-
-.brand-title i {
-  background: var(--lime);
-}
-
-.nav-pill.active,
-.mobile-tab.active,
-.filter-chip.active,
-.quick-filters .category-tab.active,
-.quick-filters .filter-chip.active {
-  background: var(--coral-strong);
-  color: var(--lime);
-}
-
-.registration-calendar {
-  border-color: #cfe2ef;
-  background: linear-gradient(135deg, #f4fbff, #ffffff 72%);
-}
-
-.calendar-title span,
-.calendar-nav {
-  color: var(--coral-strong);
-}
-
-.calendar-nav {
-  border-color: #cfe2ef;
-}
-
-.calendar-nav:hover,
-.calendar-cell.today {
-  background: #e4f4ff;
-}
-
-.calendar-cell.has-races {
-  background: linear-gradient(180deg, #ffffff, #edf8ff);
-  box-shadow: 0 4px 12px rgba(47, 118, 170, 0.13);
-}
-
-.calendar-cell .cal-dot,
-.calendar-cell.active {
-  background: var(--coral-strong);
-}
-
-.calendar-cell.today {
-  outline-color: #5baaf1;
-}
-
-.primary-btn,
-.race-card .list-action-wrap .strong {
-  border-color: var(--coral-strong);
-  background: var(--coral-strong);
-  color: #ffffff;
-}
-
-.primary-btn:hover,
-.race-card .list-action-wrap .strong:hover {
-  background: #245b83;
-}
-
-.ghost-btn,
-.race-card .list-action-wrap .mini-btn:not(.strong) {
-  border-color: #c8ddea;
-  background: #ffffff;
-  color: var(--ink);
-}
-
-.course-chips span,
-.registration-window-row span {
-  background: #eaf9ef;
-  color: #23745f;
-}
-
-.race-card,
-.alert-card,
-.settings-panel {
-  box-shadow: 0 9px 24px rgba(32, 82, 122, 0.07);
-}
-
-.race-card.list-card {
-  --card-accent: #33c7a5;
-  --card-tint: #f0fcf8;
-  --card-line: #bfe8dc;
-  overflow: hidden;
-  border-width: 1px;
-  border-left-width: 1px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #ffffff 0%, var(--card-tint) 156%);
-}
-
-.race-card.list-card.tone-open {
-  --card-accent: #ef6b5b;
-  --card-tint: #fff5f2;
-  --card-line: #f2c7bf;
-}
-
-.race-card.list-card.tone-scheduled {
-  --card-accent: #5baaf1;
-  --card-tint: #f2f9ff;
-  --card-line: #c3e0f5;
-}
-
-.race-card.list-card.tone-unconfirmed {
-  --card-accent: #e6a62d;
-  --card-tint: #fff9eb;
-  --card-line: #f0d291;
-}
-
-.race-card.list-card.tone-neutral {
-  --card-accent: #33c7a5;
-  --card-tint: #f0fcf8;
-  --card-line: #bfe8dc;
-}
-
-.race-card .list-action-wrap .mini-btn {
-  min-height: 50px;
-}
-
-.status-pill.open,
-.chip.highlight,
-.focus-enabled {
-  color: var(--coral-deep);
-}
-
-.status-pill.scheduled {
-  color: #317bbf;
-}
-
-/* 0.10.0에서는 검색을 첫 과업으로 올리고 카드 색은 상태 신호에만 사용한다. */
-.search-entry {
-  align-items: center;
-  margin: 2px 0 10px;
-  border: 1px solid #c8ddea;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.94);
-  padding: 12px 14px;
-}
-
-.search-entry > div {
-  min-width: 0;
-}
-
-.search-entry strong {
-  display: block;
-  margin-top: 3px;
-  color: var(--ink);
-  font-size: 0.96rem;
-  line-height: 1.35;
-  word-break: keep-all;
-}
-
-.filters-panel {
-  margin-bottom: 14px;
-  border-color: #c8ddea;
-  background: #ffffff;
-}
-
-.filter-row {
-  grid-template-columns: minmax(220px, 1fr) minmax(140px, 0.42fr) auto;
-}
-
-.search-control {
-  position: relative;
-  display: block;
-}
-
-.search-control input {
-  padding-right: 64px;
-}
-
-.search-control button {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  min-width: 48px;
-  min-height: 38px;
-  border: 0;
-  border-radius: 12px;
-  background: #e4f4ff;
-  color: var(--coral-strong);
-  transform: translateY(-50%);
-  font-size: 0.82rem;
-  font-weight: 900;
-}
-
-.race-card.list-card {
-  border: 1px solid var(--card-line);
-  border-top: 4px solid var(--card-accent);
-  background: #ffffff;
-}
-
-.race-card .list-action-wrap {
-  grid-column: 1;
-  grid-row: 3;
-}
-
-.race-card .registration-strip {
-  margin: 10px 0 8px;
-  border-radius: 14px;
-  background: #f5f9fc;
-  padding: 10px;
-}
-
-.race-card .race-location {
-  margin-top: 8px;
-}
-
-@media (max-width: 520px) {
-  .quick-filters,
-  .quick-filters .category-tabs,
-  .quick-filters .distance-chips {
-    overflow: visible;
-  }
-
-  .quick-filters {
-    display: grid;
-    gap: 8px;
-  }
-
-  .quick-filters .category-tabs {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .quick-filters .distance-chips {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .quick-filters .category-tab,
-  .quick-filters .filter-chip {
-    width: 100%;
-    min-width: 0;
-    padding: 0 8px;
-  }
-
-  .search-entry {
-    position: sticky;
-    top: 6px;
-    z-index: 8;
-    box-shadow: 0 8px 20px rgba(32, 82, 122, 0.11);
-  }
-
-  .filter-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 340px) {
-  .quick-filters .distance-chips {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-html { background: var(--bg); }
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font);
-}
+html { background: var(--page); scroll-padding-bottom: 110px; }
 
 button, input, select, a { font: inherit; }
 button, a, select { min-height: 48px; }
@@ -2545,12 +1453,20 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin: 0 -24px 22px;
   padding: max(12px, env(safe-area-inset-top)) 24px 12px;
   border-bottom: 1px solid rgba(219, 228, 236, .86);
-  background: rgba(245, 247, 250, .94);
+  background: rgba(247, 245, 241, .92);
   backdrop-filter: blur(18px);
 }
 .brand { min-width: 0; gap: 12px; }
 .brand-mark { width: 48px; height: 48px; }
 .brand-title { display: inline-flex; align-items: center; gap: 6px; }
+.brand-title::after {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--coral);
+  content: "";
+  transform: translateY(-10px);
+}
 .brand-title > .brand-wordmark {
   display: inline-block;
   font-family: var(--font);
@@ -2699,11 +1615,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin: 20px 2px 12px;
 }
 .all-results-head h2 { margin: 4px 0 0; color: var(--ink); font-size: clamp(23px, 5vw, 30px); letter-spacing: -.04em; }
+.all-results-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
 .all-results-head > strong { color: var(--muted); font-size: 14px; }
-.race-list-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.race-list-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 14px; }
 .race-card.list-card {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 14px;
   min-width: 0;
@@ -2713,6 +1631,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border-radius: 20px;
   background: var(--surface);
   box-shadow: 0 8px 24px rgba(31, 58, 82, .06);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.race-card.list-card > * { grid-column: 1; }
+.race-card.list-card:hover,
+.race-card.list-card:focus-within {
+  border-color: #bfd1dd;
+  box-shadow: 0 13px 30px rgba(31, 58, 82, .1);
+  transform: translateY(-2px);
 }
 .race-card.list-card::before {
   position: absolute;
@@ -2755,7 +1681,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
-.race-location { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.race-location {
+  display: block;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
 .registration-strip {
   display: grid;
   gap: 8px;
@@ -2766,10 +1706,28 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .registration-schedule-row, .race-schedule-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: start; }
 .registration-label { color: var(--muted); font-size: 12px; font-weight: 750; }
 .registration-schedule, .race-schedule-row strong { min-width: 0; color: var(--ink); font-size: 13px; line-height: 1.5; }
-.list-card-foot { display: grid; gap: 12px; margin-top: auto; }
+.list-card-foot { display: grid; gap: 10px; }
 .course-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .course-chips span { border-radius: 999px; padding: 5px 9px; background: #f1f4f7; color: var(--muted); font-size: 12px; font-weight: 700; }
-.list-action-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.race-note {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+.list-action-wrap {
+  display: grid;
+  grid-column: auto;
+  grid-row: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-self: auto;
+}
+.list-action-wrap.single { grid-template-columns: 1fr; }
 .mini-btn {
   display: inline-flex;
   min-width: 0;
@@ -2810,6 +1768,51 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .skeleton-card i { width: 100%; height: 44px; border-radius: 14px; }
 .skeleton-card b { width: 58%; height: 48px; border-radius: 14px; }
 @keyframes skeleton-shift { to { background-position-x: -220%; } }
+
+.closing-soon {
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid #f1c8c1;
+  border-radius: 18px;
+  background: rgba(255, 240, 237, .76);
+}
+.closing-soon-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+.closing-soon-head > span { color: var(--coral); font-size: 9px; }
+.closing-soon-head h3 { margin: 0; color: var(--ink); font-size: 15px; }
+.closing-soon-head small { margin-left: auto; color: var(--muted); font-size: 12px; }
+.closing-soon-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.closing-soon-list a,
+.closing-soon-list > div {
+  display: grid;
+  min-width: 0;
+  min-height: 86px;
+  align-content: space-between;
+  gap: 5px;
+  border: 1px solid rgba(239, 102, 87, .22);
+  border-radius: 14px;
+  background: #fff;
+  padding: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.closing-soon-list span { color: var(--coral-deep); font-size: 11px; font-weight: 800; }
+.closing-soon-list strong { overflow: hidden; font-size: 13px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.closing-soon-list i { color: var(--navy); font-size: 11px; font-style: normal; font-weight: 800; }
+.load-more-btn {
+  display: flex;
+  min-height: 52px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .9);
+  color: var(--navy);
+  font-weight: 800;
+}
+.load-more-btn small { color: var(--muted); font-weight: 650; }
 
 .calendar-disclosure {
   margin: 20px 0 12px;
@@ -2854,6 +1857,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .race-list-list { grid-template-columns: 1fr; gap: 11px; }
   .race-card.list-card { gap: 12px; padding: 17px; border-radius: 18px; }
   .all-results-head { margin-top: 16px; }
+  .closing-soon-list { grid-template-columns: 1fr; }
+  .closing-soon-list a,
+  .closing-soon-list > div {
+    grid-template-columns: 76px minmax(0, 1fr) auto;
+    min-height: 52px;
+    align-items: center;
+    align-content: center;
+  }
+  .closing-soon-list strong { font-size: 12px; }
 }
 
 @media (max-width: 359px) {

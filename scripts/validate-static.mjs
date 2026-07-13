@@ -7,6 +7,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const site = join(root, "outputs", "pushrun-site");
 const app = readFileSync(join(site, "app.js"), "utf8");
 const calendarCore = readFileSync(join(site, "race-calendar-core.js"), "utf8");
+const styles = readFileSync(join(site, "styles.css"), "utf8");
 const html = readFileSync(join(site, "index.html"), "utf8");
 const sw = readFileSync(join(site, "sw.js"), "utf8");
 const manifest = JSON.parse(readFileSync(join(site, "manifest.webmanifest"), "utf8"));
@@ -206,6 +207,21 @@ if (!html.includes('id="buildShaText"') || !app.includes('const BUILD_SHA = "__B
 }
 if (app.includes('>접수</a>') || app.includes('>알림</button>')) {
   errors.push("목록 행동 문구가 공식 접수처·알림 설정으로 구체화되지 않았습니다.");
+}
+if (app.includes("알림 준비 중") || app.includes("aria-label=\"${label} 불가\"")) {
+  errors.push("접수 중 카드에 비활성 알림 준비 중 행동이 남아 있습니다.");
+}
+if (!app.includes("const INITIAL_RACE_LIMIT = 20") || !app.includes("data-load-more")) {
+  errors.push("긴 목록의 20개 단위 점진 표시가 없습니다.");
+}
+if (!app.includes("sortOpenRaces") || !calendarCore.includes("cardCountdown")) {
+  errors.push("마감 임박 정렬 또는 의미가 포함된 카드 카운트다운이 없습니다.");
+}
+if ((styles.match(/:root\s*\{/g) || []).length !== 1 || !styles.includes("--page: #f7f5f1") || !styles.includes("radial-gradient")) {
+  errors.push("Dawn Run 테마 토큰과 배경이 하나의 루트로 통합되지 않았습니다.");
+}
+if (!html.includes('class="ad-slot" aria-label="광고 자리" aria-disabled="true" hidden')) {
+  errors.push("비활성 광고 영역이 홈에서 숨겨지지 않았습니다.");
 }
 if (!app.includes("sortedRacesSource === state.races")) {
   errors.push("대회 정렬 결과 캐시가 없어 필터 렌더마다 전체 정렬이 반복됩니다.");

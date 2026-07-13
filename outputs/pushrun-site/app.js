@@ -1,10 +1,10 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.11.3";
-const ASSET_VERSION = "20260713-20";
+const APP_VERSION = "0.12.0";
+const ASSET_VERSION = "20260713-21";
 const BUILD_SHA = "__BUILD_SHA__";
-const PWA_CACHE_VERSION = "pushrun-v0.11.3";
+const PWA_CACHE_VERSION = "pushrun-v0.12.0";
 const {
   normalizeRaceName,
   raceIdentity,
@@ -19,9 +19,14 @@ const {
   currentKstMonth,
   shiftCalendarMonth,
   calendarMonthInfo,
-  calendarDateKey
+  calendarDateKey,
+  cardCountdown,
+  openRacePriority,
+  sortOpenRaces
 } = globalThis.RunningBomRaceCore;
 const DEFAULT_OFFSETS = [20, 10, 0];
+const INITIAL_RACE_LIMIT = 20;
+const CLOSING_SOON_LIMIT = 4;
 const RACE_DATA_URL = `./races.json?v=${ASSET_VERSION}`;
 const MARATHON_ONLINE_LIST_URL = "http://www.roadrun.co.kr/schedule/list.php";
 const KST_DATE_KEY = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit" });
@@ -36,7 +41,7 @@ const state = {
   draftDistanceFilter: "all",
   draftRegionFilter: "all",
   draftQuery: "",
-  activeCategory: "confirmed",
+  activeCategory: "open",
   selectedCalendarDate: null,
   calendarMonth: null,
   races: [],
@@ -48,7 +53,8 @@ const state = {
   loadStatus: "loading",
   mobileFiltersExpanded: false,
   dataRevision: 0,
-  searchComposing: false
+  searchComposing: false,
+  visibleRaceCount: INITIAL_RACE_LIMIT
 };
 
 let sortedRacesSource = null;
@@ -368,39 +374,28 @@ function getUpcomingRegistrationAt(race) {
 }
 
 function getOpenRegistrationRaces() {
-  return getActionRaces()
-    .filter((race) => isAcceptingNow(race) && !canUseRegistrationTimer(race))
-    .sort((a, b) => new Date(a.registrationCloseAt || a.raceDate).getTime() - new Date(b.registrationCloseAt || b.raceDate).getTime());
+  return sortOpenRaces(
+    getActionRaces().filter((race) => isAcceptingNow(race) && !canUseRegistrationTimer(race)),
+    Date.now()
+  );
 }
 
 function getCategoryRaces() {
   return state.activeCategory === "open" ? getOpenRegistrationRaces() : getConfirmedRegistrationRaces();
 }
 
-function ticketDdayInfo(race) {
-  const target = getAlertTarget(race);
-  if (target?.type === "registration_open") return { label: target.ticketLabel || "접수", at: target.at };
-  const upcomingAt = getUpcomingRegistrationAt(race);
-  if (upcomingAt) return { label: "접수", at: new Date(upcomingAt).toISOString() };
-  if (state.activeCategory === "open" && isAcceptingNow(race)) {
-    return {
-      label: race.registrationCloseAt ? "마감" : "접수 중",
-      at: race.registrationCloseAt || race.raceDate
-    };
-  }
-  return { label: "대회", at: race.raceDate };
-}
-
 function getCategoryCopy() {
   return state.activeCategory === "open"
     ? {
-        title: "현재 접수 중",
-        description: "",
+        kicker: "접수 중",
+        title: "지금 신청 가능한 대회",
+        description: "마감이 가까운 순서로 보여드려요.",
         empty: "현재 접수 중인 대회가 없어요."
       }
     : {
+        kicker: "접수 예정",
         title: "곧 열리는 접수",
-        description: "",
+        description: "접수 시작일이 가까운 순서로 보여드려요.",
         empty: "곧 접수가 열리는 대회가 없어요."
       };
 }
@@ -714,9 +709,7 @@ function alertButtonHtml(race, variant = "mini") {
   const classes = variant === "detail" ? "primary-btn" : "mini-btn strong action-alert";
   const target = getAlertTarget(race);
   const label = `${escapeHtml(race.name)} 알림 설정`;
-  if (!target) {
-    return `<button class="${classes}" type="button" disabled aria-disabled="true" aria-label="${label} 불가">알림 준비 중</button>`;
-  }
+  if (!target) return "";
   return `<button class="${classes}" type="button" data-open-alert="${escapeHtml(race.id)}" aria-label="${label}">알림 설정</button>`;
 }
 
@@ -775,6 +768,7 @@ function renderSearchResults() {
   state.query = state.draftQuery;
   state.selectedRaceId = null;
   state.selectedCalendarDate = null;
+  state.visibleRaceCount = INITIAL_RACE_LIMIT;
   renderRaceList();
   renderCategoryTabs();
   renderRegistrationCalendar();
@@ -794,6 +788,7 @@ function resetFilters() {
   state.query = "";
   syncDraftFilters();
   state.selectedCalendarDate = null;
+  state.visibleRaceCount = INITIAL_RACE_LIMIT;
   const input = document.getElementById("searchInput");
   if (input) input.value = "";
   const clearButton = document.getElementById("clearSearchButton");
@@ -812,6 +807,7 @@ function applyFilters() {
   state.regionFilter = state.draftRegionFilter;
   state.query = state.draftQuery;
   state.selectedRaceId = null;
+  state.visibleRaceCount = INITIAL_RACE_LIMIT;
   if (window.matchMedia("(max-width: 520px)").matches) setMobileFiltersExpanded(false);
   renderRaceList();
   renderCategoryTabs();
@@ -839,13 +835,14 @@ function renderRaceList() {
   }
   const dateKey = state.selectedCalendarDate;
   const races = listRacesForCurrentContext();
+  const visibleRaces = races.slice(0, state.visibleRaceCount);
   const copy = getCategoryCopy();
   let head;
   if (dateKey) {
     const [, month, dayNum] = dateKey.split("-").map(Number);
     head = `<div class="all-results-head"><div><span class="section-kicker">대회 일정 캘린더</span><h2 id="allResultsTitle">${month}월 ${dayNum}일 일정</h2></div><button class="text-btn calendar-filter-clear" type="button" data-clear-calendar-date>전체 보기</button></div>`;
   } else {
-    head = `<div class="all-results-head"><div><span class="section-kicker">전체 대회</span><h2 id="allResultsTitle">${escapeHtml(copy.title)}</h2></div><strong>${races.length}개</strong></div>`;
+    head = `<div class="all-results-head"><div><span class="section-kicker">${escapeHtml(copy.kicker)}</span><h2 id="allResultsTitle">${escapeHtml(copy.title)}</h2><p>${escapeHtml(copy.description)}</p></div><strong>${races.length}개</strong></div>`;
   }
   if (!races.length) {
     const empty = dateKey
@@ -857,11 +854,35 @@ function renderRaceList() {
   list.innerHTML = `
     <section class="focus-board ${state.activeCategory}" aria-labelledby="allResultsTitle">
       ${head}
+      ${closingSoonHtml(races)}
       <div class="race-list-list">
-        ${races.map(raceCardHtml).join("")}
+        ${visibleRaces.map(raceCardHtml).join("")}
       </div>
+      ${visibleRaces.length < races.length ? `<button class="load-more-btn" type="button" data-load-more>20개 더 보기 <small>${visibleRaces.length}/${races.length}</small></button>` : ""}
     </section>
   `;
+}
+
+function closingSoonHtml(races) {
+  if (state.activeCategory !== "open" || state.selectedCalendarDate) return "";
+  const now = Date.now();
+  const soon = races
+    .filter((race) => openRacePriority(race, now).bucket <= 1)
+    .slice(0, CLOSING_SOON_LIMIT);
+  if (!soon.length) return "";
+  return `
+    <aside class="closing-soon" aria-labelledby="closingSoonTitle">
+      <div class="closing-soon-head"><span aria-hidden="true">●</span><h3 id="closingSoonTitle">마감 임박</h3><small>7일 안에 닫혀요.</small></div>
+      <div class="closing-soon-list">
+        ${soon.map((race) => {
+          const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
+          const content = `<span>${escapeHtml(cardCountdown(race, now).label)}</span><strong>${escapeHtml(race.name)}</strong><i aria-hidden="true">바로 신청 ›</i>`;
+          return safeUrl
+            ? `<a href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(race.name)} 공식 접수처 바로 열기">${content}</a>`
+            : `<div>${content}</div>`;
+        }).join("")}
+      </div>
+    </aside>`;
 }
 
 function renderFilterSummary() {
@@ -876,9 +897,8 @@ function renderFilterSummary() {
 function raceCardHtml(race) {
   const selected = state.selectedRaceId === race.id ? " selected" : "";
   const enabled = subscriptionsForRace(race.id).length > 0;
-  const ticketInfo = ticketDdayInfo(race);
   const safeId = escapeHtml(race.id);
-  const ticketDday = formatDday(ticketInfo.at);
+  const countdown = cardCountdown(race, Date.now());
   const tone = isAcceptingNow(race)
     ? " tone-open"
     : race.registrationStatus === "scheduled" && hasConfirmedRegistrationOpenTime(race)
@@ -893,32 +913,40 @@ function raceCardHtml(race) {
       : race.registrationStatus === "scheduled"
         ? "시간 확인 필요"
         : statusLabel(race.status);
+  const registrationAction = registrationButtonHtml(race);
+  const alertAction = alertButtonHtml(race);
+  const actions = [registrationAction, alertAction].filter(Boolean);
+  const registrationLabel = isAcceptingNow(race) ? "접수 마감" : "접수 시작";
+  const registrationValue = isAcceptingNow(race)
+    ? race.registrationCloseAt
+      ? `<strong>${escapeHtml(formatRegistrationPoint(race.registrationCloseAt))}</strong>`
+      : "<strong>공식 접수처에서 확인</strong>"
+    : registrationScheduleHtml(race);
   return `
-    <article class="race-card list-card${selected}${tone}" data-race-id="${safeId}">
+    <article class="race-card list-card${selected}${tone}" data-race-id="${safeId}" tabindex="-1">
       <div class="list-card-head">
         <div class="list-status-line">
           <span class="status-pill">${escapeHtml(status)}</span>
-          ${ticketDday ? `<strong class="list-dday">${escapeHtml(ticketDday)}</strong>` : ""}
+          <strong class="list-dday">${escapeHtml(countdown.label)}</strong>
         </div>
         <h3>${escapeHtml(race.name)}</h3>
         <p class="race-location">${escapeHtml(race.region)} · ${escapeHtml(race.city)}${race.venue ? ` · ${escapeHtml(race.venue)}` : ""}</p>
       </div>
       <div class="registration-strip">
         <div class="registration-schedule-row">
-          <span class="registration-label">접수</span>
-          ${registrationScheduleHtml(race)}
+          <span class="registration-label">${registrationLabel}</span>
+          ${registrationValue}
         </div>
         <div class="race-schedule-row">
           <span class="registration-label">대회</span>
           <strong>${escapeHtml(formatRegistrationDate(race.raceDate))}</strong>
         </div>
+        ${race.capacity ? `<div class="race-schedule-row"><span class="registration-label">규모</span><strong>${escapeHtml(race.capacity)}</strong></div>` : ""}
       </div>
       <div class="list-card-foot">
         ${courseChipsHtml(race)}
-        <div class="list-action-wrap">
-          ${registrationButtonHtml(race)}
-          ${alertButtonHtml(race)}
-        </div>
+        ${race.note ? `<p class="race-note">${escapeHtml(race.note)}</p>` : ""}
+        <div class="list-action-wrap ${actions.length === 1 ? "single" : ""}">${actions.join("")}</div>
       </div>
       ${enabled ? `<p class="focus-enabled">종목 알림 ${subscriptionsForRace(race.id).length}개가 켜져 있어요.</p>` : ""}
     </article>
@@ -1069,8 +1097,8 @@ function renderCategoryTabs() {
   const target = document.getElementById("categoryTabs");
   if (!target) return;
   target.innerHTML = [
-    ["confirmed", "곧 열림", getConfirmedRegistrationRaces().length],
-    ["open", "현재 접수 중", getOpenRegistrationRaces().length]
+    ["open", "현재 접수 중", getOpenRegistrationRaces().length],
+    ["confirmed", "곧 열림", getConfirmedRegistrationRaces().length]
   ]
     .map(([value, label, count]) => {
       const active = state.activeCategory === value;
@@ -1357,6 +1385,7 @@ function bindEvents() {
       state.activeCategory = category;
       state.selectedRaceId = null;
       state.selectedCalendarDate = null;
+      state.visibleRaceCount = INITIAL_RACE_LIMIT;
       renderCategoryTabs();
       renderRegistrationCalendar();
       renderRaceList();
@@ -1368,6 +1397,16 @@ function bindEvents() {
     const retryButton = event.target.closest("#retryRaceDataButton");
     if (retryButton) {
       void refreshRaceData();
+      return;
+    }
+
+    const loadMoreButton = event.target.closest("[data-load-more]");
+    if (loadMoreButton) {
+      const previousCount = state.visibleRaceCount;
+      state.visibleRaceCount += INITIAL_RACE_LIMIT;
+      renderRaceList();
+      document.querySelectorAll(".race-card")[previousCount]?.focus?.({ preventScroll: true });
+      document.querySelectorAll(".race-card")[previousCount]?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
@@ -1393,6 +1432,7 @@ function bindEvents() {
     const clearDateButton = event.target.closest("[data-clear-calendar-date]");
     if (clearDateButton) {
       state.selectedCalendarDate = null;
+      state.visibleRaceCount = INITIAL_RACE_LIMIT;
       render();
       document.querySelector(".content-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
@@ -1411,6 +1451,7 @@ function bindEvents() {
     if (dayButton) {
       const key = dayButton.dataset.calendarDate;
       state.selectedCalendarDate = state.selectedCalendarDate === key ? null : key;
+      state.visibleRaceCount = INITIAL_RACE_LIMIT;
       render();
       document.querySelector(".content-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
@@ -1460,6 +1501,7 @@ function bindEvents() {
       state.draftDistanceFilter = distance;
       state.distanceFilter = state.draftDistanceFilter;
       state.selectedRaceId = null;
+      state.visibleRaceCount = INITIAL_RACE_LIMIT;
       renderDistanceFilters();
       renderRaceList();
       renderCategoryTabs();
