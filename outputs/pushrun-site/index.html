@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260713-15" />
+    <link rel="stylesheet" href="./styles.css?v=20260713-16" />
   </head>
   <body>
     <div class="app-shell">
@@ -25,7 +25,7 @@
         <button class="brand" type="button" data-view="home" aria-label="러닝봄 홈">
           <img class="brand-mark" src="./icon-v2.svg" alt="" aria-hidden="true" />
           <span class="brand-copy">
-            <span class="brand-title"><strong class="brand-wordmark">러닝<img class="brand-bom" src="bom-runningbom.svg" alt="봄" /></strong></span>
+            <span class="brand-title"><strong class="brand-wordmark">러닝봄</strong><span class="brand-spark" aria-hidden="true">✦</span></span>
             <small>robom · 출발선에 서는 날</small>
           </span>
         </button>
@@ -41,41 +41,59 @@
 
       <main>
         <section class="view active" id="view-home" aria-label="대회 탐색">
+          <section class="race-finder" aria-label="대회 검색">
+            <label class="search-box search-box--primary" for="searchInput">
+              <span class="visually-hidden">대회명 또는 지역 검색</span>
+              <span class="search-control"><span class="search-icon" aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="대회명·지역 검색" autocomplete="off" inputmode="search" /><button type="button" id="clearSearchButton" aria-label="검색어 지우기" hidden>지우기</button></span>
+            </label>
+            <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">지역 · 전체</button>
+          </section>
+
+          <div class="results-toolbar search-entry">
+            <strong id="filterSummary">전국 · 전체 거리</strong>
+            <button class="text-btn" type="button" id="resetFiltersButton">전체 초기화</button>
+          </div>
+
           <section class="quick-filters" aria-label="빠른 대회 필터">
             <div class="category-tabs" id="categoryTabs" aria-label="접수 상태"></div>
             <div class="chip-row distance-chips" id="distanceFilters" aria-label="거리"></div>
           </section>
 
-          <div class="results-toolbar search-entry">
-            <div><p class="section-kicker">대회 찾기</p><strong id="filterSummary">전국 · 전체 거리</strong></div>
-            <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">검색·필터</button>
-          </div>
-
           <section class="filters-panel" id="filtersPanel" aria-label="전체 대회 찾기" hidden>
             <div class="filter-head">
-              <div><span class="section-kicker">조건 선택</span><h2>내가 찾는 대회를 바로 보기</h2></div>
+              <div><span class="section-kicker">지역 선택</span><h2>어디에서 달릴까요?</h2></div>
             </div>
             <div class="filter-row" id="filterRow">
-              <label class="search-box"><span>대회명·지역 검색</span><span class="search-control"><input id="searchInput" type="search" placeholder="예: 서울, 하프마라톤" autocomplete="off" /><button type="button" id="clearSearchButton" aria-label="검색어 지우기" hidden>지우기</button></span></label>
               <label class="select-box"><span>지역</span><select id="regionFilter"></select></label>
-              <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">결과 보기</button>
+              <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">적용</button>
             </div>
-          </section>
-
-          <section class="registration-calendar" id="registrationCalendar" aria-label="월별 접수 캘린더"></section>
-
-          <button class="permission-entry" id="permissionEntry" type="button" data-view="settings">
-            <span>알림 준비</span><strong>브라우저 권한을 확인하면 접수 시간을 놓치지 않아요.</strong><i aria-hidden="true">›</i>
-          </button>
-
-          <section class="hero-race" id="homeHero" aria-live="polite" aria-busy="true"></section>
-
-          <section class="ad-slot" aria-label="광고 자리" aria-disabled="true">
-            <span>광고</span><p>러닝화·대회 준비 추천</p><strong>현재 비활성</strong>
           </section>
 
           <section class="content-grid" aria-label="전체 대회 결과">
-            <div class="race-list" id="raceList" aria-live="polite" aria-busy="true"></div>
+            <div class="race-list" id="raceList" aria-live="polite" aria-busy="true">
+              <section class="focus-board" role="status" aria-label="대회 정보를 불러오는 중">
+                <div class="all-results-head"><div><span class="section-kicker">전체 대회</span><h2>대회를 확인하고 있어요.</h2></div></div>
+                <div class="race-list-list race-list-skeleton" aria-hidden="true">
+                  <div class="skeleton-card"><span></span><strong></strong><i></i><i></i><b></b></div>
+                  <div class="skeleton-card"><span></span><strong></strong><i></i><i></i><b></b></div>
+                  <div class="skeleton-card"><span></span><strong></strong><i></i><i></i><b></b></div>
+                  <div class="skeleton-card"><span></span><strong></strong><i></i><i></i><b></b></div>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <details class="calendar-disclosure">
+            <summary><span>월간 접수 일정</span><small>날짜로 대회 찾기</small></summary>
+            <section class="registration-calendar" id="registrationCalendar" aria-label="월별 접수 캘린더"></section>
+          </details>
+
+          <button class="permission-entry" id="permissionEntry" type="button" data-view="settings">
+            <span>알림 준비</span><strong>브라우저 권한과 동작 범위를 확인하세요.</strong><i aria-hidden="true">›</i>
+          </button>
+
+          <section class="ad-slot" aria-label="광고 자리" aria-disabled="true">
+            <span>광고</span><p>러닝화·대회 준비 추천</p><strong>현재 비활성</strong>
           </section>
         </section>
 
@@ -142,6 +160,8 @@
                 <div><dt>개발자</dt><dd>로봄</dd></div>
                 <div><dt>앱 버전</dt><dd id="appVersionText">확인 중</dd></div>
                 <div><dt>데이터 버전</dt><dd id="dataVersionText">확인 중</dd></div>
+                <div><dt>빌드</dt><dd id="buildShaText">확인 중</dd></div>
+                <div><dt>PWA 캐시</dt><dd id="cacheVersionText">확인 중</dd></div>
               </dl>
               <div class="legal-links">
                 <a href="https://robom.kr" target="_blank" rel="noopener noreferrer">robom.kr</a>
@@ -233,8 +253,8 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./race-calendar-core.js?v=20260713-15"></script>
-    <script src="./alerts-core.js?v=20260713-15"></script>
-    <script src="./app.js?v=20260713-15"></script>
+    <script src="./race-calendar-core.js?v=20260713-16"></script>
+    <script src="./alerts-core.js?v=20260713-16"></script>
+    <script src="./app.js?v=20260713-16"></script>
   </body>
 </html>

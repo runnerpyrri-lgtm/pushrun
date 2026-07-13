@@ -38,9 +38,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: 운영 빌드 식별자 기록
+        shell: bash
+        run: |
+          mkdir -p .pages-release
+          cp -a outputs/pushrun-site/. .pages-release/
+          sed -i "s/__BUILD_SHA__/${GITHUB_SHA::7}/g" .pages-release/app.js
+
       - name: Deploy static site to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: outputs/pushrun-site
+          publish_dir: .pages-release
