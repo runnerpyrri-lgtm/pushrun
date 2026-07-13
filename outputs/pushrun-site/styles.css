@@ -1523,13 +1523,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .search-entry .text-btn { min-height: 48px; padding: 0 10px; border: 0; background: transparent; }
 
 .quick-filters { display: grid; gap: 9px; margin-bottom: 14px; }
-.quick-filters .category-tabs,
-.quick-filters .distance-chips {
+.quick-filters .category-tabs {
   display: flex;
   gap: 8px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
+}
+/* 거리 필터: 2줄 × 3칸 그리드로 모바일 폭을 꽉 채워 끝 칩(트레일)이 잘리지 않게 한다. */
+.quick-filters .distance-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.quick-filters .distance-chips .filter-chip {
+  min-width: 0;
+  padding: 0 10px;
 }
 .quick-filters .category-tabs::-webkit-scrollbar,
 .quick-filters .distance-chips::-webkit-scrollbar { display: none; }

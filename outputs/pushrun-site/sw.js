@@ -1,14 +1,14 @@
 // 러닝봄 앱 셸 캐시와 알림 클릭 처리를 담당하는 서비스워커. 캐시 키는 기존 설치 호환용으로 유지한다.
-const CACHE_NAME = "pushrun-v0.15.1";
+const CACHE_NAME = "pushrun-v0.15.2";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260713-26",
-  "./race-calendar-core.js?v=20260713-26",
-  "./alerts-core.js?v=20260713-26",
-  "./app.js?v=20260713-26",
-  "./races.json?v=20260713-26",
-  "./bom-runningbom.svg?v=20260713-26",
+  "./styles.css?v=20260713-27",
+  "./race-calendar-core.js?v=20260713-27",
+  "./alerts-core.js?v=20260713-27",
+  "./app.js?v=20260713-27",
+  "./races.json?v=20260713-27",
+  "./bom-runningbom.svg?v=20260713-27",
   "./manifest.webmanifest",
   "./icon-v2.svg",
   "./apple-touch-icon-v2.png",
