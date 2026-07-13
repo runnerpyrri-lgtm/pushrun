@@ -1886,3 +1886,98 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .mobile-tab svg { width: 24px; height: 24px; }
 .mobile-tab strong { font-size: 12px; font-weight: 800; }
 .mobile-tab.active { background: var(--coral-soft); color: var(--coral-deep); }
+
+/* 설정 화면의 패밀리 링크와 앱 정보를 한 행씩 읽기 쉽게 정렬한다. */
+.settings-links {
+  display: grid;
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.settings-links a {
+  display: flex;
+  min-width: 0;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.settings-links span {
+  min-width: 0;
+  font-weight: 800;
+}
+
+.settings-links small {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.app-info-list {
+  display: grid;
+  gap: 0;
+  margin: 12px 0;
+}
+
+.app-info-list div {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.app-info-list dt {
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.app-info-list dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-weight: 800;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 14px;
+}
+
+.legal-links a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  color: var(--navy);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.settings-links a:hover,
+.settings-links a:focus-visible,
+.legal-links a:hover,
+.legal-links a:focus-visible {
+  color: var(--coral-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+  .settings-links a { min-height: 60px; gap: 12px; }
+  .settings-links small { max-width: 58%; }
+  .app-info-list div { gap: 12px; }
+}
