@@ -1981,3 +1981,35 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .settings-links small { max-width: 58%; }
   .app-info-list div { gap: 12px; }
 }
+
+/* ── 로봄 패밀리 공통 설정 UI 킷 (야외봄 정본 규격, 러닝봄 코랄 팔레트) ──
+   카드 라운드24 · 아이콘 칩 헤더 · 행 68px(아이콘칩 40px 라운드14) · pill 버튼 · 앱 메타 카드 */
+.settings-grid { display: grid; gap: 0; }
+.settings-card { overflow: hidden; margin: 0 0 16px; padding: 0; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }
+.settings-card-head { display: flex; align-items: center; gap: 9px; padding: 16px 18px 10px; }
+.settings-card-head h2 { margin: 0; padding: 0; color: var(--ink); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; }
+.settings-chip { width: 28px; height: 28px; display: grid; place-items: center; color: var(--coral-deep); background: var(--coral-soft); border-radius: 10px; }
+.settings-note { margin: 0; padding: 0 18px 14px; color: var(--ink); font-size: 14.5px; line-height: 1.65; font-weight: 500; }
+.settings-note--muted { color: var(--muted); font-size: 13px; }
+.settings-list { margin: 0; padding: 0 18px 14px 34px; color: var(--ink); font-size: 14.5px; line-height: 1.7; }
+.settings-list li + li { margin-top: 4px; }
+.settings-row { min-height: 68px; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 10px 16px; color: var(--ink); text-decoration: none; border-top: 1px solid var(--line); }
+.settings-row-icon { width: 40px; height: 40px; display: grid; place-items: center; color: var(--coral-deep); background: var(--coral-soft); border-radius: 14px; }
+.settings-row strong, .settings-row small { display: block; }
+.settings-row strong { font-size: 0.94rem; font-weight: 800; }
+.settings-row small { margin-top: 2px; color: var(--muted); font-size: 0.8rem; font-weight: 500; }
+.settings-row em { color: var(--coral-deep); font-size: 0.72rem; font-style: normal; font-weight: 800; }
+.settings-row-go { color: var(--muted); display: grid; place-items: center; }
+.settings-deeplinks { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 18px 16px; }
+.settings-deeplinks .primary-action { min-height: 46px; padding: 0 18px; border: 0; border-radius: 13px; background: var(--coral-deep); color: #fff; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+.settings-deeplinks .ghost-action { min-height: 46px; padding: 0 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-2); color: var(--ink); font-size: 0.92rem; font-weight: 700; cursor: pointer; }
+.app-meta-card { min-height: 82px; display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; margin-bottom: 8px; padding: 16px; background: var(--coral-soft); border: 0; border-radius: 24px; box-shadow: none; }
+.app-meta-icon { width: 48px; height: 48px; display: grid; place-items: center; color: var(--coral-deep); background: var(--surface); border-radius: 16px; }
+.app-meta-icon img { display: block; }
+.app-meta-card strong { display: block; font-size: 1rem; }
+.app-meta-card small { display: block; margin-top: 2px; color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+.app-version { color: var(--coral-deep); font-weight: 800; font-size: 0.9rem; }
+@media (min-width: 900px) {
+  .settings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; align-items: start; }
+  .settings-grid > .app-meta-card { grid-column: 1 / -1; }
+}
