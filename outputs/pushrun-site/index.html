@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#173f5f" />
     <meta
       name="description"
-      content="러닝 대회 접수 예정과 현재 접수 중인 대회를 빠르게 확인하는 러닝봄."
+      content="러닝 대회의 공식 접수 시각과 현재 접수 중인 대회를 빠르게 확인하는 러닝봄."
     />
     <title>러닝봄 - 러닝 대회 접수 알림</title>
     <link rel="manifest" href="./manifest.webmanifest" />
@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="러닝봄" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="stylesheet" href="./styles.css?v=20260713-14" />
+    <link rel="stylesheet" href="./styles.css?v=20260713-15" />
   </head>
   <body>
     <div class="app-shell">
@@ -46,6 +46,22 @@
             <div class="chip-row distance-chips" id="distanceFilters" aria-label="거리"></div>
           </section>
 
+          <div class="results-toolbar search-entry">
+            <div><p class="section-kicker">대회 찾기</p><strong id="filterSummary">전국 · 전체 거리</strong></div>
+            <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">검색·필터</button>
+          </div>
+
+          <section class="filters-panel" id="filtersPanel" aria-label="전체 대회 찾기" hidden>
+            <div class="filter-head">
+              <div><span class="section-kicker">조건 선택</span><h2>내가 찾는 대회를 바로 보기</h2></div>
+            </div>
+            <div class="filter-row" id="filterRow">
+              <label class="search-box"><span>대회명·지역 검색</span><span class="search-control"><input id="searchInput" type="search" placeholder="예: 서울, 하프마라톤" autocomplete="off" /><button type="button" id="clearSearchButton" aria-label="검색어 지우기" hidden>지우기</button></span></label>
+              <label class="select-box"><span>지역</span><select id="regionFilter"></select></label>
+              <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">결과 보기</button>
+            </div>
+          </section>
+
           <section class="registration-calendar" id="registrationCalendar" aria-label="월별 접수 캘린더"></section>
 
           <button class="permission-entry" id="permissionEntry" type="button" data-view="settings">
@@ -56,22 +72,6 @@
 
           <section class="ad-slot" aria-label="광고 자리" aria-disabled="true">
             <span>광고</span><p>러닝화·대회 준비 추천</p><strong>현재 비활성</strong>
-          </section>
-
-          <div class="results-toolbar">
-            <p class="section-kicker">전체 대회</p>
-            <button class="text-btn mobile-filter-toggle" type="button" id="mobileFilterToggleButton" aria-expanded="false" aria-controls="filtersPanel">대회 찾기</button>
-          </div>
-
-          <section class="filters-panel" id="filtersPanel" aria-label="전체 대회 찾기" hidden>
-            <div class="filter-head">
-              <div><span class="section-kicker">전체 대회</span><h2>지역과 검색어로 찾기</h2></div>
-            </div>
-            <div class="filter-row" id="filterRow">
-              <label class="select-box"><span>지역</span><select id="regionFilter"></select></label>
-              <label class="search-box"><span>검색</span><input id="searchInput" type="search" placeholder="대회명, 지역" autocomplete="off" /></label>
-              <button class="primary-btn apply-btn" type="button" id="applyFiltersButton">검색하기</button>
-            </div>
           </section>
 
           <section class="content-grid" aria-label="전체 대회 결과">
@@ -233,8 +233,8 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./race-calendar-core.js?v=20260713-14"></script>
-    <script src="./alerts-core.js?v=20260713-14"></script>
-    <script src="./app.js?v=20260713-14"></script>
+    <script src="./race-calendar-core.js?v=20260713-15"></script>
+    <script src="./alerts-core.js?v=20260713-15"></script>
+    <script src="./app.js?v=20260713-15"></script>
   </body>
 </html>

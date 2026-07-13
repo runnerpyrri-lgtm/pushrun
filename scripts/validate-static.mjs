@@ -178,6 +178,15 @@ if (!html.includes('name="theme-color" content="#173f5f"') || manifest.theme_col
 if (!sw.includes('request.mode === "navigate"')) {
   errors.push("sw.js의 HTML 셸 폴백이 탐색 요청으로 제한되지 않았습니다.");
 }
+if (app.includes('const status = isAcceptingNow(race) ? "현재 접수 중" : "접수 예정"')) {
+  errors.push("히어로가 접수 상태와 D-day를 중복 표시하는 이전 문구를 사용합니다.");
+}
+if (!html.includes('id="clearSearchButton"') || !html.includes('id="filterSummary"')) {
+  errors.push("모바일 검색의 지우기 버튼 또는 적용 조건 요약이 없습니다.");
+}
+if (!app.includes("sortedRacesSource === state.races")) {
+  errors.push("대회 정렬 결과 캐시가 없어 필터 렌더마다 전체 정렬이 반복됩니다.");
+}
 
 if (errors.length > 0) {
   console.error(errors.join("\n"));

@@ -3711,3 +3711,186 @@ select:focus-visible {
 .status-pill.scheduled {
   color: #317bbf;
 }
+
+/* 0.10.0에서는 검색을 첫 과업으로 올리고 카드 색은 상태 신호에만 사용한다. */
+.search-entry {
+  align-items: center;
+  margin: 2px 0 10px;
+  border: 1px solid #c8ddea;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 12px 14px;
+}
+
+.search-entry > div {
+  min-width: 0;
+}
+
+.search-entry strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 0.96rem;
+  line-height: 1.35;
+  word-break: keep-all;
+}
+
+.filters-panel {
+  margin-bottom: 14px;
+  border-color: #c8ddea;
+  background: #ffffff;
+}
+
+.filter-row {
+  grid-template-columns: minmax(220px, 1fr) minmax(140px, 0.42fr) auto;
+}
+
+.search-control {
+  position: relative;
+  display: block;
+}
+
+.search-control input {
+  padding-right: 64px;
+}
+
+.search-control button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  min-width: 48px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 12px;
+  background: #e4f4ff;
+  color: var(--coral-strong);
+  transform: translateY(-50%);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.race-card.list-card {
+  border: 1px solid var(--card-line);
+  border-top: 4px solid var(--card-accent);
+  background: #ffffff;
+}
+
+.race-card .list-card-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 8px;
+}
+
+.race-list-list .race-card.list-card .list-date {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  width: fit-content;
+  min-height: 38px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  border: 1px solid var(--card-line);
+  background: var(--card-tint);
+  color: color-mix(in srgb, var(--card-accent) 74%, #10273d);
+  padding: 6px 10px;
+  box-shadow: none;
+}
+
+.race-card .list-date span {
+  font-size: 0.76rem;
+  line-height: 1.25;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.race-card .list-date strong {
+  font-size: 0.94rem;
+}
+
+.race-card .list-body {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.race-card .list-action-wrap {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.race-card .registration-strip {
+  margin: 10px 0 8px;
+  border-radius: 14px;
+  background: #f5f9fc;
+  padding: 10px;
+}
+
+.race-card .race-location {
+  margin-top: 8px;
+}
+
+@media (max-width: 520px) {
+  .quick-filters,
+  .quick-filters .category-tabs,
+  .quick-filters .distance-chips {
+    overflow: visible;
+  }
+
+  .quick-filters {
+    display: grid;
+    gap: 8px;
+  }
+
+  .quick-filters .category-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .quick-filters .distance-chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .quick-filters .category-tab,
+  .quick-filters .filter-chip {
+    width: 100%;
+    min-width: 0;
+    padding: 0 8px;
+  }
+
+  .search-entry {
+    position: sticky;
+    top: 6px;
+    z-index: 8;
+    box-shadow: 0 8px 20px rgba(32, 82, 122, 0.11);
+  }
+
+  .filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-race {
+    margin-top: 14px;
+  }
+
+  .hero-status {
+    max-width: 100%;
+    height: auto;
+    min-height: 40px;
+    line-height: 1.35;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .race-card .list-card-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 340px) {
+  .quick-filters .distance-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .race-card .list-card-grid { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,8 +1,8 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.9.6";
-const ASSET_VERSION = "20260713-14";
+const APP_VERSION = "0.10.0";
+const ASSET_VERSION = "20260713-15";
 const {
   normalizeRaceName,
   raceIdentity,
@@ -46,6 +46,9 @@ const state = {
   loadStatus: "loading",
   mobileFiltersExpanded: !window.matchMedia("(max-width: 520px)").matches
 };
+
+let sortedRacesSource = null;
+let sortedRacesCache = [];
 
 function loadJson(key, fallback) {
   try {
@@ -306,12 +309,15 @@ function sortValueForGroup(race, group) {
 }
 
 function getRaces() {
-  return state.races.filter(isVisibleRace).sort((a, b) => {
+  if (sortedRacesSource === state.races) return sortedRacesCache;
+  sortedRacesSource = state.races;
+  sortedRacesCache = state.races.filter(isVisibleRace).sort((a, b) => {
     const groupA = raceSortGroup(a);
     const groupB = raceSortGroup(b);
     if (groupA !== groupB) return groupA - groupB;
     return sortValueForGroup(a, groupA) - sortValueForGroup(b, groupB);
   });
+  return sortedRacesCache;
 }
 
 function getActionRaces() {
@@ -363,9 +369,9 @@ function getCategoryCopy() {
         empty: "현재 접수 중인 대회가 없어요."
       }
     : {
-        title: "접수 예정",
+        title: "곧 열리는 접수",
         description: "",
-        empty: "접수 예정 대회가 없어요."
+        empty: "곧 접수가 열리는 대회가 없어요."
       };
 }
 
@@ -377,7 +383,7 @@ function isVisibleRace(race) {
 
 function statusLabel(status) {
   return {
-    scheduled: "접수 예정",
+    scheduled: "곧 열림",
     open: "접수 중",
     closed: "마감",
     sold_out: "매진",
@@ -432,6 +438,18 @@ function filteredRaces() {
 function getHeroRace() {
   const primary = state.activeCategory === "open" ? getOpenRegistrationRaces() : getConfirmedRegistrationRaces();
   return primary[0] || getActionRaces()[0] || null;
+}
+
+function hasAppliedFilters() {
+  return Boolean(state.query.trim() || state.regionFilter !== "all" || state.distanceFilter !== "all");
+}
+
+function listRacesForCurrentContext() {
+  if (state.selectedCalendarDate) return racesForSelectedDate(state.selectedCalendarDate);
+  const races = getCategoryRaces();
+  if (hasAppliedFilters()) return races;
+  const heroId = getHeroRace()?.id;
+  return heroId ? races.filter((race) => race.id !== heroId) : races;
 }
 
 function registrationActionAt(race) {
@@ -526,27 +544,34 @@ function renderHomeHero() {
   const ticket = ticketDdayInfo(race);
   const targetAt = ticket.at ? new Date(ticket.at) : null;
   const timeConfirmed = race.registrationOpenAt && hasConfirmedRegistrationOpenTime(race);
-  const status = isAcceptingNow(race) ? "현재 접수 중" : "접수 예정";
+  const accepting = isAcceptingNow(race);
   const dday = formatDday(ticket.at, "일정 확인");
   const distance = courseTokens(race).slice(0, 2).join(" · ") || "종목 확인";
-  const openTime = isAcceptingNow(race)
+  const actionLabel = accepting
+    ? `지금 접수 중${race.registrationCloseAt ? ` · 마감 ${formatDday(race.registrationCloseAt, "일정 확인")}` : ""}`
+    : timeConfirmed && targetAt
+      ? `접수 ${dday} · ${formatRegistrationPoint(targetAt)}`
+      : `접수 ${targetAt ? formatRegistrationDate(targetAt) : "일정 확인"} · 시간 확인 필요`;
+  const actionTime = accepting
     ? "지금"
     : timeConfirmed && targetAt
-      ? formatRegistrationTime(targetAt)
-      : "시간 미확정";
-  target.className = `hero-race ${isAcceptingNow(race) ? "open" : "scheduled"}`;
+      ? formatRegistrationPoint(targetAt)
+      : targetAt
+        ? formatRegistrationDate(targetAt)
+        : "일정 확인";
+  target.className = `hero-race ${accepting ? "open" : "scheduled"}`;
   target.innerHTML = `
     <div class="hero-accent" aria-hidden="true"></div>
     <div class="hero-topline">
-      <span class="hero-status">${escapeHtml(status)} · ${escapeHtml(dday)}</span>
-      <span class="hero-date">${escapeHtml(formatShortDate(race.raceDate))} 대회</span>
+      <span class="hero-status">${escapeHtml(actionLabel)}</span>
+      <span class="hero-date">${escapeHtml(race.region)} ${escapeHtml(race.city)}</span>
     </div>
     <h1>${escapeHtml(race.name)}</h1>
-    <p class="hero-location">${escapeHtml(distance)} · ${escapeHtml(race.region)} ${escapeHtml(race.city)}</p>
+    <p class="hero-location">${escapeHtml(formatRegistrationDate(race.raceDate))} · ${escapeHtml(distance)}</p>
     <div class="hero-metrics" aria-label="핵심 접수 정보">
-      <div><strong>${escapeHtml(dday)}</strong><span>${isAcceptingNow(race) ? "접수 마감" : "접수까지"}</span></div>
-      <div><strong>${escapeHtml(distance)}</strong><span>관심 거리</span></div>
-      <div><strong>${escapeHtml(openTime)}</strong><span>오픈 시각</span></div>
+      <div><strong>${escapeHtml(actionTime)}</strong><span>${accepting ? "현재 접수" : "접수 시작"}</span></div>
+      <div><strong>${escapeHtml(formatShortDate(race.raceDate))}</strong><span>대회일</span></div>
+      <div><strong>${escapeHtml(distance)}</strong><span>종목</span></div>
     </div>
     <div class="hero-actions">
       ${registrationButtonHtml(race, "detail")}
@@ -804,6 +829,7 @@ function applyFilters() {
   renderCategoryTabs();
   renderRegistrationCalendar();
   renderHomeHero();
+  renderFilterSummary();
   showToast("선택한 조건으로 대회를 찾았어요.");
 }
 
@@ -819,7 +845,7 @@ function renderRaceList() {
     return;
   }
   const dateKey = state.selectedCalendarDate;
-  const races = dateKey ? racesForSelectedDate(dateKey) : getCategoryRaces();
+  const races = listRacesForCurrentContext();
   const copy = getCategoryCopy();
   let head;
   if (dateKey) {
@@ -845,6 +871,15 @@ function renderRaceList() {
   `;
 }
 
+function renderFilterSummary() {
+  const target = document.getElementById("filterSummary");
+  if (!target) return;
+  const region = state.regionFilter === "all" ? "전국" : state.regionFilter;
+  const distance = state.distanceFilter === "all" ? "전체 거리" : state.distanceFilter;
+  const query = state.query.trim() ? ` · “${state.query.trim()}”` : "";
+  target.textContent = `${region} · ${distance}${query} · 결과 ${getCategoryRaces().length}개`;
+}
+
 function raceCardHtml(race) {
   const selected = state.selectedRaceId === race.id ? " selected" : "";
   const enabled = subscriptionsForRace(race.id).length > 0;
@@ -858,17 +893,22 @@ function raceCardHtml(race) {
       : race.registrationStatus === "scheduled"
         ? " tone-unconfirmed"
         : " tone-neutral";
+  const status = isAcceptingNow(race)
+    ? "접수 중"
+    : race.registrationStatus === "scheduled" && hasConfirmedRegistrationOpenTime(race)
+      ? "접수 시각 확정"
+      : race.registrationStatus === "scheduled"
+        ? "시간 확인 필요"
+        : statusLabel(race.status);
   return `
     <article class="race-card list-card${selected}${tone}" data-race-id="${safeId}">
       <div class="list-card-grid">
         <div class="list-date">
-          <span>${escapeHtml(ticketInfo.label)}</span>
+          <span>${escapeHtml(status)}</span>
           ${ticketDday ? `<strong>${escapeHtml(ticketDday)}</strong>` : ""}
         </div>
         <div class="list-body">
           <h3>${escapeHtml(race.name)}</h3>
-          <p class="race-location">${escapeHtml(race.region)} · ${escapeHtml(race.city)}</p>
-          ${courseChipsHtml(race)}
           <div class="registration-strip">
             <div class="registration-schedule-row">
               <span class="registration-label">접수</span>
@@ -879,6 +919,8 @@ function raceCardHtml(race) {
               <strong>${escapeHtml(formatRegistrationDate(race.raceDate))}</strong>
             </div>
           </div>
+          <p class="race-location">${escapeHtml(race.region)} · ${escapeHtml(race.city)}${race.venue ? ` · ${escapeHtml(race.venue)}` : ""}</p>
+          ${courseChipsHtml(race)}
         </div>
         <div class="list-action-wrap">
           ${registrationButtonHtml(race)}
@@ -1030,7 +1072,7 @@ function renderCategoryTabs() {
   const target = document.getElementById("categoryTabs");
   if (!target) return;
   target.innerHTML = [
-    ["confirmed", "접수 예정", getConfirmedRegistrationRaces().length],
+    ["confirmed", "곧 열림", getConfirmedRegistrationRaces().length],
     ["open", "현재 접수 중", getOpenRegistrationRaces().length]
   ]
     .map(([value, label, count]) => {
@@ -1395,6 +1437,8 @@ function bindEvents() {
 
   document.getElementById("searchInput").addEventListener("input", (event) => {
     state.draftQuery = event.target.value;
+    const clearButton = document.getElementById("clearSearchButton");
+    if (clearButton) clearButton.hidden = !event.target.value;
   });
 
   // Enter 키로 "확인" 버튼과 동일하게 필터를 즉시 적용한다. 기존 applyFilters 재사용.
@@ -1424,6 +1468,20 @@ function bindEvents() {
   });
 
   document.getElementById("applyFiltersButton").addEventListener("click", applyFilters);
+  document.getElementById("clearSearchButton").addEventListener("click", () => {
+    const searchInput = document.getElementById("searchInput");
+    state.draftQuery = "";
+    state.query = "";
+    if (searchInput) {
+      searchInput.value = "";
+      searchInput.focus();
+    }
+    document.getElementById("clearSearchButton").hidden = true;
+    renderRaceList();
+    renderCategoryTabs();
+    renderHomeHero();
+    renderFilterSummary();
+  });
   document.getElementById("mobileFilterToggleButton").addEventListener("click", () => {
     setMobileFiltersExpanded(!state.mobileFiltersExpanded);
   });
@@ -1503,6 +1561,7 @@ function render() {
   renderCategoryTabs();
   renderRegistrationCalendar();
   renderHomeHero();
+  renderFilterSummary();
   renderRaceList();
   renderAlerts();
   renderSyncStatus();
