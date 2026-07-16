@@ -6,3 +6,5 @@ outputs/*.log
 outputs/cloudflared*
 *.tmp
 *.bak
+.vercel
+.env*
