@@ -1,0 +1,2 @@
+// DO NOT EDIT. 러닝봄의 개인정보 최소 분석 이벤트 계약이다.
+window.RobomFamilyAnalyticsContract = Object.freeze({ appId: "runningbom", events: ["race_search_used","race_filter_applied","race_opened","official_registration_clicked","alert_enabled"], forbiddenFields: ["latitude","longitude","address","email","phone","oauth_token","push_endpoint","medication","medicine","hospital","calendar_title","family_event_title","raw_query","raw_answer","api_key","access_token","refresh_token"] });

@@ -1,16 +1,16 @@
 :root {
   color-scheme: light;
-  --page: #f7f5f1;
+  --page: var(--app-page, #fff9f2);
   --bg: var(--page);
   --surface: #ffffff;
   --surface-2: #f3f6f8;
   --soft: #f3f6f8;
-  --ink: #17324a;
-  --muted: #66788a;
-  --line: #dbe3e8;
-  --coral: #ef6657;
-  --coral-soft: #fff0ed;
-  --coral-deep: #b84439;
+  --ink: var(--app-ink, #1d3047);
+  --muted: var(--app-muted, #6c756f);
+  --line: var(--family-border, #dfe6e2);
+  --coral: var(--app-brand, #f35f46);
+  --coral-soft: var(--app-brand-soft, #ffebe6);
+  --coral-deep: var(--app-brand-deep, #a93725);
   --coral-strong: #173f5f;
   --sky: #5aa9e6;
   --sky-soft: #eaf5fc;
@@ -21,9 +21,9 @@
   --navy: #173f5f;
   --lime: #dff08b;
   --amber: #e6a62d;
-  --shadow: 0 12px 32px rgba(31, 58, 82, 0.08);
-  --r: 24px;
-  --font: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --shadow: var(--family-shadow-card, 0 12px 30px rgba(29, 48, 71, 0.08));
+  --r: var(--family-radius-md, 18px);
+  --font: "Pretendard Variable", "Pretendard", var(--family-font, -apple-system, BlinkMacSystemFont, sans-serif);
 }
 
 * {
@@ -53,6 +53,17 @@ select {
 
 button {
   cursor: pointer;
+}
+
+.family-line-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 button:disabled {
@@ -128,6 +139,15 @@ button:disabled {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(12px);
 }
+
+.topnav .nav-pill {
+  display: inline-flex;
+  min-height: var(--family-touch-min, 48px);
+  align-items: center;
+  gap: 7px;
+}
+
+.topnav .family-line-icon { width: 20px; height: 20px; }
 
 .nav-pill,
 .mobile-tab,
@@ -913,9 +933,10 @@ p {
   border: 1px solid var(--line);
   border-radius: 50%;
   background: #fff;
-  font-size: 1.4rem;
   line-height: 1;
 }
+
+.modal-close .family-line-icon { width: 22px; height: 22px; margin: auto; }
 
 .alert-modal h2 {
   margin: 8px 48px 5px 0;
@@ -1426,7 +1447,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin: 0 -24px 22px;
   padding: max(12px, env(safe-area-inset-top)) 24px 12px;
   border-bottom: 1px solid rgba(219, 228, 236, .86);
-  background: rgba(247, 245, 241, .92);
+  background: rgba(255, 249, 242, .92);
   backdrop-filter: blur(18px);
 }
 .brand { min-width: 0; gap: 12px; }
@@ -1462,7 +1483,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   vertical-align: -.2em;
 }
 .brand-copy small { color: var(--muted); font-size: 13px; }
-.icon-btn { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--navy); font-size: 20px; line-height: 1; }
+.icon-btn { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--navy); line-height: 1; }
 
 .race-finder {
   display: grid;
@@ -1481,7 +1502,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   background: var(--surface);
   box-shadow: 0 5px 18px rgba(31, 58, 82, .05);
 }
-.search-icon { padding-left: 16px; color: var(--navy); font-size: 23px; line-height: 1; }
+.search-icon { padding-left: 16px; color: var(--navy); line-height: 1; }
+.search-icon .family-line-icon { width: 22px; height: 22px; }
 .search-control input {
   width: 100%;
   min-width: 0;
@@ -1759,7 +1781,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   background: rgba(255, 240, 237, .76);
 }
 .closing-soon-head { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
-.closing-soon-head > span { color: var(--coral); font-size: 9px; }
+.closing-soon-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
 .closing-soon-head h3 { margin: 0; color: var(--ink); font-size: 15px; }
 .closing-soon-head small { margin-left: auto; color: var(--muted); font-size: 12px; }
 .closing-soon-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
@@ -1816,15 +1838,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   list-style: none;
 }
 .calendar-disclosure summary::-webkit-details-marker { display: none; }
-.calendar-disclosure summary::after { content: "+"; font-size: 22px; }
-.calendar-disclosure[open] summary::after { content: "−"; }
 .calendar-disclosure summary small { margin-left: auto; color: var(--muted); font-size: 12px; font-weight: 600; }
+.disclosure-icon { flex: 0 0 auto; width: 20px; height: 20px; transition: transform var(--family-motion-fast, 160ms) ease; }
+.calendar-disclosure[open] .disclosure-icon,
+.more-conditions[open] .disclosure-icon { transform: rotate(180deg); }
 .registration-calendar { margin: 0; padding: 0 16px 18px; border: 0; box-shadow: none; }
 .calendar-head { margin-top: 4px; }
 .calendar-nav { width: 48px; min-width: 48px; height: 48px; }
 .calendar-cell { min-width: 0; min-height: 48px; border-radius: 12px; }
 
-.permission-entry, .ad-slot { margin-top: 12px; border-radius: 18px; }
+.permission-entry { margin-top: 12px; border-radius: 18px; }
 .permission-entry {
   width: 100%;
   min-height: 56px;
@@ -1841,8 +1864,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .permission-entry span { grid-area: kicker; color: var(--coral-deep); font-size: 0.72rem; font-weight: 800; }
 .permission-entry strong { grid-area: title; font-size: 0.9rem; font-weight: 700; }
-.permission-entry i { grid-area: go; color: var(--muted); font-style: normal; font-size: 1.1rem; }
-.ad-slot { background: #f0f3f6; }
+.permission-entry > .family-line-icon { grid-area: go; color: var(--muted); }
 .mobile-tabs { border-top-color: var(--line); background: rgba(255, 255, 255, .96); }
 .mobile-tab.active { background: var(--sky-soft); color: var(--navy); }
 
@@ -1880,10 +1902,26 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* ── 로봄 패밀리 공통 하단 내비 시스템 (최종 승자 규칙) ──
    탭 64px·라운드 18px·아이콘 24px 선 1.9·활성=브랜드 연배경+진한 글자. 청약봄 규격과 동일. */
-.mobile-tab { min-height: 64px; border-radius: 18px; gap: 3px; color: var(--muted); }
+.mobile-tab { min-height: 56px; border-radius: 18px; gap: 3px; color: var(--muted); }
 .mobile-tab svg { width: 24px; height: 24px; }
 .mobile-tab strong { font-size: 12px; font-weight: 800; }
 .mobile-tab.active { background: var(--coral-soft); color: var(--coral-deep); }
+
+@media (max-width: 900px) {
+  .mobile-tabs {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: calc(var(--family-nav-height, 72px) + env(safe-area-inset-bottom));
+    gap: 6px;
+    padding: 7px max(12px, env(safe-area-inset-right)) max(7px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 28px 28px 0 0;
+  }
+  .app-shell { padding-bottom: calc(var(--family-nav-height, 72px) + env(safe-area-inset-bottom) + 28px); }
+}
 
 /* 설정 화면의 패밀리 링크와 앱 정보를 한 행씩 읽기 쉽게 정렬한다. */
 
@@ -1900,6 +1938,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .settings-chip { width: 28px; height: 28px; display: grid; place-items: center; color: var(--coral-deep); background: var(--coral-soft); border-radius: 10px; }
 .settings-note { margin: 0; padding: 0 18px 14px; color: var(--ink); font-size: 14.5px; line-height: 1.65; font-weight: 500; }
 .settings-note--muted { color: var(--muted); font-size: 13px; }
+.settings-note--warning { color: #6f2e24; background: var(--coral-soft); margin: 0 18px 10px; padding: 12px 14px; border-radius: 14px; }
 .settings-list { margin: 0; padding: 0 18px 14px 34px; color: var(--ink); font-size: 14.5px; line-height: 1.7; }
 .settings-list li + li { margin-top: 4px; }
 .settings-row { min-height: 68px; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 11px; padding: 10px 16px; color: var(--ink); text-decoration: none; border-top: 1px solid var(--line); }
@@ -1910,14 +1949,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .settings-row em { color: var(--coral-deep); font-size: 0.72rem; font-style: normal; font-weight: 800; }
 .settings-row-go { color: var(--muted); display: grid; place-items: center; }
 .settings-deeplinks { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 18px 16px; }
-.settings-deeplinks .primary-action { min-height: 46px; padding: 0 18px; border: 0; border-radius: 13px; background: var(--coral-deep); color: #fff; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
-.settings-deeplinks .ghost-action { min-height: 46px; padding: 0 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-2); color: var(--ink); font-size: 0.92rem; font-weight: 700; cursor: pointer; }
+.settings-deeplinks .primary-action { min-height: 48px; padding: 0 18px; border: 0; border-radius: 13px; background: var(--coral-deep); color: #fff; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+.settings-deeplinks .ghost-action { min-height: 48px; padding: 0 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-2); color: var(--ink); font-size: 0.92rem; font-weight: 700; cursor: pointer; }
+.button-link { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.settings-consent-row { display: flex; min-height: 76px; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 18px; border-top: 1px solid var(--line); color: var(--ink); cursor: pointer; }
+.settings-consent-row strong, .settings-consent-row small { display: block; }
+.settings-consent-row strong { font-size: 0.94rem; }
+.settings-consent-row small { margin-top: 3px; color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+.settings-consent-row input { flex: 0 0 auto; width: 24px; height: 24px; accent-color: var(--coral-deep); }
 .app-meta-card { min-height: 82px; display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; margin-bottom: 8px; padding: 16px; background: var(--coral-soft); border: 0; border-radius: 24px; box-shadow: none; }
 .app-meta-icon { width: 48px; height: 48px; display: grid; place-items: center; color: var(--coral-deep); background: var(--surface); border-radius: 16px; }
 .app-meta-icon img { display: block; }
 .app-meta-card strong { display: block; font-size: 1rem; }
 .app-meta-card small { display: block; margin-top: 2px; color: var(--muted); font-size: 0.78rem; font-weight: 500; }
 .app-version { color: var(--coral-deep); font-weight: 800; font-size: 0.9rem; }
+.app-meta-list { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; width: 100%; margin: 4px 0 0; overflow: hidden; border: 1px solid rgba(169, 55, 37, .14); border-radius: 14px; background: rgba(255, 255, 255, .55); }
+.app-meta-list div { min-width: 0; padding: 10px 12px; background: rgba(255, 255, 255, .72); }
+.app-meta-list dt { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
+.app-meta-list dd { margin: 3px 0 0; color: var(--ink); font-size: 0.8rem; font-weight: 750; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .app-meta-list { grid-template-columns: 1fr; } }
 @media (min-width: 900px) {
   .settings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; align-items: start; }
   .settings-grid > .app-meta-card { grid-column: 1 / -1; }
@@ -1948,7 +1998,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   background: #fff;
   box-shadow: 0 5px 18px rgba(31, 58, 82, 0.05);
 }
-.race-finder .search-icon { padding-left: 16px; color: var(--navy); font-size: 22px; line-height: 1; }
+.race-finder .search-icon { padding-left: 16px; color: var(--navy); line-height: 1; }
 .race-finder .search-control input {
   width: 100%; min-width: 0; height: 50px; border: 0; padding: 0 12px;
   background: transparent; color: var(--ink); font-size: 16px; font-weight: 700; outline: none;
@@ -2028,12 +2078,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* 조건 더보기 — 접수 마감 포함 */
 .more-conditions { margin: 0 2px 12px; }
 .more-conditions > summary {
-  list-style: none; cursor: pointer; min-height: 40px; display: inline-flex; align-items: center;
+  list-style: none; cursor: pointer; min-height: 48px; display: inline-flex; align-items: center; gap: 6px;
   color: var(--muted); font-size: 13px; font-weight: 700;
 }
 .more-conditions > summary::-webkit-details-marker { display: none; }
-.more-conditions > summary::before { content: "＋ "; }
-.more-conditions[open] > summary::before { content: "－ "; }
 .switch-row {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   min-height: 48px; margin-top: 6px; padding: 0 14px;

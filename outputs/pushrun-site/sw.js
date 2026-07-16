@@ -1,14 +1,24 @@
 // 러닝봄 앱 셸 캐시와 알림 클릭 처리를 담당하는 서비스워커. 캐시 키는 기존 설치 호환용으로 유지한다.
-const CACHE_NAME = "pushrun-v0.16.0";
+const CACHE_PREFIX = "pushrun-v";
+const CACHE_NAME = "pushrun-v0.17.0";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260714-01",
-  "./race-calendar-core.js?v=20260714-01",
-  "./alerts-core.js?v=20260714-01",
-  "./app.js?v=20260714-01",
-  "./races.json?v=20260714-01",
-  "./bom-runningbom.svg?v=20260714-01",
+  "./family/tokens.css?v=20260716-01",
+  "./styles.css?v=20260716-01",
+  "./family/analytics-events.js?v=20260716-01",
+  "./family-analytics.js?v=20260716-01",
+  "./race-calendar-core.js?v=20260716-01",
+  "./alerts-core.js?v=20260716-01",
+  "./family-shell.js?v=20260716-01",
+  "./app.js?v=20260716-01",
+  "./races.json?v=20260716-01",
+  "./family/app-meta.json?v=20260716-01",
+  "./family/settings-contract.json?v=20260716-01",
+  "./family/feature-flags.json?v=20260716-01",
+  "./family/auth-config.json?v=20260716-01",
+  "./family/wordmark.svg?v=20260716-01",
+  "./family/icons.svg?v=20260716-01",
   "./manifest.webmanifest",
   "./icon-v2.svg",
   "./apple-touch-icon-v2.png",
@@ -24,9 +34,17 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+    Promise.all([
+      caches.keys().then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+      ),
+      self.clients.claim()
+    ])
   );
-  self.clients.claim();
 });
 
 self.addEventListener("message", (event) => {

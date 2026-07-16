@@ -1,10 +1,10 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.16.0";
-const ASSET_VERSION = "20260714-01";
+const APP_VERSION = "0.17.0";
+const ASSET_VERSION = "20260716-01";
 const BUILD_SHA = "__BUILD_SHA__";
-const PWA_CACHE_VERSION = "pushrun-v0.16.0";
+const PWA_CACHE_VERSION = "pushrun-v0.17.0";
 const {
   normalizeRaceName,
   raceIdentity,
@@ -68,6 +68,10 @@ let sortedRacesMinute = -1;
 let regionOptionsKey = "";
 let searchApplyTimer = null;
 const raceTimeCache = new WeakMap();
+
+function trackFamilyEvent(eventName, surface = "home") {
+  window.RobomFamilyAnalytics?.track(eventName, { surface });
+}
 
 function loadJson(key, fallback) {
   try {
@@ -563,9 +567,9 @@ function renderRegistrationCalendar() {
 
   target.innerHTML = `
     <div class="calendar-head">
-      <button type="button" class="calendar-nav" data-calendar-nav="prev" aria-label="이전 달">‹</button>
+      <button type="button" class="calendar-nav" data-calendar-nav="prev" aria-label="이전 달"><svg class="family-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg></button>
       <div class="calendar-title"><span>대회 일정 캘린더</span><h2>${year}년 ${month}월</h2></div>
-      <button type="button" class="calendar-nav" data-calendar-nav="next" aria-label="다음 달">›</button>
+      <button type="button" class="calendar-nav" data-calendar-nav="next" aria-label="다음 달"><svg class="family-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></button>
     </div>
     <div class="calendar-weekdays">${CALENDAR_WEEKDAYS.map((label, index) => `<span class="${index === 0 ? "sun" : index === 6 ? "sat" : ""}">${label}</span>`).join("")}</div>
     <div class="calendar-grid">${cells.join("")}</div>`;
@@ -744,7 +748,7 @@ function registrationButtonHtml(race, variant = "mini") {
   const warning = insecure
     ? ` title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다" aria-label="${raceName} 접수 사이트 새 창으로 열기, HTTP 연결 주의"`
     : ` aria-label="${raceName} 접수 사이트 새 창으로 열기"`;
-  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${warning}>${buttonText}</a>`;
+  return `<a class="${classes}" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" data-family-event="official_registration_clicked"${warning}>${buttonText}</a>`;
 }
 
 function alertButtonHtml(race, variant = "mini") {
@@ -816,6 +820,7 @@ function renderSearchResults() {
   renderCategoryTabs();
   renderRegistrationCalendar();
   renderFilterSummary();
+  if (state.query.trim()) trackFamilyEvent("race_search_used");
 }
 
 function scheduleSearchApply() {
@@ -919,13 +924,13 @@ function closingSoonHtml(races) {
   if (!soon.length) return "";
   return `
     <aside class="closing-soon" aria-labelledby="closingSoonTitle">
-      <div class="closing-soon-head"><span aria-hidden="true">●</span><h3 id="closingSoonTitle">마감 임박</h3><small>7일 안에 닫혀요.</small></div>
+      <div class="closing-soon-head"><span class="closing-soon-dot" aria-hidden="true"></span><h3 id="closingSoonTitle">마감 임박</h3><small>7일 안에 닫혀요.</small></div>
       <div class="closing-soon-list">
         ${soon.map((race) => {
           const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
-          const content = `<span>${escapeHtml(cardCountdown(race, now).label)}</span><strong>${escapeHtml(race.name)}</strong><i aria-hidden="true">바로 신청 ›</i>`;
+          const content = `<span>${escapeHtml(cardCountdown(race, now).label)}</span><strong>${escapeHtml(race.name)}</strong><i>바로 신청</i>`;
           return safeUrl
-            ? `<a href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(race.name)} 공식 접수처 바로 열기">${content}</a>`
+            ? `<a href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" data-family-event="official_registration_clicked" aria-label="${escapeHtml(race.name)} 공식 접수처 바로 열기">${content}</a>`
             : `<div>${content}</div>`;
         }).join("")}
       </div>
@@ -1016,7 +1021,7 @@ function raceDetailHtml(race) {
   const safeUrl = /^https?:\/\//i.test(race.registrationUrl || "");
   const insecure = /^http:\/\//i.test(race.registrationUrl || "");
   const officialBlock = safeUrl
-    ? `<a class="detail-official" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer"${insecure ? ' title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다"' : ""} aria-label="${escapeHtml(race.name)} 공식 접수처 새 창으로 열기">공식 접수처 열기</a>`
+    ? `<a class="detail-official" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" data-family-event="official_registration_clicked"${insecure ? ' title="보안 연결(HTTPS)을 지원하지 않는 외부 사이트입니다"' : ""} aria-label="${escapeHtml(race.name)} 공식 접수처 새 창으로 열기">공식 접수처 열기</a>`
     : `<div class="detail-official disabled" role="note">공식 접수처 링크 준비 중</div>`;
   const sourceLine = `${escapeHtml(race.sourceName || "공개 접수 일정")} · 신청 전 공식 페이지 확인`;
 
@@ -1049,9 +1054,9 @@ function raceCardHtml(race) {
   // 이미 접수 중이라 알릴 시점이 없으면 → "지금 접수하기"(공식 접수처).
   const safeRegUrl = /^https?:\/\//i.test(race.registrationUrl || "");
   const alertButton = canAlert
-    ? `<button class="race-alert-btn${alertOn ? " on" : ""}" type="button" data-open-alert="${safeId}" aria-pressed="${alertOn}" aria-label="${escapeHtml(race.name)} 접수 알림 ${alertOn ? "설정됨" : "설정"}">${alertOn ? "✓ 알림 켜짐" : "알림 설정"}</button>`
+    ? `<button class="race-alert-btn${alertOn ? " on" : ""}" type="button" data-open-alert="${safeId}" aria-pressed="${alertOn}" aria-label="${escapeHtml(race.name)} 접수 알림 ${alertOn ? "설정됨" : "설정"}">${alertOn ? "알림 켜짐" : "알림 설정"}</button>`
     : safeRegUrl
-      ? `<a class="race-alert-btn" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(race.name)} 공식 접수처 새 창으로 열기">지금 접수하기</a>`
+      ? `<a class="race-alert-btn" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" data-family-event="official_registration_clicked" aria-label="${escapeHtml(race.name)} 공식 접수처 새 창으로 열기">지금 접수하기</a>`
       : `<span class="race-alert-btn disabled" role="note">공식 접수처 확인</span>`;
   return `
     <article class="race-card-v2" data-race-id="${safeId}" data-expanded="${expanded}" role="listitem">
@@ -1201,18 +1206,18 @@ function renderSyncStatus() {
 
 function renderAppInfo() {
   const appVersion = document.getElementById("appVersionText");
+  const appVersionDetail = document.getElementById("appVersionDetailText");
   const dataVersion = document.getElementById("dataVersionText");
   const buildSha = document.getElementById("buildShaText");
   const cacheVersion = document.getElementById("cacheVersionText");
   if (appVersion) appVersion.textContent = APP_VERSION;
+  if (appVersionDetail) appVersionDetail.textContent = APP_VERSION;
   if (dataVersion) dataVersion.textContent = state.dataVersion || "확인 전";
   if (buildSha) buildSha.textContent = BUILD_SHA.startsWith("__") ? "로컬" : BUILD_SHA;
   if (cacheVersion) cacheVersion.textContent = PWA_CACHE_VERSION;
   const subjectBase = `러닝봄 ${APP_VERSION}`;
   const general = document.getElementById("generalInquiryLink");
-  const ad = document.getElementById("adInquiryLink");
   if (general) general.href = `mailto:hello.robom@gmail.com?subject=${encodeURIComponent(`[${subjectBase}] 일반 문의`)}`;
-  if (ad) ad.href = `mailto:hello.robom@gmail.com?subject=${encodeURIComponent(`[${subjectBase}] 광고·제휴 문의`)}`;
 }
 
 function renderCategoryTabs() {
@@ -1405,6 +1410,7 @@ async function enableAlertFromModal() {
     ?.focus();
   const savedMessage = targets.length > 1 ? `${targets.length}개 종목 알림을 켰어요.` : `${targets[0].ticketLabel || "접수"} 알림을 켰어요.`;
   showToast(permission === "granted" ? savedMessage : `${savedMessage} 브라우저 권한은 꺼져 있어요.`);
+  trackFamilyEvent("alert_enabled", "alerts");
 }
 
 function cancelAlert(subscriptionId) {
@@ -1536,11 +1542,15 @@ function bindEvents() {
       renderRegistrationCalendar();
       renderRaceList();
       renderFilterSummary();
+      trackFamilyEvent("race_filter_applied");
       document.querySelector(`[data-category="${category}"]`)?.focus();
     });
   }
 
   document.addEventListener("click", (event) => {
+    const familyEventTarget = event.target.closest("[data-family-event]");
+    if (familyEventTarget) trackFamilyEvent(familyEventTarget.dataset.familyEvent);
+
     const retryButton = event.target.closest("#retryRaceDataButton");
     if (retryButton) {
       void refreshRaceData();
@@ -1612,6 +1622,7 @@ function bindEvents() {
       const card = document.querySelector(`[data-race-id="${CSS.escape(id)}"]`);
       card?.querySelector("[data-expand-race]")?.focus({ preventScroll: true });
       if (state.expandedRaceId === id) card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (state.expandedRaceId === id) trackFamilyEvent("race_opened");
       return;
     }
 
@@ -1657,6 +1668,7 @@ function bindEvents() {
       renderCategoryTabs();
       renderRegistrationCalendar();
       renderFilterSummary();
+      trackFamilyEvent("race_filter_applied");
       document.querySelector(`[data-distance-filter="${distance}"]`)?.focus();
     }
   });
@@ -1671,6 +1683,7 @@ function bindEvents() {
     renderCategoryTabs();
     renderRegistrationCalendar();
     renderFilterSummary();
+    trackFamilyEvent("race_filter_applied");
   });
 
   // 정렬: 대회일/접수일/지역순 즉시 적용.

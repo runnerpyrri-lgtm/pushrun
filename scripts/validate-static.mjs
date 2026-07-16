@@ -10,9 +10,17 @@ const calendarCore = readFileSync(join(site, "race-calendar-core.js"), "utf8");
 const styles = readFileSync(join(site, "styles.css"), "utf8");
 const html = readFileSync(join(site, "index.html"), "utf8");
 const sw = readFileSync(join(site, "sw.js"), "utf8");
+const familyAnalytics = readFileSync(join(site, "family-analytics.js"), "utf8");
+const familyShell = readFileSync(join(site, "family-shell.js"), "utf8");
 const manifest = JSON.parse(readFileSync(join(site, "manifest.webmanifest"), "utf8"));
 const data = JSON.parse(readFileSync(join(site, "races.json"), "utf8"));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+const familyMeta = JSON.parse(readFileSync(join(root, "generated", "robom-family", "app-meta.json"), "utf8"));
+const familySettings = JSON.parse(readFileSync(join(root, "generated", "robom-family", "settings-contract.json"), "utf8"));
+const familyFeatureFlags = JSON.parse(readFileSync(join(root, "generated", "robom-family", "feature-flags.json"), "utf8"));
+const familyAuth = JSON.parse(readFileSync(join(root, "generated", "robom-family", "auth-config.json"), "utf8"));
+const familyLock = JSON.parse(readFileSync(join(root, "family.lock.json"), "utf8"));
+const FAMILY_SOURCE_COMMIT = "5a63eab4f6930837f9877efd187562b85530a81a";
 
 // ── 신선도 기준(상수) ─────────────────────────────────────────────
 // 접수 예정(오픈 시각이 미래) 대회가 이 수 미만이면 FAIL.
@@ -31,8 +39,8 @@ const all = [...featured, ...schedule];
 
 if (featured.length === 0) errors.push("featuredRaces가 비어 있습니다.");
 if (schedule.length === 0) errors.push("scheduleFeed가 비어 있습니다.");
-if (!manifest.start_url || !Array.isArray(manifest.icons) || manifest.icons.length === 0) {
-  errors.push("PWA manifest의 start_url 또는 icons가 없습니다.");
+if (!manifest.id || !manifest.start_url || !manifest.scope || !Array.isArray(manifest.icons) || manifest.icons.length === 0) {
+  errors.push("PWA manifest의 id, start_url, scope 또는 icons가 없습니다.");
 }
 
 // app.js 가 역참조하는 필수 필드: 하나라도 비면 런타임에서 앱 전체가 죽거나 카드가 깨진다.
@@ -148,11 +156,44 @@ if (appVersion !== pkg.version) errors.push(`앱 버전 불일치: package=${pkg
 if (
   !assetVersion ||
   !html.includes(`app.js?v=${assetVersion}`) ||
+  !html.includes(`family-analytics.js?v=${assetVersion}`) ||
+  !html.includes(`family-shell.js?v=${assetVersion}`) ||
+  !html.includes(`family/analytics-events.js?v=${assetVersion}`) ||
+  !html.includes(`family/tokens.css?v=${assetVersion}`) ||
   !html.includes(`race-calendar-core.js?v=${assetVersion}`) ||
   !html.includes(`alerts-core.js?v=${assetVersion}`) ||
   !html.includes(`styles.css?v=${assetVersion}`)
 ) {
   errors.push("app.js의 ASSET_VERSION과 index.html 캐시버스트가 다릅니다.");
+}
+if (!html.includes(`name="application-version" content="${pkg.version}"`)) {
+  errors.push("HTML application-version과 package.json 버전이 다릅니다.");
+}
+if (familyLock.sourceCommit !== FAMILY_SOURCE_COMMIT) {
+  errors.push(`family.lock.json sourceCommit 불일치: ${familyLock.sourceCommit}`);
+}
+if (familyLock.familySpecVersion !== familyMeta.familySpecVersion || familyMeta.id !== "runningbom") {
+  errors.push("패밀리 lock과 RunningBom 메타데이터가 일치하지 않습니다.");
+}
+if (familyMeta.version !== pkg.version) {
+  errors.push(`패밀리 app-meta 버전 drift: package=${pkg.version}, app-meta=${familyMeta.version}`);
+}
+for (const name of ["feature-flags.json", "auth-config.json"]) {
+  if (!familyLock.files?.[name]) errors.push(`${name}이 family.lock.json에 없습니다.`);
+  if (!sw.includes(`./family/${name}?v=${assetVersion}`)) errors.push(`${name}이 PWA 앱 셸 캐시에 없습니다.`);
+}
+if (familyFeatureFlags.ads?.enabled || familyFeatureFlags.analytics?.enabled) {
+  errors.push("패밀리 feature flag의 광고·분석 기본값은 비활성이어야 합니다.");
+}
+if (!familyFeatureFlags.analytics?.consentRequired) {
+  errors.push("패밀리 분석 feature flag는 명시적 동의를 요구해야 합니다.");
+}
+if (familyAuth.namespace !== "runningbom" || familyAuth.guestFirst !== true) {
+  errors.push("패밀리 auth config는 runningbom guest-first여야 합니다.");
+}
+const familyAppIds = familyMeta.familyApps?.map((item) => item.id).sort() || [];
+if (familyAppIds.join(",") !== ["calendarbom", "certbom", "homebom", "outbom", "runningbom"].join(",")) {
+  errors.push("설정용 패밀리 메타데이터에 5개 앱 전체가 없습니다.");
 }
 
 // sw.js: CACHE_NAME(pushrun-vX.Y.Z)은 package.json 버전과, APP_SHELL 의 ?v= 는 ASSET_VERSION 과 일치해야 한다.
@@ -169,6 +210,23 @@ if (swBustVersions.length === 0 || swBustVersions.some((version) => version !== 
 }
 if (!sw.includes(`./alerts-core.js?v=${assetVersion}`)) {
   errors.push("sw.js APP_SHELL 에 alerts-core.js 가 없습니다 (오프라인 셸에서 앱이 깨집니다).");
+}
+for (const familyAsset of [
+  "./family/tokens.css",
+  "./family/analytics-events.js",
+  "./family/app-meta.json",
+  "./family/settings-contract.json",
+  "./family/wordmark.svg",
+  "./family/icons.svg",
+  "./family-analytics.js",
+  "./family-shell.js"
+]) {
+  if (!sw.includes(`${familyAsset}?v=${assetVersion}`)) {
+    errors.push(`sw.js APP_SHELL 패밀리 자산 누락: ${familyAsset}`);
+  }
+}
+if (!sw.includes('const CACHE_PREFIX = "pushrun-v"') || !sw.includes("key.startsWith(CACHE_PREFIX)")) {
+  errors.push("서비스워커가 러닝봄 own prefix 캐시만 정리하지 않습니다.");
 }
 if (!sw.includes(`./race-calendar-core.js?v=${assetVersion}`) || !calendarCore.includes("buildRaceCalendarEvents")) {
   errors.push("대회 일정 캘린더 core가 HTML·서비스워커에 일관되게 포함되지 않았습니다.");
@@ -197,10 +255,11 @@ if (!html.includes('class="race-finder"') || !html.includes('placeholder="대회
 if (
   !html.includes('<strong class="brand-prefix">러닝</strong>') ||
   !html.includes('class="brand-bom"') ||
-  !html.includes("bom-runningbom.svg") ||
-  !sw.includes(`./bom-runningbom.svg?v=${assetVersion}`)
+  !html.includes(`family/wordmark.svg?v=${assetVersion}`) ||
+  !sw.includes(`./family/wordmark.svg?v=${assetVersion}`) ||
+  html.includes("bom-runningbom.svg")
 ) {
-  errors.push("러닝봄의 기존 커스텀 봄 트레이드마크가 HTML·서비스워커에 일관되게 포함되지 않았습니다.");
+  errors.push("중앙 패밀리 봄 wordmark가 HTML·서비스워커에 일관되게 연결되지 않았습니다.");
 }
 if (!html.includes('id="buildShaText"') || !app.includes('const BUILD_SHA = "__BUILD_SHA__"')) {
   errors.push("설정 화면의 운영 빌드 식별자가 없습니다.");
@@ -217,14 +276,52 @@ if (!app.includes("const INITIAL_RACE_LIMIT = 20") || !app.includes("data-load-m
 if (!app.includes("sortOpenRaces") || !calendarCore.includes("cardCountdown")) {
   errors.push("마감 임박 정렬 또는 의미가 포함된 카드 카운트다운이 없습니다.");
 }
-if ((styles.match(/:root\s*\{/g) || []).length !== 1 || !styles.includes("--page: #f7f5f1") || !styles.includes("radial-gradient")) {
-  errors.push("Dawn Run 테마 토큰과 배경이 하나의 루트로 통합되지 않았습니다.");
+if ((styles.match(/:root\s*\{/g) || []).length !== 1 || !styles.includes("--page: var(--app-page") || !styles.includes("--family-nav-height") || !styles.includes("radial-gradient")) {
+  errors.push("패밀리 생성 토큰과 RunningBom 배경이 실제 CSS에 연결되지 않았습니다.");
 }
-if (!html.includes('class="ad-slot" aria-label="광고 자리" aria-disabled="true" hidden')) {
-  errors.push("비활성 광고 영역이 홈에서 숨겨지지 않았습니다.");
+if (/ad-slot|광고 자리/.test(`${html}\n${styles}\n${app}`)) {
+  errors.push("hidden 또는 visible 광고 placeholder가 남아 있습니다.");
 }
 if (!app.includes("sortedRacesSource === state.races")) {
   errors.push("대회 정렬 결과 캐시가 없어 필터 렌더마다 전체 정렬이 반복됩니다.");
+}
+if (/[⌕›‹×⌂♧⚙]/.test(`${html}\n${app}`)) {
+  errors.push("문자 임시 아이콘이 HTML 또는 동적 UI에 남아 있습니다.");
+}
+if (!html.includes("family/icons.svg#family-icon-search") || !html.includes("family/icons.svg#family-icon-settings")) {
+  errors.push("중앙 패밀리 선형 SVG 내비 아이콘이 연결되지 않았습니다.");
+}
+if (!styles.includes("min-height: calc(var(--family-nav-height") || !styles.includes("env(safe-area-inset-bottom)")) {
+  errors.push("48px 이상 하단 내비 높이 또는 safe-area 처리가 없습니다.");
+}
+const requiredSettingsIds = [
+  "installAppButton",
+  "checkUpdateButton",
+  "stableInstallLink",
+  "familyAppsList",
+  "supportLink",
+  "privacyLink",
+  "analyticsConsentToggle",
+  "familySpecVersionText",
+  "deploymentProviderText"
+];
+if (requiredSettingsIds.some((id) => !html.includes(`id="${id}"`))) {
+  errors.push("패밀리 설정의 설치·5앱·지원·개인정보·앱 메타 흐름이 불완전합니다.");
+}
+if (!familySettings.sections.includes("install-and-update") || !familySettings.sections.includes("app-meta")) {
+  errors.push("생성된 설정 계약에 필수 패밀리 섹션이 없습니다.");
+}
+if (!familyShell.includes('addEventListener("beforeinstallprompt"') || !familyShell.includes("navigator.standalone") || !familyShell.includes("홈 화면에 추가")) {
+  errors.push("자체 PWA 설치 CTA의 beforeinstallprompt 또는 iOS fallback이 없습니다.");
+}
+if (!familyAnalytics.includes("let provider = null") || !familyAnalytics.includes("if (!contract.events.includes(eventName) || !getConsent() || !provider) return false")) {
+  errors.push("개인정보 최소 분석 adapter가 기본 noop·동의 확인을 보장하지 않습니다.");
+}
+if (!html.includes("실행 중일 때만") || !html.includes("서버 푸시는 제공하지 않습니다")) {
+  errors.push("웹 알림이 실행 중에만 확인된다는 한계 안내가 정확하지 않습니다.");
+}
+for (const [name, source] of [["family-analytics.js", familyAnalytics], ["family-shell.js", familyShell]]) {
+  if (!source.startsWith("// ")) errors.push(`${name} 첫 줄에 한국어 역할 주석이 없습니다.`);
 }
 
 if (errors.length > 0) {

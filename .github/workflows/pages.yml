@@ -26,9 +26,15 @@ jobs:
         with:
           node-version: 22
       - name: JavaScript 문법 검사
-        run: node --check outputs/pushrun-site/app.js && node --check outputs/pushrun-site/sw.js && node --check outputs/pushrun-site/alerts-core.js && node --check outputs/pushrun-site/race-calendar-core.js
+        run: node --check outputs/pushrun-site/app.js && node --check outputs/pushrun-site/family-analytics.js && node --check outputs/pushrun-site/family-shell.js && node --check outputs/pushrun-site/sw.js && node --check outputs/pushrun-site/alerts-core.js && node --check outputs/pushrun-site/race-calendar-core.js
       - name: 정적 자산·대회 데이터 검사
         run: npm test
+      - name: 네이티브 의존성 설치
+        run: npm --prefix apps/mobile ci
+      - name: Android·iOS 네이티브 검증
+        run: npm --prefix apps/mobile run check && npm --prefix apps/mobile run export:native
+      - name: Production dependency audit
+        run: npm run audit:prod
 
   deploy:
     if: github.event_name != 'pull_request'

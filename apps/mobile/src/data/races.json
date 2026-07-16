@@ -1,0 +1,66 @@
+{
+  "revision": "2026-07-16",
+  "source": "RunningBom 웹 대회 데이터에서 선별한 번들 샘플",
+  "races": [
+    {
+      "id": "wyd-life-run-2026",
+      "name": "WYD와 함께하는 생명사랑 마라톤/걷기 대회",
+      "region": "경기",
+      "venue": "안성 미리내 성지",
+      "raceDate": "2026-10-09",
+      "distances": ["10K", "5K"],
+      "registrationOpensAt": "2026-08-02T09:00:00+09:00",
+      "registrationTimeConfirmed": true,
+      "officialUrl": "https://cafe.naver.com/browna6seu",
+      "sourceName": "마라톤온라인"
+    },
+    {
+      "id": "daegu-bukgu-love-2026",
+      "name": "제22회 대구 북구사랑 마라톤",
+      "region": "대구",
+      "venue": "금호강 산격야영장",
+      "raceDate": "2026-10-18",
+      "distances": ["10K", "5K"],
+      "registrationOpensAt": "2026-08-03T00:00:00+09:00",
+      "registrationTimeConfirmed": false,
+      "officialUrl": "http://maraton.dbsfa365.co.kr/",
+      "sourceName": "마라톤온라인"
+    },
+    {
+      "id": "ulsan-human-rights-2026",
+      "name": "제21회 울산인권마라톤",
+      "region": "울산",
+      "venue": "태화강 둔치",
+      "raceDate": "2026-11-01",
+      "distances": ["Half", "10K", "5K"],
+      "registrationOpensAt": "2026-08-18T00:00:00+09:00",
+      "registrationTimeConfirmed": false,
+      "officialUrl": "http://www.humanrun.org",
+      "sourceName": "마라톤온라인"
+    },
+    {
+      "id": "yeongcheon-dam-2026",
+      "name": "2026 영천댐 마라톤",
+      "region": "경북",
+      "venue": "영천댐 하류공원",
+      "raceDate": "2026-11-07",
+      "distances": ["Half", "10K", "5K"],
+      "registrationOpensAt": "2026-09-01T00:00:00+09:00",
+      "registrationTimeConfirmed": false,
+      "officialUrl": "http://runyc.kr",
+      "sourceName": "마라톤온라인"
+    },
+    {
+      "id": "yeongnam-alps-half-2026",
+      "name": "제4회 영남알프스 전국 하프마라톤",
+      "region": "울산",
+      "venue": "울주군 영남알프스 일원",
+      "raceDate": "2026-11-15",
+      "distances": ["Half", "10K", "5K"],
+      "registrationOpensAt": "2026-09-01T00:00:00+09:00",
+      "registrationTimeConfirmed": false,
+      "officialUrl": "http://xn--q20bn3kn1bg9oekd84a785cnfg.kr/",
+      "sourceName": "마라톤온라인"
+    }
+  ]
+}

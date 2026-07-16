@@ -9,6 +9,7 @@
 - 동작/대회 데이터: `outputs/pushrun-site/app.js`
 - 대회 데이터: `outputs/pushrun-site/races.json`
 - 디자인: `outputs/pushrun-site/styles.css`
+- 독립 Android·iOS 앱: `apps/mobile`
 
 ## 실행
 
@@ -17,6 +18,30 @@ npm start
 ```
 
 브라우저에서 `http://127.0.0.1:4173/` 을 열면 됩니다.
+
+설정에서는 로봄 패밀리 5개 앱, 앱 메타데이터, 설치·업데이트, 문의, 개인정보 및 분석 동의 상태를 확인할 수 있습니다. 설치 버튼은 지원 브라우저의 PWA 설치 창을 열고, iOS Safari에서는 홈 화면 추가 방법을 안내합니다.
+
+웹 알림의 브라우저 타이머는 RunningBom이 열려 실행 중일 때만 확인합니다. 서버 푸시 알림은 제공하지 않습니다.
+
+## 로봄 패밀리 정본
+
+패밀리 생성물은 로봄 중앙 정본의 immutable commit `5a63eab4f6930837f9877efd187562b85530a81a`에서 동기화합니다.
+
+```bash
+node ../robom/ops/scripts/family/sync-app.mjs \
+  --app runningbom \
+  --target "$PWD/generated/robom-family" \
+  --lock "$PWD/family.lock.json" \
+  --flavor vanilla \
+  --source-commit 5a63eab4f6930837f9877efd187562b85530a81a
+npm run build
+```
+
+`npm run build`는 생성물 해시를 확인한 뒤 실제 정적 사이트의 `outputs/pushrun-site/family`로 복사합니다. 패밀리 계약 CI도 같은 immutable commit의 reusable workflow를 사용합니다.
+
+## 네이티브 앱
+
+`apps/mobile`은 Expo SDK 57 기반의 독립 React Native 프로젝트입니다. 번들 대회를 지역·거리로 고르고, 정확한 접수 시작 시각이 확인된 대회는 기기 로컬 알림을 예약하며, 공식 대회 페이지를 운영체제 브라우저로 엽니다. 실행·EAS 프로필·스토어 제출 전 절차는 `apps/mobile/README.md`에 정리되어 있습니다.
 
 ## 배포
 

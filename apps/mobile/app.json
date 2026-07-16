@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "러닝봄",
+    "slug": "runningbom",
+    "version": "0.17.0",
+    "description": "지역·거리·접수 상태로 러닝 대회를 찾고 공식 접수 시작 알림을 준비하는 러닝봄",
+    "orientation": "portrait",
+    "scheme": "runningbom",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "kr.robom.runningbom",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "러닝봄"
+      },
+      "associatedDomains": [
+        "applinks:robom.kr"
+      ]
+    },
+    "android": {
+      "package": "kr.robom.runningbom",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#FFF8F4",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": true,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [
+            {
+              "scheme": "runningbom"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "robom.kr",
+              "pathPrefix": "/get/runningbom"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "plugins": [
+      "expo-notifications"
+    ]
+  }
+}
