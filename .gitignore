@@ -7,4 +7,5 @@ outputs/cloudflared*
 *.tmp
 *.bak
 .vercel
+.vercel-static/
 .env*

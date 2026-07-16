@@ -20,6 +20,8 @@ const familySettings = JSON.parse(readFileSync(join(root, "generated", "robom-fa
 const familyFeatureFlags = JSON.parse(readFileSync(join(root, "generated", "robom-family", "feature-flags.json"), "utf8"));
 const familyAuth = JSON.parse(readFileSync(join(root, "generated", "robom-family", "auth-config.json"), "utf8"));
 const familyLock = JSON.parse(readFileSync(join(root, "family.lock.json"), "utf8"));
+const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
+const vercelBuild = readFileSync(join(root, "scripts", "build-vercel.mjs"), "utf8");
 const FAMILY_SOURCE_COMMIT = "fe655b865edb5ad2c037e117143684c6dae9f5eb";
 
 // ── 신선도 기준(상수) ─────────────────────────────────────────────
@@ -36,6 +38,13 @@ const httpLinks = [];
 const featured = Array.isArray(data.featuredRaces) ? data.featuredRaces : [];
 const schedule = Array.isArray(data.scheduleFeed) ? data.scheduleFeed : [];
 const all = [...featured, ...schedule];
+
+if (vercelConfig.buildCommand !== "node scripts/build-vercel.mjs" || vercelConfig.outputDirectory !== ".vercel-static") {
+  errors.push("Vercel 정적 미러가 빌드 SHA 주입 산출물을 배포하지 않습니다.");
+}
+if (!vercelBuild.includes("VERCEL_GIT_COMMIT_SHA") || !vercelBuild.includes('replaceAll("__BUILD_SHA__"')) {
+  errors.push("Vercel 빌드가 운영 Git SHA를 app.js에 주입하지 않습니다.");
+}
 
 if (/cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com|unpkg\.com/.test(html)) {
   errors.push("첫 화면에 외부 CDN 글꼴 또는 설치 자산 의존이 남아 있습니다.");
