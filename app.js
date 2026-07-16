@@ -1,10 +1,10 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.17.2";
-const ASSET_VERSION = "20260716-03";
-const BUILD_SHA = "94667c2";
-const PWA_CACHE_VERSION = "pushrun-v0.17.2";
+const APP_VERSION = "0.17.3";
+const ASSET_VERSION = "20260717-01";
+const BUILD_SHA = "ec414c8";
+const PWA_CACHE_VERSION = "pushrun-v0.17.3";
 const {
   normalizeRaceName,
   raceIdentity,

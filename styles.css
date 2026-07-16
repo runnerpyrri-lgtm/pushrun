@@ -2006,7 +2006,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .race-finder .search-control input:focus { box-shadow: none; }
 .race-finder .search-control:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(38, 127, 174, 0.2); }
 .race-finder #clearSearchButton {
-  margin-right: 8px; min-width: 44px; min-height: 40px; border: 0; border-radius: 10px;
+  margin-right: 8px; min-width: 48px; min-height: 48px; border: 0; border-radius: 10px;
   background: #f1f4f7; color: var(--muted); font-size: 13px; font-weight: 800;
 }
 .region-select-box { position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
@@ -2066,8 +2066,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 #filterSummaryContext { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
 .sort-select-box { position: relative; flex: 0 0 auto; }
 .sort-select-box select {
-  min-height: 42px; border: 1px solid #dbe3e8; border-radius: 12px; background: #fff;
-  color: var(--ink); font-size: 13px; font-weight: 700; padding: 0 30px 0 10px; outline: none;
+  /* 48px 터치·16px 글자: iOS 자동 확대와 작은 터치 타깃을 함께 방지한다. */
+  min-height: 48px; border: 1px solid #dbe3e8; border-radius: 12px; background: #fff;
+  color: var(--ink); font-size: 16px; font-weight: 700; padding: 0 30px 0 10px; outline: none;
   appearance: none; -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2317324a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 9px center;
@@ -2076,7 +2077,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* 전체 초기화 (필터 걸릴 때만) */
 .reset-row { margin: 0 2px 12px; }
-.reset-row .text-btn { min-height: 40px; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: underline; padding: 0; cursor: pointer; }
+.reset-row .text-btn { min-height: 48px; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: underline; padding: 0 4px; cursor: pointer; }
 
 /* 조건 더보기 — 접수 마감 포함 */
 .more-conditions { margin: 0 2px 12px; }
