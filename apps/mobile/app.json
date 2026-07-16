@@ -2,16 +2,16 @@
   "expo": {
     "name": "러닝봄",
     "slug": "runningbom",
-    "version": "0.17.2",
+    "version": "0.17.3",
     "description": "지역·거리·접수 상태로 러닝 대회를 찾고 공식 접수 시작 알림을 준비하는 러닝봄",
-    "orientation": "portrait",
+    "orientation": "default",
     "scheme": "runningbom",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "kr.robom.runningbom",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPlist": {
         "CFBundleDisplayName": "러닝봄"
       },
@@ -21,7 +21,7 @@
     },
     "android": {
       "package": "kr.robom.runningbom",
-      "versionCode": 1,
+      "versionCode": 2,
       "permissions": [
         "android.permission.POST_NOTIFICATIONS"
       ],

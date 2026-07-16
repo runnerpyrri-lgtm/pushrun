@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -78,6 +79,8 @@ function ChoiceRow<T extends string>({
 }
 
 function AppScreen() {
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const deepLinkUrl = Linking.useLinkingURL();
   const [region, setRegion] = useState<RegionFilter>('전체');
   const [distance, setDistance] = useState<DistanceFilter>('전체');
@@ -208,12 +211,12 @@ function AppScreen() {
   return (
     <SafeAreaView edges={['top', 'right', 'bottom', 'left']} style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.page}>
+      <ScrollView contentContainerStyle={[styles.page, isTablet && styles.pageTablet]}>
         <View style={styles.header}>
           <Text accessibilityRole="header" style={styles.wordmark}>
             러닝<Text style={styles.wordmarkAccent}>봄</Text>
           </Text>
-          <Text style={styles.version}>Native 0.17.2</Text>
+          <Text style={styles.version}>Native 0.17.3</Text>
         </View>
 
         <View style={styles.intro}>
@@ -254,13 +257,13 @@ function AppScreen() {
           <Text style={styles.revision}>데이터 {bundledRevision}</Text>
         </View>
 
-        <View style={styles.raceList}>
+        <View style={[styles.raceList, isTablet && styles.raceListTablet]}>
           {visibleRaces.map((race) => {
             const focused = race.id === focusedRaceId;
             const scheduled = Boolean(scheduledRaceIds[race.id]);
             const busy = race.id === busyRaceId;
             return (
-              <View key={race.id} style={[styles.raceCard, focused && styles.raceCardFocused]}>
+              <View key={race.id} style={[styles.raceCard, isTablet && styles.raceCardTablet, focused && styles.raceCardFocused]}>
                 <View style={styles.raceTopline}>
                   <Text style={styles.region}>{race.region}</Text>
                   <Text style={styles.distances}>{race.distances.join(' · ')}</Text>
@@ -377,6 +380,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 36,
+  },
+  pageTablet: {
+    width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingHorizontal: 32,
   },
   header: {
     minHeight: 56,
@@ -496,12 +505,21 @@ const styles = StyleSheet.create({
   raceList: {
     gap: 14,
   },
+  raceListTablet: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'stretch',
+  },
   raceCard: {
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
     borderRadius: 22,
     padding: 18,
+  },
+  raceCardTablet: {
+    flexBasis: '48%',
+    flexGrow: 1,
   },
   raceCardFocused: {
     borderColor: colors.coral,

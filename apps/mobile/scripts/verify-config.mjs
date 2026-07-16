@@ -12,14 +12,15 @@ const assert = (condition, message) => {
   }
 };
 
-const [packageJson, appJson, easJson, raceData] = await Promise.all([
+const [packageJson, rootPackageJson, appJson, easJson, raceData] = await Promise.all([
   readJson('package.json'),
+  readJson('../../package.json'),
   readJson('app.json'),
   readJson('eas.json'),
   readJson('src/data/races.json'),
 ]);
 
-assert(packageJson.version === '0.17.2', '모바일 버전은 0.17.2이어야 합니다.');
+assert(packageJson.version === rootPackageJson.version, '웹·모바일 앱 버전이 일치해야 합니다.');
 assert(packageJson.dependencies.expo === '~57.0.6', 'Expo SDK 57 버전이 고정되지 않았습니다.');
 assert(packageJson.dependencies.react === '19.2.3', 'React 19.2.3이 필요합니다.');
 assert(packageJson.dependencies['react-native'] === '0.86.0', 'React Native 0.86.0이 필요합니다.');
@@ -27,6 +28,8 @@ assert(!packageJson.dependencies['react-native-webview'], 'WebView 의존성은 
 assert(appJson.expo.scheme === 'runningbom', '앱 scheme은 runningbom이어야 합니다.');
 assert(appJson.expo.android.package === 'kr.robom.runningbom', 'Android package가 일치하지 않습니다.');
 assert(appJson.expo.ios.bundleIdentifier === 'kr.robom.runningbom', 'iOS bundleIdentifier가 일치하지 않습니다.');
+assert(appJson.expo.orientation === 'default', '휴대폰·태블릿 회전을 모두 지원해야 합니다.');
+assert(appJson.expo.ios.supportsTablet === true, 'iPad 지원이 켜져 있어야 합니다.');
 assert(typeof appJson.expo.description === 'string' && appJson.expo.description.length >= 20, '스토어 설명이 필요합니다.');
 assert(appJson.expo.plugins.includes('expo-notifications'), 'expo-notifications 플러그인이 필요합니다.');
 assert(
