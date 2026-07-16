@@ -6,9 +6,9 @@
   --surface-2: #f3f6f8;
   --soft: #f3f6f8;
   --ink: var(--app-ink, #1d3047);
-  --muted: var(--app-muted, #6c756f);
+  --muted: #56615b;
   --line: var(--family-border, #dfe6e2);
-  --coral: var(--app-brand, #f35f46);
+  --coral: var(--app-brand-deep, #a93725);
   --coral-soft: var(--app-brand-soft, #ffebe6);
   --coral-deep: var(--app-brand-deep, #a93725);
   --coral-strong: #173f5f;
