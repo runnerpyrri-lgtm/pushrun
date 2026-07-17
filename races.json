@@ -1,5 +1,5 @@
 {
-  "version": "2026.07.12-race-data-10",
+  "version": "2026.07.16-race-data-11",
   "sources": [
     "마라톤온라인",
     "마라톤GO",
@@ -126,26 +126,6 @@
       "popularity": 92,
       "sourceName": "대구마라톤 공식",
       "note": "풀코스/단체 9월 17일 10시, 10km/건강달리기 9월 22일 10시 오픈으로 공지됐습니다."
-    },
-    {
-      "id": "seoul-international",
-      "name": "2026 서울마라톤",
-      "region": "서울",
-      "city": "광화문",
-      "venue": "광화문광장",
-      "raceDate": "2026-03-15T08:00:00+09:00",
-      "registrationOpenAt": "2025-06-09T19:00:00+09:00",
-      "registrationCloseAt": "2026-06-10T23:59:00+09:00",
-      "registrationUrl": "https://dongma.club",
-      "distances": [
-        "Full",
-        "10K"
-      ],
-      "status": "closed",
-      "capacity": 38000,
-      "popularity": 98,
-      "sourceName": "동마클럽 · 마라톤GO",
-      "note": "접수처는 동마클럽으로 확인됩니다."
     },
     {
       "id": "seoul-half",
@@ -409,7 +389,7 @@
     },
     {
       "date": "2026-07-19",
-      "status": "open",
+      "status": "closed",
       "name": "2026 청계산.인릉산 Trail Run",
       "region": "서울",
       "venue": "화물터미널 청계산옛골",
@@ -603,7 +583,7 @@
     },
     {
       "date": "2026-08-15",
-      "status": "open",
+      "status": "closed",
       "name": "영남알프스9봉 트레일 레이스",
       "region": "경남",
       "venue": "청운산장",
@@ -776,7 +756,7 @@
     },
     {
       "date": "2026-09-05",
-      "status": "open",
+      "status": "closed",
       "name": "2026 하반기 JUST RUN10 세종",
       "region": "세종",
       "venue": "세종마루공원 밑 금강변",
@@ -1738,7 +1718,7 @@
     },
     {
       "date": "2026-10-18",
-      "status": "open",
+      "status": "closed",
       "name": "제25회 대청호마라톤",
       "region": "대전",
       "venue": "대청공원",
@@ -1850,7 +1830,7 @@
     },
     {
       "date": "2026-10-25",
-      "status": "open",
+      "status": "closed",
       "name": "2026 광명평화마라톤",
       "region": "경기",
       "venue": "광명역 일원",
@@ -2123,7 +2103,7 @@
     },
     {
       "date": "2026-11-08",
-      "status": "open",
+      "status": "closed",
       "name": "2026 양산 배내골 애플 런",
       "region": "경남",
       "venue": "장선마을 회관 앞 운동장",
