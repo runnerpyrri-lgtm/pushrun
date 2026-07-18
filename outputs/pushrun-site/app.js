@@ -1,10 +1,10 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.17.3";
+const APP_VERSION = "0.17.4";
 const ASSET_VERSION = "20260718-01";
 const BUILD_SHA = "__BUILD_SHA__";
-const PWA_CACHE_VERSION = "pushrun-v0.17.3";
+const PWA_CACHE_VERSION = "pushrun-v0.17.4";
 const {
   normalizeRaceName,
   raceIdentity,
@@ -1059,7 +1059,7 @@ function raceCardHtml(race) {
       ? `<a class="race-alert-btn" href="${escapeHtml(race.registrationUrl)}" target="_blank" rel="noopener noreferrer" data-family-event="official_registration_clicked" aria-label="${escapeHtml(race.name)} 공식 접수처 새 창으로 열기">지금 접수하기</a>`
       : `<span class="race-alert-btn disabled" role="note">공식 접수처 확인</span>`;
   return `
-    <article class="race-card-v2" data-race-id="${safeId}" data-expanded="${expanded}" role="listitem">
+    <article class="race-card-v2" data-race-id="${safeId}" data-expanded="${expanded}" role="listitem" tabindex="-1">
       <span class="race-accent" aria-hidden="true" style="background:${tone.accent}"></span>
       <div class="race-card-top">
         <div class="race-status-wrap">
@@ -1562,8 +1562,8 @@ function bindEvents() {
       const previousCount = state.visibleRaceCount;
       state.visibleRaceCount += INITIAL_RACE_LIMIT;
       renderRaceList();
-      document.querySelectorAll(".race-card")[previousCount]?.focus?.({ preventScroll: true });
-      document.querySelectorAll(".race-card")[previousCount]?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.querySelectorAll(".race-card-v2")[previousCount]?.focus?.({ preventScroll: true });
+      document.querySelectorAll(".race-card-v2")[previousCount]?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
