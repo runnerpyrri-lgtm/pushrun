@@ -2251,9 +2251,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* ── 글로벌 ── */
 body {
-  background:
-    radial-gradient(circle at 88% -6%, rgba(216, 243, 55, 0.20), transparent 30rem),
-    var(--grouped);
+  background: var(--grouped);
   color: var(--ink);
   font-family: var(--font);
   font-size: 17px;
@@ -2287,11 +2285,13 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .settings-consent-row small,
 .app-meta-card small { font-weight: 400; }
 
-/* ── 상단바(헤더) ── */
+/* ── 상단바(헤더): 아래 콘텐츠 배경(--grouped)과 완전히 동일한 색 + 헤어라인 한 줄만.
+   그라디언트·그림자·둥근 모서리를 없애 "결계"처럼 분리돼 보이던 이질감 제거. ── */
 .topbar {
-  background: linear-gradient(180deg, var(--volt-soft) 0%, rgba(255, 255, 255, 0.96) 100%);
-  border-bottom: 1px solid var(--hairline);
-  box-shadow: 0 10px 26px rgba(35, 40, 20, 0.10);
+  background: var(--grouped);
+  border-bottom: .5px solid var(--hairline);
+  border-radius: 0;
+  box-shadow: none;
 }
 .brand-mark { box-shadow: 0 10px 24px rgba(35, 40, 20, 0.14); }
 .icon-btn { color: var(--volt-text); border-color: var(--hairline); }
@@ -2474,7 +2474,8 @@ h1, h2, h3 { letter-spacing: -0.02em; }
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-top: 0.5px solid var(--hairline);
-  box-shadow: 0 -8px 24px rgba(35, 40, 20, 0.06);
+  border-radius: 0;
+  box-shadow: none;
 }
 .mobile-tab { color: var(--muted); }
 .mobile-tab.active { background: transparent; color: var(--volt-text); }

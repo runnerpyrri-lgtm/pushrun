@@ -4,14 +4,14 @@
   "name": "러닝봄",
   "englishName": "RunningBom",
   "repo": "robom-labs/runningbom",
-  "version": "0.17.7",
+  "version": "0.17.8",
   "webUrl": "https://robom-labs.github.io/runningbom/",
   "stableInstallUrl": "https://robom.kr/get/runningbom",
   "privacyUrl": "https://robom.kr/privacy/runningbom",
   "supportUrl": "https://robom.kr/support",
   "deployProvider": "github-pages",
   "familySpecVersion": "1.0.0",
-  "lastVerifiedAt": "2026-07-18T23:54:33+09:00",
+  "lastVerifiedAt": "2026-07-19T01:20:00+09:00",
   "familyApps": [
     {
       "id": "outbom",
