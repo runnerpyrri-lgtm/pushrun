@@ -68,8 +68,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 88% -6%, rgba(87, 171, 13, 0.16), transparent 30rem),
-    #f5f7f3;
+    radial-gradient(circle at 88% -6%, rgba(216, 243, 55, 0.20), transparent 30rem),
+    var(--grouped);
   color: var(--ink);
   font-family: var(--font);
   font-size: 16px;
@@ -1479,13 +1479,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-height: 82px;
   margin: 0 -24px 22px;
   padding: max(16px, env(safe-area-inset-top)) 24px 18px;
-  border-bottom: 0;
+  border-bottom: .5px solid var(--hairline);
   border-radius: 0 0 22px 22px;
-  background: linear-gradient(180deg, #eef8dc 0%, rgba(255, 255, 255, .96) 100%);
+  /* 아래 콘텐츠 배경(--grouped)과 같은 재질의 프로스티드 바 — 이질감 제거(하단 탭바와 동일 재질). */
+  background: rgba(244, 245, 240, 0.82);
   color: var(--ink);
-  border-bottom: 1px solid rgba(52, 100, 10, .14);
-  box-shadow: 0 10px 26px rgba(52, 100, 10, .10);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 6px 18px rgba(35, 40, 20, .06);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 .brand { min-width: 0; gap: 12px; }
 .brand-mark { width: 48px; height: 48px; }
