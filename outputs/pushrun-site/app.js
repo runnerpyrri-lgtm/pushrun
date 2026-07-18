@@ -2,7 +2,7 @@ const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
 const APP_VERSION = "0.17.4";
-const ASSET_VERSION = "20260718-01";
+const ASSET_VERSION = "20260718-02";
 const BUILD_SHA = "__BUILD_SHA__";
 const PWA_CACHE_VERSION = "pushrun-v0.17.4";
 const {
@@ -968,7 +968,7 @@ function courseTagList(race) {
 // 접수 상태 → 카드 톤(상단 색선·배지·시간 확정 필). 시안과 1:1.
 function raceTone(race) {
   if (isOpenRace(race)) {
-    return { accent: "#ef6657", badgeBg: "#fff0ed", badgeColor: "#b84439", statusLabel: "접수 중", timePill: false, regLineColor: "#3f4b57" };
+    return { accent: "#57ab0d", badgeBg: "#eaf7d8", badgeColor: "#2f5d0e", statusLabel: "접수 중", timePill: false, regLineColor: "#3f4b57" };
   }
   if (isRegistrationClosed(race)) {
     return { accent: "#c3ccd4", badgeBg: "#eef2f5", badgeColor: "#5c6b78", statusLabel: "접수 마감", timePill: false, regLineColor: "#5c6b78" };
