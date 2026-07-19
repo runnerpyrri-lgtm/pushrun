@@ -1,6 +1,6 @@
 {
   "name": "runningbom",
-  "version": "0.17.10",
+  "version": "0.17.11",
   "private": true,
   "scripts": {
     "build": "node scripts/sync-family-static.mjs && node scripts/validate-static.mjs",

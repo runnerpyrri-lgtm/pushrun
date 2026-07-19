@@ -255,8 +255,8 @@ if (!sw.includes(`./race-calendar-core.js?v=${assetVersion}`) || !calendarCore.i
 if (app.includes(".getHours()") || app.includes(".getMonth()") || app.includes(".getDate()")) {
   errors.push("화면 날짜·시각 계산에 브라우저 로컬 Date API가 남아 있습니다.");
 }
-if (!html.includes('name="theme-color" content="#1d2014"') || manifest.theme_color !== "#1d2014") {
-  errors.push("HTML과 manifest의 Dawn Track theme-color가 다릅니다.");
+if (!html.includes('name="theme-color" content="#2b211a"') || manifest.theme_color !== "#2b211a") {
+  errors.push("HTML과 manifest의 웜 에스프레소 theme-color가 다릅니다.");
 }
 if (!sw.includes('request.mode === "navigate"')) {
   errors.push("sw.js의 HTML 셸 폴백이 탐색 요청으로 제한되지 않았습니다.");

@@ -1,10 +1,10 @@
 const ALERT_STORAGE_KEY = "pushrun:alert-subscriptions:v3";
 const SYNC_STORAGE_KEY = "pushrun:last-sync:v1";
 const PERMISSION_GUIDE_KEY = "pushrun:permission-guide-seen:v1";
-const APP_VERSION = "0.17.10";
-const ASSET_VERSION = "20260718-09";
+const APP_VERSION = "0.17.11";
+const ASSET_VERSION = "20260719-01";
 const BUILD_SHA = "__BUILD_SHA__";
-const PWA_CACHE_VERSION = "pushrun-v0.17.10";
+const PWA_CACHE_VERSION = "pushrun-v0.17.11";
 const {
   normalizeRaceName,
   raceIdentity,
@@ -968,15 +968,15 @@ function courseTagList(race) {
 // 접수 상태 → 카드 톤(상단 색선·배지·시간 확정 필). 시안과 1:1.
 function raceTone(race) {
   if (isOpenRace(race)) {
-    return { accent: "#57ab0d", badgeBg: "#eaf7d8", badgeColor: "#2f5d0e", statusLabel: "접수 중", timePill: false, regLineColor: "#3f4b57" };
+    return { accent: "#2e9e63", badgeBg: "#e3f4e9", badgeColor: "#217a4b", statusLabel: "접수 중", timePill: false, regLineColor: "#5c4d40" };
   }
   if (isRegistrationClosed(race)) {
-    return { accent: "#c3ccd4", badgeBg: "#eef2f5", badgeColor: "#5c6b78", statusLabel: "접수 마감", timePill: false, regLineColor: "#5c6b78" };
+    return { accent: "#d8c7b8", badgeBg: "#f3e9dd", badgeColor: "#6e6156", statusLabel: "접수 마감", timePill: false, regLineColor: "#6e6156" };
   }
   if (hasConfirmedRegistrationOpenTime(race)) {
-    return { accent: "#5aa9e6", badgeBg: "#eaf5fc", badgeColor: "#245f8e", statusLabel: "접수 예정", timePill: true, timePillLabel: "시간 확정", timePillBg: "#eaf8f3", timePillColor: "#237c65", timePillBorder: "0", regLineColor: "#3f4b57" };
+    return { accent: "#d9932c", badgeBg: "#fdf1dc", badgeColor: "#8a6414", statusLabel: "접수 예정", timePill: true, timePillLabel: "시간 확정", timePillBg: "#e3f4e9", timePillColor: "#217a4b", timePillBorder: "0", regLineColor: "#5c4d40" };
   }
-  return { accent: "repeating-linear-gradient(90deg,#758391 0 7px,transparent 7px 11px)", badgeBg: "#eef2f5", badgeColor: "#48566a", statusLabel: "접수 예정", timePill: true, timePillLabel: "시간 확인 중", timePillBg: "#eef2f5", timePillColor: "#5c6b78", timePillBorder: "1px dashed #b7c1c9", regLineColor: "#5c6b78" };
+  return { accent: "repeating-linear-gradient(90deg,#cbb8a5 0 7px,transparent 7px 11px)", badgeBg: "#f3e9dd", badgeColor: "#6e6156", statusLabel: "접수 예정", timePill: true, timePillLabel: "시간 확인 중", timePillBg: "#f3e9dd", timePillColor: "#6e6156", timePillBorder: "1px dashed #cbb8a5", regLineColor: "#6e6156" };
 }
 
 // ⑥ 카드에서 가장 중요한 접수 일정 한 줄
