@@ -11,7 +11,7 @@ function createContext() {
   const storage = new Map();
   const meta = new Map([
     ["application-version", APP_VERSION],
-    ["robom-family-spec-version", "1.0.0"]
+    ["robom-family-spec-version", "1.1.0"]
   ]);
   const context = {
     crypto: { randomUUID: () => "00000000-0000-4000-8000-000000000017" },
