@@ -1,11 +1,12 @@
 {
   "name": "runningbom",
-  "version": "0.17.12",
+  "version": "0.17.13",
   "private": true,
   "scripts": {
     "build": "node scripts/sync-family-static.mjs && node scripts/validate-static.mjs",
     "test": "node scripts/verify-family.mjs generated/robom-family family.lock.json && node scripts/sync-family-static.mjs --check && node scripts/validate-static.mjs && node --test \"scripts/*.test.mjs\"",
     "start": "node scripts/serve.mjs",
-    "audit:prod": "node scripts/audit-production.mjs --dir apps/mobile"
+    "audit:prod": "node scripts/audit-production.mjs --dir apps/mobile",
+    "linkcheck": "node scripts/link-healthcheck.mjs"
   }
 }
