@@ -68,7 +68,7 @@
       const response = await root.fetch(metaUrl, { cache: "no-store" });
       if (!response.ok) throw new Error("family-meta-load-failed");
       const meta = await response.json();
-      if (meta.id !== "runningbom" || !Array.isArray(meta.familyApps) || meta.familyApps.length !== 6) {
+      if (meta.id !== "runningbom" || !Array.isArray(meta.familyApps) || meta.familyApps.length !== 4) {
         throw new Error("family-meta-invalid");
       }
       renderFamilyMeta(meta);
