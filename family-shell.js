@@ -41,18 +41,18 @@
   function renderFamilyApps(meta) {
     const target = root.document.getElementById("familyAppsList");
     if (!target || !Array.isArray(meta.familyApps)) return;
+    // 스토어 출시 전이라 형제 앱은 준비 중 안내와 로봄 안정 설치 경로(robom.kr/get)만 노출한다.
     target.innerHTML = meta.familyApps
+      .filter((app) => app.id !== meta.id)
       .map((app) => {
-        const href = safeHttpsUrl(app.installUrl || app.webUrl);
-        const current = app.id === meta.id;
-        return `<a class="settings-row" data-family-app="${escapeHtml(app.id)}" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><span class="settings-row-icon" aria-hidden="true">${icon("family")}</span><span><strong>${escapeHtml(app.name)}</strong><small>${current ? "현재 사용 중인 앱" : "안정 설치 경로 열기"}</small></span><em>${current ? "현재 앱" : "설치 안내"}</em></a>`;
+        const href = safeHttpsUrl(app.installUrl);
+        return `<a class="settings-row" data-family-app="${escapeHtml(app.id)}" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><span class="settings-row-icon" aria-hidden="true">${icon("family")}</span><span><strong>${escapeHtml(app.name)}</strong><small>준비 중 · 2026년 8월 초 출시 예정</small></span><em>준비 중</em></a>`;
       })
       .join("");
   }
 
   function renderFamilyMeta(meta) {
     renderFamilyApps(meta);
-    setLink("stableInstallLink", meta.stableInstallUrl);
     setLink("supportLink", meta.supportUrl);
     setLink("privacyLink", meta.privacyUrl);
     setText("familySpecVersionText", meta.familySpecVersion || "확인 전");
@@ -79,56 +79,6 @@
         status.textContent = "패밀리 앱 정보를 불러오지 못했어요. 잠시 후 다시 확인해 주세요.";
       }
     }
-  }
-
-  function isStandalone() {
-    return root.matchMedia?.("(display-mode: standalone)")?.matches || root.navigator.standalone === true;
-  }
-
-  function isIos() {
-    return /iphone|ipad|ipod/i.test(root.navigator.userAgent) || (root.navigator.platform === "MacIntel" && root.navigator.maxTouchPoints > 1);
-  }
-
-  function renderInstallState(message = "") {
-    const button = root.document.getElementById("installAppButton");
-    const status = root.document.getElementById("installStatusText");
-    if (!button || !status) return;
-    button.disabled = false;
-    if (isStandalone()) {
-      button.textContent = "설치됨";
-      button.disabled = true;
-      status.textContent = message || "러닝봄이 홈 화면 앱으로 실행 중입니다.";
-    } else if (deferredInstallPrompt) {
-      button.textContent = "러닝봄 설치";
-      status.textContent = message || "이 기기에 러닝봄을 앱처럼 설치할 수 있습니다.";
-    } else if (isIos()) {
-      button.textContent = "iPhone 설치 방법";
-      status.textContent = message || "Safari에서 홈 화면에 추가할 수 있습니다.";
-    } else {
-      button.textContent = "설치 방법 보기";
-      status.textContent = message || "설치 지원 브라우저에서는 주소창이나 메뉴에서 앱 설치를 선택할 수 있습니다.";
-    }
-  }
-
-  async function requestInstall() {
-    if (isStandalone()) return;
-    if (deferredInstallPrompt) {
-      const prompt = deferredInstallPrompt;
-      deferredInstallPrompt = null;
-      try {
-        await prompt.prompt();
-        const choice = await prompt.userChoice;
-        renderInstallState(choice?.outcome === "accepted" ? "설치 요청을 완료했습니다." : "설치를 취소했습니다. 원할 때 다시 시도할 수 있습니다.");
-      } catch {
-        renderInstallState("설치 창을 열지 못했어요. 브라우저 메뉴의 앱 설치를 이용해 주세요.");
-      }
-      return;
-    }
-    if (isIos()) {
-      renderInstallState("Safari의 공유 메뉴를 열고 홈 화면에 추가를 선택하세요.");
-      return;
-    }
-    renderInstallState("브라우저 주소창 또는 메뉴에서 앱 설치나 홈 화면에 추가를 선택하세요.");
   }
 
   async function checkForUpdate() {
@@ -174,19 +124,17 @@
     updateStatus();
   }
 
+  // 스토어 출시 전이라 설치 유도 UI는 노출하지 않지만, beforeinstallprompt를 가로채는
+  // PWA·TWA 플러밍은 유지해 브라우저 기본 설치 배너를 억제한다.
   root.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     deferredInstallPrompt = event;
-    renderInstallState();
   });
   root.addEventListener("appinstalled", () => {
     deferredInstallPrompt = null;
-    renderInstallState("러닝봄 설치를 완료했습니다.");
   });
 
-  root.document.getElementById("installAppButton")?.addEventListener("click", requestInstall);
   root.document.getElementById("checkUpdateButton")?.addEventListener("click", checkForUpdate);
-  renderInstallState();
   renderAnalyticsConsent();
   void loadFamilyMeta();
 })(window);
