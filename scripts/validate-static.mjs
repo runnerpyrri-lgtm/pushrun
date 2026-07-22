@@ -316,9 +316,7 @@ if (!styles.includes("min-height: calc(var(--family-nav-height") || !styles.incl
   errors.push("48px 이상 하단 내비 높이 또는 safe-area 처리가 없습니다.");
 }
 const requiredSettingsIds = [
-  "installAppButton",
   "checkUpdateButton",
-  "stableInstallLink",
   "familyAppsList",
   "supportLink",
   "privacyLink",
@@ -327,13 +325,18 @@ const requiredSettingsIds = [
   "deploymentProviderText"
 ];
 if (requiredSettingsIds.some((id) => !html.includes(`id="${id}"`))) {
-  errors.push("패밀리 설정의 설치·5앱·지원·개인정보·앱 메타 흐름이 불완전합니다.");
+  errors.push("패밀리 설정의 업데이트·앱·지원·개인정보·앱 메타 흐름이 불완전합니다.");
 }
 if (!familySettings.sections.includes("install-and-update") || !familySettings.sections.includes("app-meta")) {
   errors.push("생성된 설정 계약에 필수 패밀리 섹션이 없습니다.");
 }
-if (!familyShell.includes('addEventListener("beforeinstallprompt"') || !familyShell.includes("navigator.standalone") || !familyShell.includes("홈 화면에 추가")) {
-  errors.push("자체 PWA 설치 CTA의 beforeinstallprompt 또는 iOS fallback이 없습니다.");
+// 스토어 출시 전이라 사용자 설치 CTA는 노출하지 않는다. 다만 브라우저 기본 설치 배너를
+// 억제하는 beforeinstallprompt 플러밍(TWA·PWA 유지에 필요)은 남아 있어야 한다.
+if (!familyShell.includes('addEventListener("beforeinstallprompt"')) {
+  errors.push("PWA·TWA 설치 플러밍의 beforeinstallprompt 처리가 없습니다.");
+}
+if (/설치 방법 보기|이 기기에 러닝봄 설치|홈 화면에 추가/.test(`${html}\n${familyShell}`)) {
+  errors.push("출시 전 노출 금지된 자체 PWA 설치 유도 UI가 남아 있습니다.");
 }
 if (!familyAnalytics.includes("let provider = null") || !familyAnalytics.includes("if (!contract.events.includes(eventName) || !getConsent() || !provider) return false")) {
   errors.push("개인정보 최소 분석 adapter가 기본 noop·동의 확인을 보장하지 않습니다.");
