@@ -32,6 +32,8 @@ const MIN_UPCOMING_REGISTRATION = 1;
 // 대회일이 이미 지난 대회 비율이 이 값을 초과하면 FAIL.
 // 절반 넘게 끝난 대회라면 데이터 자체가 오래된 것으로 본다.
 const MAX_ENDED_RATIO = 0.5;
+// 예약 동기화가 멈춘 상태를 새 코드 배포 시에도 놓치지 않도록, 마지막 성공 수집일을 검사한다.
+const MAX_DATA_REFRESH_AGE_MS = 8 * 24 * 60 * 60 * 1000;
 
 const errors = [];
 const warn = [];
@@ -39,6 +41,16 @@ const httpLinks = [];
 const featured = Array.isArray(data.featuredRaces) ? data.featuredRaces : [];
 const schedule = Array.isArray(data.scheduleFeed) ? data.scheduleFeed : [];
 const all = [...featured, ...schedule];
+
+const lastSuccessfulRefreshAt = Date.parse(data.lastSuccessfulRefreshAt || "");
+if (!Number.isFinite(lastSuccessfulRefreshAt)) {
+  errors.push("lastSuccessfulRefreshAt이 없거나 올바른 ISO 시각이 아닙니다.");
+} else if (Date.now() - lastSuccessfulRefreshAt > MAX_DATA_REFRESH_AGE_MS) {
+  errors.push("대회 데이터 자동 동기화가 8일 넘게 성공하지 않았습니다.");
+}
+if (data.refreshPolicy?.providerUrl !== "https://marathongo.co.kr/raceSchedule/domestic") {
+  errors.push("대회 데이터 자동 동기화 출처 정책이 누락되었거나 예상과 다릅니다.");
+}
 
 if (vercelConfig.buildCommand !== "node scripts/build-vercel.mjs" || vercelConfig.outputDirectory !== ".vercel-static") {
   errors.push("Vercel 정적 미러가 빌드 SHA 주입 산출물을 배포하지 않습니다.");

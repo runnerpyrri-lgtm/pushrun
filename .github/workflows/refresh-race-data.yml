@@ -1,0 +1,51 @@
+name: Refresh running race data
+
+on:
+  schedule:
+    # 6시간마다 KST 기준 03:17, 09:17, 15:17, 21:17에 실행한다.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: running-race-data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 공개 일정 수집 및 정규화
+        run: npm run data:refresh
+      - name: 모바일 원격 번들 동기화
+        run: npm run mobile:sync
+      - name: 대회 데이터·모바일 계약 검증
+        run: |
+          node scripts/validate-static.mjs
+          node --test scripts/race-data-core.test.mjs scripts/mobile-data-contract.test.mjs
+      - name: 수집 리포트 보관
+        uses: actions/upload-artifact@v4
+        with:
+          name: running-race-data-refresh-report
+          path: outputs/race-data-refresh-report.json
+          if-no-files-found: error
+      - name: 검증된 변경만 main에 반영
+        run: |
+          if git diff --quiet -- outputs/pushrun-site/races.json apps/mobile/src/data/races.json; then
+            echo "검증된 대회 데이터 변경이 없습니다."
+            exit 0
+          fi
+          git config user.name "robom-data-bot"
+          git config user.email "actions@github.com"
+          git add outputs/pushrun-site/races.json apps/mobile/src/data/races.json
+          git commit -m "chore(data): 자동 대회 일정 동기화"
+          git push origin HEAD:main

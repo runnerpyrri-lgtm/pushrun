@@ -4,6 +4,7 @@ work/
 outputs/*.pid
 outputs/*.log
 outputs/link-healthcheck-report.json
+outputs/race-data-refresh-report.json
 outputs/cloudflared*
 *.tmp
 *.bak

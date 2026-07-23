@@ -58,3 +58,16 @@ https://robom-labs.github.io/runningbom/
 - 1차 확인: 마라톤온라인 대회 일정
 - 접수 링크/상세 보강: 공식 대회 사이트, 러너블, 마라톤GO
 - 카드에는 접수 기간, 대회일, D-day, 지역, 거리, 대회 페이지 상태만 짧게 표시합니다.
+
+### 자동 동기화
+
+`main`의 예약 워크플로는 6시간마다 마라톤GO 공개 국내 일정에서 상세 페이지를 읽습니다. 날짜·장소·거리·접수 기간이 모두 확인된 값만 기존 정본과 대조해 반영하고, 출처 요청·정규화·정적 검증 중 하나라도 실패하면 기존 검증본을 유지합니다. 새 데이터는 웹 `races.json`과 Android·iOS의 원격 데이터 경로에 함께 반영됩니다.
+
+로컬에서 같은 절차를 확인하려면 아래를 실행합니다.
+
+```bash
+npm run data:refresh:check
+npm run data:refresh
+npm run mobile:sync
+npm test
+```
