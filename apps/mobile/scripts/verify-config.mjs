@@ -41,8 +41,8 @@ assert(
   !appJson.expo.android.permissions.includes('android.permission.SCHEDULE_EXACT_ALARM'),
   '스토어 심사 부담이 큰 정확 알람 특수 권한을 선언하면 안 됩니다.',
 );
-assert(appJson.expo.ios.associatedDomains.includes('applinks:robom.kr'), 'iOS Universal Link 도메인이 필요합니다.');
-assert(appJson.expo.android.intentFilters.some((filter) => filter.data?.some((data) => data.scheme === 'https' && data.host === 'robom.kr' && data.pathPrefix === '/get/runningbom')), 'Android App Link 경로가 필요합니다.');
+assert(!appJson.expo.ios.associatedDomains?.includes('applinks:robom.kr'), '실제 Apple Team ID 검증 전에는 Universal Link 도메인을 선언하면 안 됩니다.');
+assert(!appJson.expo.android.intentFilters.some((filter) => filter.autoVerify === true), '실제 Play 앱 서명 검증 전에는 Android App Link autoVerify를 선언하면 안 됩니다.');
 
 for (const profile of ['development', 'preview', 'production']) {
   assert(easJson.build[profile], `EAS ${profile} 프로필이 없습니다.`);

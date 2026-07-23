@@ -8,6 +8,5 @@
     "google": "unconfigured",
     "apple": "unconfigured"
   },
-  "namespace": "runningbom",
-  "calendarSensitiveSync": "not-applicable"
+  "namespace": "runningbom"
 }

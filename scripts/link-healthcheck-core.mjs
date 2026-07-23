@@ -36,35 +36,36 @@ export function parseLinkUrl(rawUrl) {
 
 // 네트워크 요청 결과(상태 코드·리다이렉트 여부·오류)만 받아 링크 생/사를 순수하게 판정한다.
 // - 2xx~3xx(추적 후 최종 상태)면 정상. 리다이렉트가 있었다면 reason에 남긴다(도메인 이전 감지용).
-// - 404/410은 "없는 페이지", 그 외 4xx/5xx는 각각 클라이언트/서버 오류로 죽은 링크 처리한다.
+// - 404/410만 "없는 페이지"로 확정한다. 인증 차단·요청 제한·서버 장애·네트워크 실패는
+//   외부 사이트의 일시 상태일 수 있으므로 unknown으로 남겨 수집 결과를 함부로 삭제하지 않는다.
 export function classifyLinkStatus({ status, redirected, finalUrl, error } = {}) {
-  if (error) return { healthy: false, redirected: Boolean(redirected), reason: `요청 실패: ${error}` };
+  if (error) return { healthy: false, unknown: true, state: "unknown", redirected: Boolean(redirected), reason: `요청 실패: ${error}` };
   if (typeof status !== "number" || Number.isNaN(status)) {
-    return { healthy: false, redirected: Boolean(redirected), reason: "상태 코드 없음" };
+    return { healthy: false, unknown: true, state: "unknown", redirected: Boolean(redirected), reason: "상태 코드 없음" };
   }
   const redirectNote = redirected ? ` (리다이렉트됨 → ${finalUrl || "알 수 없는 주소"})` : "";
   if (status >= 200 && status < 400) {
-    return { healthy: true, redirected: Boolean(redirected), reason: `${status}${redirectNote}` };
+    return { healthy: true, unknown: false, state: "healthy", redirected: Boolean(redirected), reason: `${status}${redirectNote}` };
   }
   if (status === 404 || status === 410) {
-    return { healthy: false, redirected: Boolean(redirected), reason: `${status} 없는 페이지${redirectNote}` };
+    return { healthy: false, unknown: false, state: "dead", redirected: Boolean(redirected), reason: `${status} 없는 페이지${redirectNote}` };
   }
-  if (status >= 400 && status < 500) {
-    return { healthy: false, redirected: Boolean(redirected), reason: `${status} 클라이언트 오류${redirectNote}` };
-  }
-  return { healthy: false, redirected: Boolean(redirected), reason: `${status} 서버 오류${redirectNote}` };
+  return { healthy: false, unknown: true, state: "unknown", redirected: Boolean(redirected), reason: `${status} 외부 확인 필요${redirectNote}` };
 }
 
 // 개별 점검 결과 배열을 집계해 리포트 요약을 만든다.
 export function summarizeHealthcheck(results) {
   const list = Array.isArray(results) ? results : [];
-  const deadLinks = list.filter((result) => !result.healthy);
+  const deadLinks = list.filter((result) => result.state === "dead");
+  const unknownLinks = list.filter((result) => result.state === "unknown");
   const redirectedLinks = list.filter((result) => result.redirected);
   return {
     total: list.length,
-    healthy: list.length - deadLinks.length,
+    healthy: list.filter((result) => result.state === "healthy").length,
     dead: deadLinks.length,
+    unknown: unknownLinks.length,
     redirected: redirectedLinks.length,
     deadLinks,
+    unknownLinks,
   };
 }

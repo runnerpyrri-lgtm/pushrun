@@ -29,7 +29,25 @@ function normalizeRace(race, prefix) {
     raceDate: String(race.raceDate ?? race.date).slice(0, 10),
     distances: race.distances,
     registrationOpensAt: race.registrationOpenAt,
+    registrationClosesAt: race.registrationCloseAt ?? undefined,
     registrationTimeConfirmed: race.registrationOpenTimeConfirmed === true,
+    registrationWindows: Array.isArray(race.registrationWindows)
+      ? race.registrationWindows
+        .filter((window) => window?.opensAt)
+        .map((window) => ({
+          label: window.label,
+          distance: window.distance,
+          opensAt: window.opensAt,
+          closesAt: window.closesAt ?? undefined,
+          timeConfirmed: window.timeConfirmed === true,
+        }))
+      : undefined,
+    registrationStatus: race.status ?? "unknown",
+    registrationPeriodLabel: race.registrationPeriodLabel ?? undefined,
+    note: race.note ?? undefined,
+    capacity: Number.isFinite(race.capacity) ? race.capacity : undefined,
+    organizer: race.organizer ?? undefined,
+    verifiedAt: race.registrationTimeVerifiedAt ?? race.linkVerifiedFrom ?? undefined,
     officialUrl: race.registrationUrl ?? race.sourceDetailUrl,
     sourceName: race.sourceName,
   };

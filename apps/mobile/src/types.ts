@@ -9,7 +9,21 @@ export type Race = {
   raceDate: string;
   distances: RaceDistance[];
   registrationOpensAt: string;
+  registrationClosesAt?: string;
   registrationTimeConfirmed: boolean;
+  registrationWindows?: Array<{
+    label?: string;
+    distance?: string;
+    opensAt: string;
+    closesAt?: string;
+    timeConfirmed?: boolean;
+  }>;
+  registrationStatus?: 'open' | 'scheduled' | 'closed' | 'sold_out' | 'cancelled' | 'unknown' | string;
+  registrationPeriodLabel?: string;
+  note?: string;
+  capacity?: number;
+  organizer?: string;
+  verifiedAt?: string;
   officialUrl: string;
   sourceName: string;
 };

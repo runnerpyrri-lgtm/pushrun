@@ -17,12 +17,15 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   bundledRevision,
   distances,
+  fetchLatestRaces,
   filterRaces,
   formatRaceDate,
   formatRegistrationTime,
+  registrationStatusLabel,
+  canScheduleRegistrationAlert,
   raceIdFromDeepLink,
   races,
-  regions,
+  regionsFor,
 } from './src/races';
 import {
   configureNotificationChannel,
@@ -84,6 +87,7 @@ function AppScreen() {
   const deepLinkUrl = Linking.useLinkingURL();
   const [region, setRegion] = useState<RegionFilter>('전체');
   const [distance, setDistance] = useState<DistanceFilter>('전체');
+  const [raceFeed, setRaceFeed] = useState({ revision: bundledRevision, races });
   const [focusedRaceId, setFocusedRaceId] = useState<string | null>(null);
   const [busyRaceId, setBusyRaceId] = useState<string | null>(null);
   const [scheduledRaceIds, setScheduledRaceIds] = useState<Record<string, string>>({});
@@ -92,7 +96,7 @@ function AppScreen() {
   );
 
   const revealRace = useCallback((raceId: string) => {
-    if (!races.some((race) => race.id === raceId)) {
+    if (!raceFeed.races.some((race) => race.id === raceId)) {
       return;
     }
 
@@ -100,7 +104,7 @@ function AppScreen() {
     setDistance('전체');
     setFocusedRaceId(raceId);
     setNotice('딥 링크로 선택한 대회를 목록 맨 위에 표시했어요.');
-  }, []);
+  }, [raceFeed.races]);
 
   useEffect(() => {
     void configureNotificationChannel().catch(() => {
@@ -108,6 +112,16 @@ function AppScreen() {
     });
 
     let active = true;
+    void fetchLatestRaces()
+      .then((latest) => {
+        if (!active) return;
+        setRaceFeed(latest);
+        setNotice('운영 데이터로 최신 접수 상태를 확인했어요. 네트워크가 없으면 번들 데이터를 사용합니다.');
+      })
+      .catch(() => {
+        if (!active) return;
+        setNotice('최신 데이터를 불러오지 못해 설치된 검증 데이터로 표시하고 있어요. 네트워크를 확인해 주세요.');
+      });
     void Notifications.getAllScheduledNotificationsAsync()
       .then((scheduled) => {
         if (!active) {
@@ -159,7 +173,7 @@ function AppScreen() {
   }, [deepLinkUrl, revealRace]);
 
   const visibleRaces = useMemo(() => {
-    const filtered = filterRaces(region, distance);
+    const filtered = filterRaces(region, distance, raceFeed.races);
     if (!focusedRaceId) {
       return filtered;
     }
@@ -169,7 +183,9 @@ function AppScreen() {
       if (right.id === focusedRaceId) return 1;
       return 0;
     });
-  }, [distance, focusedRaceId, region]);
+  }, [distance, focusedRaceId, raceFeed.races, region]);
+
+  const availableRegions = useMemo(() => regionsFor(raceFeed.races), [raceFeed.races]);
 
   const openExternalUrl = useCallback(async (url: string, label: string) => {
     try {
@@ -216,7 +232,7 @@ function AppScreen() {
           <Text accessibilityRole="header" style={styles.wordmark}>
             러닝<Text style={styles.wordmarkAccent}>봄</Text>
           </Text>
-          <Text style={styles.version}>Native 0.17.13</Text>
+          <Text style={styles.version}>Native 0.18.0</Text>
         </View>
 
         <View style={styles.intro}>
@@ -230,7 +246,7 @@ function AppScreen() {
         <View style={styles.filters}>
           <ChoiceRow
             label="지역"
-            choices={regions}
+            choices={availableRegions}
             selected={region}
             onSelect={(choice) => {
               setFocusedRaceId(null);
@@ -254,7 +270,7 @@ function AppScreen() {
 
         <View style={styles.resultHeader}>
           <Text style={styles.resultTitle}>대회 {visibleRaces.length}개</Text>
-          <Text style={styles.revision}>데이터 {bundledRevision}</Text>
+          <Text style={styles.revision}>데이터 {raceFeed.revision}</Text>
         </View>
 
         <View style={[styles.raceList, isTablet && styles.raceListTablet]}>
@@ -262,6 +278,8 @@ function AppScreen() {
             const focused = race.id === focusedRaceId;
             const scheduled = Boolean(scheduledRaceIds[race.id]);
             const busy = race.id === busyRaceId;
+            const status = registrationStatusLabel(race);
+            const canSchedule = canScheduleRegistrationAlert(race);
             return (
               <View key={race.id} style={[styles.raceCard, isTablet && styles.raceCardTablet, focused && styles.raceCardFocused]}>
                 <View style={styles.raceTopline}>
@@ -270,26 +288,32 @@ function AppScreen() {
                 </View>
                 <Text style={styles.raceName}>{race.name}</Text>
                 <Text style={styles.raceMeta}>{formatRaceDate(race)} · {race.venue}</Text>
+                <View style={styles.statusRow}>
+                  <Text style={[styles.statusPill, status === '접수 중' && styles.statusOpen, status === '접수 예정' && styles.statusScheduled]}>{status}</Text>
+                  {race.capacity ? <Text style={styles.capacity}>{race.capacity.toLocaleString('ko-KR')}명</Text> : null}
+                </View>
 
                 <View style={styles.registrationBox}>
-                  <Text style={styles.registrationLabel}>접수 시작</Text>
+                  <Text style={styles.registrationLabel}>{status === '접수 중' ? '현재 접수 일정' : '접수 일정'}</Text>
                   <Text style={styles.registrationValue}>{formatRegistrationTime(race)}</Text>
                 </View>
+
+                {race.note ? <Text style={styles.note}>{race.note}</Text> : null}
 
                 <View style={styles.actions}>
                   <Pressable
                     accessibilityRole="button"
-                    disabled={busy}
+                    disabled={busy || !canSchedule}
                     onPress={() => void scheduleAlert(race)}
                     style={({ pressed }) => [
                       styles.primaryButton,
                       scheduled && styles.scheduledButton,
-                      busy && styles.disabledButton,
+                      (busy || !canSchedule) && styles.disabledButton,
                       pressed && styles.pressed,
                     ]}
                   >
                     <Text style={styles.primaryButtonText}>
-                      {busy ? '예약 중' : scheduled ? '알림 예약됨' : race.registrationTimeConfirmed ? '접수 알림 예약' : '시각 확인 후 예약'}
+                      {busy ? '예약 중' : scheduled ? '알림 예약됨' : canSchedule ? '접수 알림 예약' : status === '접수 중' ? '접수 진행 중' : status === '접수 예정' ? '시각 확인 후 예약' : '알림 대상 아님'}
                     </Text>
                   </Pressable>
                   <Pressable
@@ -561,6 +585,40 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 14,
     marginTop: 16,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+  },
+  statusPill: {
+    borderRadius: 999,
+    backgroundColor: '#F3E9DD',
+    color: '#6E6156',
+    fontSize: 12,
+    fontWeight: '900',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  statusOpen: {
+    backgroundColor: '#E3F4E9',
+    color: '#217A4B',
+  },
+  statusScheduled: {
+    backgroundColor: '#FFF1D9',
+    color: '#8A6414',
+  },
+  capacity: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  note: {
+    color: '#4B5B53',
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 12,
   },
   registrationLabel: {
     color: colors.coralDark,

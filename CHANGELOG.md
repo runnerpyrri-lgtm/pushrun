@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.0 (2026-07-23)
+
+- 네이티브 앱이 웹 정본의 접수 종료·매진·취소 상태, 접수 기간, 종목별 접수창, 정원, 운영 메모와 검증 시각을 그대로 보존하도록 동기화 계약을 확장했다.
+- 접수가 끝났거나 매진·취소된 대회에는 알림 예약 버튼을 비활성화하고 실제 상태를 카드에서 먼저 보이게 했다.
+- 실제 앱 서명이 없는 빈 도메인 인증 파일과 충돌하던 Android App Link 자동 검증·iOS Universal Link 선언을 제거하고, 검증 가능한 `runningbom://` 딥링크만 유지했다.
+- Android versionCode와 iOS buildNumber를 3으로 올리고 PWA 캐시를 `pushrun-v0.18.0`으로 갱신했다.
+
 러닝봄(러닝 대회 접수 알림)의 주요 변경 이력. [SemVer](https://semver.org/lang/ko/).
 
 ## Unreleased

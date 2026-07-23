@@ -29,7 +29,14 @@ const links = collectRegistrationLinks(data);
 async function checkOne(link) {
   const parsed = parseLinkUrl(link.url);
   if (!parsed) {
-    return { ...link, ...classifyLinkStatus({ error: "URL 형식 오류" }) };
+    return {
+      ...link,
+      healthy: false,
+      unknown: false,
+      state: "dead",
+      redirected: false,
+      reason: "URL 형식 오류",
+    };
   }
   try {
     let response;
@@ -73,12 +80,15 @@ mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, JSON.stringify({ checkedAt: new Date().toISOString(), summary, results }, null, 2));
 
 console.log(
-  `링크 헬스체크: 총 ${summary.total}개 중 정상 ${summary.healthy}개, 죽은 링크 ${summary.dead}개, 리다이렉트 ${summary.redirected}개`
+  `링크 헬스체크: 총 ${summary.total}개 중 정상 ${summary.healthy}개, 죽은 링크 ${summary.dead}개, 외부 확인 필요 ${summary.unknown}개, 리다이렉트 ${summary.redirected}개`
 );
 if (summary.deadLinks.length > 0) {
   console.error("죽은 링크:");
   for (const dead of summary.deadLinks) {
     console.error(`- [${dead.field}] ${dead.url} (${dead.reason}) — ${dead.races.join(", ")}`);
   }
+}
+if (summary.unknown > 0) {
+  console.warn(`외부 확인 필요 링크 ${summary.unknown}개는 인증 차단·요청 제한·일시 장애일 수 있어 자동 삭제하지 않았습니다.`);
 }
 if (summary.dead > 0) process.exitCode = 1;

@@ -62,37 +62,43 @@ test("classifyLinkStatus: 404·410은 죽은 링크로 판정", () => {
   assert.match(classifyLinkStatus({ status: 404 }).reason, /404/);
 });
 
-test("classifyLinkStatus: 4xx·5xx는 죽은 링크로 판정", () => {
-  assert.equal(classifyLinkStatus({ status: 403 }).healthy, false);
-  assert.equal(classifyLinkStatus({ status: 500 }).healthy, false);
-  assert.equal(classifyLinkStatus({ status: 503 }).healthy, false);
+test("classifyLinkStatus: 인증 차단·요청 제한·서버 오류는 외부 확인 필요로 남긴다", () => {
+  for (const status of [403, 429, 500, 503]) {
+    const result = classifyLinkStatus({ status });
+    assert.equal(result.healthy, false);
+    assert.equal(result.state, "unknown");
+  }
 });
 
-test("classifyLinkStatus: 네트워크 오류·상태 코드 없음도 죽은 링크로 판정", () => {
+test("classifyLinkStatus: 네트워크 오류·상태 코드 없음도 외부 확인 필요로 남긴다", () => {
   const errorResult = classifyLinkStatus({ error: "fetch failed: getaddrinfo ENOTFOUND" });
   assert.equal(errorResult.healthy, false);
+  assert.equal(errorResult.state, "unknown");
   assert.match(errorResult.reason, /요청 실패/);
 
   const missingResult = classifyLinkStatus({});
   assert.equal(missingResult.healthy, false);
+  assert.equal(missingResult.state, "unknown");
 });
 
 test("summarizeHealthcheck: 정상·죽은 링크·리다이렉트 개수를 집계한다", () => {
   const results = [
-    { url: "https://ok.example.com", healthy: true, redirected: false },
-    { url: "https://redirected.example.com", healthy: true, redirected: true },
-    { url: "https://dead.example.com", healthy: false, redirected: false, reason: "404 없는 페이지" },
+    { url: "https://ok.example.com", healthy: true, state: "healthy", redirected: false },
+    { url: "https://redirected.example.com", healthy: true, state: "healthy", redirected: true },
+    { url: "https://dead.example.com", healthy: false, state: "dead", redirected: false, reason: "404 없는 페이지" },
+    { url: "https://unknown.example.com", healthy: false, state: "unknown", redirected: false },
   ];
   const summary = summarizeHealthcheck(results);
-  assert.equal(summary.total, 3);
+  assert.equal(summary.total, 4);
   assert.equal(summary.healthy, 2);
   assert.equal(summary.dead, 1);
+  assert.equal(summary.unknown, 1);
   assert.equal(summary.redirected, 1);
   assert.equal(summary.deadLinks.length, 1);
   assert.equal(summary.deadLinks[0].url, "https://dead.example.com");
 });
 
 test("summarizeHealthcheck: 빈 배열·비배열 입력도 안전하게 처리한다", () => {
-  assert.deepEqual(summarizeHealthcheck([]), { total: 0, healthy: 0, dead: 0, redirected: 0, deadLinks: [] });
-  assert.deepEqual(summarizeHealthcheck(undefined), { total: 0, healthy: 0, dead: 0, redirected: 0, deadLinks: [] });
+  assert.deepEqual(summarizeHealthcheck([]), { total: 0, healthy: 0, dead: 0, unknown: 0, redirected: 0, deadLinks: [], unknownLinks: [] });
+  assert.deepEqual(summarizeHealthcheck(undefined), { total: 0, healthy: 0, dead: 0, unknown: 0, redirected: 0, deadLinks: [], unknownLinks: [] });
 });

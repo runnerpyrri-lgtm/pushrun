@@ -3,6 +3,7 @@
 work/
 outputs/*.pid
 outputs/*.log
+outputs/link-healthcheck-report.json
 outputs/cloudflared*
 *.tmp
 *.bak
