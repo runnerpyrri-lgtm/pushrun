@@ -25,6 +25,7 @@ export type Race = {
   organizer?: string;
   verifiedAt?: string;
   officialUrl: string;
+  externalLinkKind?: 'official' | 'source';
   sourceName: string;
 };
 

@@ -20,6 +20,7 @@
       "note": "풀코스/단체 9월 17일 10시, 10km/건강달리기 9월 22일 10시 오픈으로 공지됐습니다.",
       "capacity": 40000,
       "officialUrl": "https://daegumarathon.daegu.go.kr",
+      "externalLinkKind": "official",
       "sourceName": "대구마라톤 공식"
     },
     {
@@ -39,6 +40,7 @@
       "note": "2026년 1월 5일 접수 예정으로 확인된 인천 하프 대회입니다.",
       "capacity": 9000,
       "officialUrl": "http://www.incheonmarathon.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -58,6 +60,7 @@
       "note": "기부 문화와 결합한 부산 러닝 대회입니다.",
       "capacity": 7000,
       "officialUrl": "http://www.givenrace.com/give#/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -76,6 +79,7 @@
       "note": "부산항북항 친수공원 예정지에서 열리는 10km 대회입니다.",
       "capacity": 6000,
       "officialUrl": "http://busan.therace.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -95,6 +99,7 @@
       "note": "홈페이지 선착순 접수, HALF 8만원·10km 7만원으로 확인됩니다.",
       "capacity": 12000,
       "officialUrl": "http://www.seoulhalfmarathon.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -117,6 +122,7 @@
       "note": "트레일·울트라 성격의 부산 장거리 레이스입니다.",
       "capacity": 1800,
       "officialUrl": "http://www.busan-50k.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -137,6 +143,7 @@
       "note": "하프·10km·5km 전종목 선착순 5,000명으로 확인됩니다.",
       "capacity": 5000,
       "officialUrl": "http://kgseasiderun.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -157,6 +164,7 @@
       "note": "3월 11일 14시 접수 예정으로 확인됩니다.",
       "capacity": 5000,
       "officialUrl": "http://incheonafcup.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -177,6 +185,7 @@
       "note": "서울 여의도공원에서 열리는 하프·10km·5km 대회입니다.",
       "capacity": 5000,
       "officialUrl": "http://seoulrun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -197,6 +206,7 @@
       "organizer": "사우나런",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://saunarun.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -216,6 +226,7 @@
       "organizer": "전국마라톤협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/e320ef81-c1ba-4939-bc1d-c398e514e920",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -235,6 +246,7 @@
       "organizer": "(주)락앤런",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://rocknrun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -255,6 +267,7 @@
       "organizer": "(사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250821130406&csno=20190812093657#baseline",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -274,7 +287,8 @@
       "registrationPeriodLabel": "6/12 - 7/31",
       "organizer": "사우나런",
       "verifiedAt": "마라톤온라인 home 아이콘",
-      "officialUrl": "http://saunarun.com/category/?idx=119",
+      "officialUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41625",
+      "externalLinkKind": "source",
       "sourceName": "마라톤온라인"
     },
     {
@@ -294,6 +308,7 @@
       "note": "6월 티켓 오픈 예정으로 공지된 대회입니다.",
       "capacity": 7000,
       "officialUrl": "http://www.nightracebusan.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -313,6 +328,7 @@
       "organizer": "러너블",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://insiderun.me",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -332,6 +348,7 @@
       "organizer": "양산시, 부산MBC",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.yangsanuphillrace.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -352,6 +369,7 @@
       "organizer": "(사)대한이에스지협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://moonnightrun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -371,6 +389,7 @@
       "organizer": "(주)락앤런",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://rocknrun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -391,6 +410,7 @@
       "organizer": "전국마라톤협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/9e568eef-64ff-4548-881f-3a420689dece",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -410,6 +430,7 @@
       "organizer": "JYD자연을달린다",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://jyd.creatorlink.net",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -429,6 +450,7 @@
       "organizer": "(사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250820150217&csno=20191209143330#baseline",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -449,6 +471,7 @@
       "organizer": "한국실업육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.ifunrunkorea.co.kr/sub0102",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -468,6 +491,7 @@
       "organizer": "파브코리아",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.mtrailrun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -488,6 +512,7 @@
       "organizer": "단양군육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://danyangmarathon.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -507,6 +532,7 @@
       "organizer": "전국마라톤협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/48116855-ac2a-4db5-b343-593a01c5b353",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -528,6 +554,7 @@
       "organizer": "(사)국민성공시대",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://seoulhalfrun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -548,6 +575,7 @@
       "organizer": "국대레포츠, 대관령면체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://daegwallyeongrun.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -568,6 +596,7 @@
       "organizer": "(주)러닝브레이커, 전국러닝협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://runten.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -588,6 +617,7 @@
       "organizer": "한국방송통신대학교 전국 총동문",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://runbs.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -607,6 +637,7 @@
       "organizer": "순천만울트라조직위",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.scultra100.net",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -627,6 +658,7 @@
       "organizer": "(사)대한생활체육마라톤협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://vrun.kr/index.asp",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -648,6 +680,7 @@
       "organizer": "봉화군체육회, 매일신문사",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://bonghwarun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -667,6 +700,7 @@
       "organizer": "(주)메이드인피플",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://sandrun.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -686,6 +720,7 @@
       "note": "10km 2,000명, 5km 1,000명 선착순 모집으로 확인됩니다.",
       "capacity": 3000,
       "officialUrl": "http://mara1080.com/event/a9780087-8fc3-4849-a234-7659978f6792",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -705,6 +740,7 @@
       "note": "공식 일정은 6월 17일 14시부터 7월 10일 17시까지이며, 6월 26일 전 종목 선착순 마감 공지가 게시됐습니다.",
       "capacity": 5000,
       "officialUrl": "https://run.ytn.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "YTN 서울투어마라톤 공식"
     },
     {
@@ -726,6 +762,7 @@
       "organizer": "김대중재단",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://kdjrun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -745,6 +782,7 @@
       "organizer": "(사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250626120820&csno=20191016122754#baseline",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -764,6 +802,7 @@
       "organizer": "인천광역시 체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.sgicaaf.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -784,6 +823,7 @@
       "organizer": "1986프로덕션",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://bbangtrailrun.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -805,6 +845,7 @@
       "organizer": "초록우산 대전세종지역본부",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/9443583f-6577-466c-ab2f-43d1dbd820d4",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -825,6 +866,7 @@
       "organizer": "청년일보, (주)소풍",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://whiterun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -845,6 +887,7 @@
       "organizer": "일간스포츠",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://runseoulrun.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -866,6 +909,7 @@
       "organizer": "매일신문사",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://energyrun.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -887,6 +931,7 @@
       "organizer": "(사)대한치과의사협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.smilerun.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -906,6 +951,7 @@
       "organizer": "(사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eapp&opp=20250910133652&csno=20191227110239#baseline",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -927,6 +973,7 @@
       "organizer": "인천일보,(사)인천마라톤조직위",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.ganghwamarathon.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -947,6 +994,7 @@
       "organizer": "전마협",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/2044eb82-fcdb-4e56-b79b-f3543a6a360d",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -968,6 +1016,7 @@
       "organizer": "(사)21세기경제사회연구원",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.cyber-run.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -989,6 +1038,7 @@
       "organizer": "동아일보",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.gongjumarathon.com/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1010,6 +1060,7 @@
       "organizer": "동대문구육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.runddm.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1030,6 +1081,7 @@
       "organizer": "한돈자조금위원회, 런코리아",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://handonrun.com/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1050,6 +1102,7 @@
       "organizer": "마포구체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/53b338c6-d38a-47b3-9479-080b00c6113a",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1071,6 +1124,7 @@
       "organizer": "서산시체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/fcaa0bc8-1489-47c3-8fec-8e5a5c17284e",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1090,6 +1144,7 @@
       "organizer": "완주군/삼삼이즈",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://samsamis.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1110,6 +1165,7 @@
       "organizer": "(사)희망지킴이 천사운동본부",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://hope1004.org",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1129,6 +1185,7 @@
       "organizer": "아산 이순신트레일 조직위원회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://isunshintrail.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1151,6 +1208,7 @@
       "organizer": "안동시, 매일신문사",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.admarathon.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1171,6 +1229,7 @@
       "organizer": "(사)파주출판도시입주기업체협의",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://runbookcity.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1192,6 +1251,7 @@
       "organizer": "홍천시체육회, 홍천육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.hongcheonrun.net/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1213,6 +1273,7 @@
       "organizer": "달서구체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.달서하프마라톤.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1233,6 +1294,7 @@
       "organizer": "(주)경남신문사",
       "verifiedAt": "2026-07-12",
       "officialUrl": "http://www.knmarathon.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1253,6 +1315,7 @@
       "organizer": "(사)한국체육개발원 등",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://seoulopen.or.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1273,6 +1336,7 @@
       "organizer": "헤럴드경제",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://hangeulrun.com/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1293,6 +1357,7 @@
       "organizer": "마라톤선교연합회/천주교수원교구",
       "verifiedAt": "2026-07-12",
       "officialUrl": "https://cafe.naver.com/browna6seu",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1313,6 +1378,7 @@
       "organizer": "구미시산악연맹, 구미트레일런",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "https://cafe.naver.com/gumitrailrunnerclub",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1332,6 +1398,7 @@
       "organizer": "천안삼거리흥타령울트라조직위",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.chultra.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1352,6 +1419,7 @@
       "organizer": "거제시, 거제시체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/b43655f0-60be-4c97-ad62-d377f6586ae0",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1374,6 +1442,7 @@
       "organizer": "나주시, MBN, 매일경제",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://najumarathon.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1396,6 +1465,7 @@
       "organizer": "한국트레일러너연맹 (사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.koreatrail.net/home/main.php?link=event&einc=eindex&csno=20190605121808&opp=20260203121910#baseline",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1416,6 +1486,7 @@
       "note": "풀·하프·10km 참가비와 접수 기간이 확인됩니다.",
       "capacity": 10000,
       "officialUrl": "http://www.gyeongjumarathon.com/home",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -1435,6 +1506,7 @@
       "organizer": "대전광역시 중구체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://dtrail.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1456,6 +1528,7 @@
       "organizer": "정선군",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://jsrun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1476,6 +1549,7 @@
       "organizer": "아시아투데이",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://asiarun.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1497,6 +1571,7 @@
       "organizer": "목포MBC / 마라톤세상",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.greenstep.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1517,6 +1592,7 @@
       "organizer": "대구광역시북구체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://maraton.dbsfa365.co.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1537,6 +1613,7 @@
       "organizer": "여주시육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/edaee6e1-0d92-4248-9927-06ed3b0abfd0",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1558,6 +1635,7 @@
       "organizer": "대덕구",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.dcmarathon.or.kr/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1578,6 +1656,7 @@
       "organizer": "(사)대한생활체육마라톤협회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://xn--439a68tboh.kr/index.asp",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1599,6 +1678,7 @@
       "organizer": "광명시체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://gmrun.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1620,6 +1700,7 @@
       "organizer": "청송군, 매일신문",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://csmarathon.co.kr/csmarathon/",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1651,6 +1732,7 @@
       "note": "공식 사이트 기준 Full 일반접수는 7월 14일 14시, 10km 일반접수는 7월 16일 14시에 열립니다.",
       "capacity": 12000,
       "officialUrl": "https://www.chuncheonmarathon.com/apply/part-application.html",
+      "externalLinkKind": "official",
       "sourceName": "공식 · 마라톤GO"
     },
     {
@@ -1672,6 +1754,7 @@
       "organizer": "청도군체육회, 대구일보",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://청도반시마라톤.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1693,6 +1776,7 @@
       "organizer": "K-RUN챌린지조직위",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.irunman.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1714,6 +1798,7 @@
       "organizer": "김천시체육회, 매일신문사",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://gcmarathon.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1734,6 +1819,7 @@
       "organizer": "무안군체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/d596615e-cf32-4f20-bdbe-13b633f51c4e",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1753,6 +1839,7 @@
       "note": "러너블에서 미등록 추가접수 선응모가 7월 한 달간 진행 중입니다.",
       "capacity": 30000,
       "officialUrl": "https://runable.me/",
+      "externalLinkKind": "official",
       "sourceName": "러너블 · JTBC 공식"
     },
     {
@@ -1774,6 +1861,7 @@
       "organizer": "울산인권마라톤대회 조직위원회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.humanrun.org",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1795,6 +1883,7 @@
       "organizer": "대전시 중구 육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.djmarathon.co.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1815,7 +1904,8 @@
       "registrationPeriodLabel": "9/1 - 9/30",
       "organizer": "영천시육상연맹, 채널경북",
       "verifiedAt": "마라톤온라인 home 아이콘",
-      "officialUrl": "http://runyc.kr",
+      "officialUrl": "http://www.roadrun.co.kr/schedule/view.php?no=41539",
+      "externalLinkKind": "source",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1838,6 +1928,7 @@
       "organizer": "부여군마라톤연합회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://mara1080.com/event/ffc023fc-7a54-4610-bdd6-2bb9a1028122",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1858,6 +1949,7 @@
       "organizer": "배내골 주민자치위원회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://k-marathon.or.kr/main.php",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1878,6 +1970,7 @@
       "organizer": "송파구육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.songparunsportal.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1897,6 +1990,7 @@
       "organizer": "하청면체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.거제앵산트레일레이스.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1917,6 +2011,7 @@
       "organizer": "가민,러너블",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://runable.me/product/18977?comp=18962",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1936,6 +2031,7 @@
       "note": "HALF 6월 25일, 10km 6월 26일 접수로 확인됩니다.",
       "capacity": 12000,
       "officialUrl": "http://mbn-seoulmarathon.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
     {
@@ -1957,6 +2053,7 @@
       "organizer": "고창군체육회",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://www.gcrun.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1977,6 +2074,7 @@
       "organizer": "세종특별자치시육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://sjrun.com",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     },
     {
@@ -1998,6 +2096,7 @@
       "organizer": "울산광역시 울주군육상연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "officialUrl": "http://영남알프스마라톤.kr",
+      "externalLinkKind": "official",
       "sourceName": "마라톤온라인"
     }
   ]

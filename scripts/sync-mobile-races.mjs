@@ -49,6 +49,7 @@ function normalizeRace(race, prefix) {
     organizer: race.organizer ?? undefined,
     verifiedAt: race.registrationTimeVerifiedAt ?? race.linkVerifiedFrom ?? undefined,
     officialUrl: race.registrationUrl ?? race.sourceDetailUrl,
+    externalLinkKind: race.registrationUrl ? "official" : "source",
     sourceName: race.sourceName,
   };
 }

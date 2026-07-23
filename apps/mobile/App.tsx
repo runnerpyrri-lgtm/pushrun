@@ -232,7 +232,7 @@ function AppScreen() {
           <Text accessibilityRole="header" style={styles.wordmark}>
             러닝<Text style={styles.wordmarkAccent}>봄</Text>
           </Text>
-          <Text style={styles.version}>Native 0.18.0</Text>
+          <Text style={styles.version}>Native 0.18.1</Text>
         </View>
 
         <View style={styles.intro}>
@@ -280,6 +280,7 @@ function AppScreen() {
             const busy = race.id === busyRaceId;
             const status = registrationStatusLabel(race);
             const canSchedule = canScheduleRegistrationAlert(race);
+            const externalLinkLabel = race.externalLinkKind === 'source' ? '대회 정보 출처' : '공식 대회 페이지';
             return (
               <View key={race.id} style={[styles.raceCard, isTablet && styles.raceCardTablet, focused && styles.raceCardFocused]}>
                 <View style={styles.raceTopline}>
@@ -318,10 +319,10 @@ function AppScreen() {
                   </Pressable>
                   <Pressable
                     accessibilityRole="link"
-                    onPress={() => void openExternalUrl(race.officialUrl, '공식 대회 페이지')}
+                    onPress={() => void openExternalUrl(race.officialUrl, externalLinkLabel)}
                     style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}
                   >
-                    <Text style={styles.secondaryButtonText}>공식 대회 페이지</Text>
+                    <Text style={styles.secondaryButtonText}>{externalLinkLabel}</Text>
                   </Pressable>
                 </View>
 
