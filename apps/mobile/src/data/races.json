@@ -1,5 +1,5 @@
 {
-  "revision": "2026.07.24-race-data-12",
+  "revision": "2026.07.25-race-data-13",
   "source": "RunningBom 웹 정본의 검증된 대회 데이터",
   "races": [
     {
@@ -958,6 +958,27 @@
       "organizer": "주식회사 락앤런",
       "verifiedAt": "마라톤GO 공개 일정 상세",
       "officialUrl": "https://rocknrun.kr/REDFOODRACE",
+      "externalLinkKind": "official",
+      "sourceName": "마라톤GO"
+    },
+    {
+      "id": "schedule-855bdb82c78e",
+      "name": "나이트런 in 청주",
+      "region": "충북",
+      "venue": "무심천 체육공원",
+      "raceDate": "2026-09-12",
+      "distances": [
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-05-21T00:00:00+09:00",
+      "registrationClosesAt": "2026-08-30T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "open",
+      "registrationPeriodLabel": "05/21 - 08/30",
+      "organizer": "나이트런 플러스",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://n-runplus.co.kr/",
       "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
@@ -2304,6 +2325,28 @@
       "sourceName": "마라톤GO"
     },
     {
+      "id": "schedule-083391df052c",
+      "name": "2026 울산마라톤대회",
+      "region": "울산",
+      "venue": "울산종합운동장",
+      "raceDate": "2026-10-11",
+      "distances": [
+        "Half",
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-07-27T00:00:00+09:00",
+      "registrationClosesAt": "2026-08-31T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "scheduled",
+      "registrationPeriodLabel": "07/27 - 08/31",
+      "organizer": "울산광역시 육상연맹",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-ulsan-marathon-asanro-road-race",
+      "externalLinkKind": "source",
+      "sourceName": "마라톤GO"
+    },
+    {
       "id": "schedule-a474df3af840",
       "name": "2026 핑크런",
       "region": "서울",
@@ -2367,6 +2410,28 @@
       "organizer": "한국트레일러너연맹 (사)한국산악마라톤연맹",
       "verifiedAt": "마라톤온라인 home 아이콘",
       "sourceName": "마라톤온라인"
+    },
+    {
+      "id": "schedule-1b8d7f7833f7",
+      "name": "제5회 천안이봉주마라톤대회",
+      "region": "충남",
+      "venue": "천안종합운동장",
+      "raceDate": "2026-10-11",
+      "distances": [
+        "Half",
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-07-31T00:00:00+09:00",
+      "registrationClosesAt": "2026-08-30T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "scheduled",
+      "registrationPeriodLabel": "07/31 - 08/30",
+      "organizer": "-",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://bjlee.casports.or.kr/",
+      "externalLinkKind": "official",
+      "sourceName": "마라톤GO"
     },
     {
       "id": "gyeongju-marathon",
@@ -2499,6 +2564,27 @@
       "sourceName": "마라톤GO"
     },
     {
+      "id": "schedule-6a11c939f2bc",
+      "name": "제2회 10.19 평화마라톤",
+      "region": "전남",
+      "venue": "여수진남경기장 주경기장",
+      "raceDate": "2026-10-17",
+      "distances": [
+        "5K",
+        "10.19"
+      ],
+      "registrationOpensAt": "2026-07-24T00:00:00+09:00",
+      "registrationClosesAt": "2026-09-20T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "open",
+      "registrationPeriodLabel": "07/24 - 09/20",
+      "organizer": "뉴스탑전남",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://marathongo.co.kr/raceDetail/domestic/2nd-1019-peace-marathon-2026-yeosu",
+      "externalLinkKind": "source",
+      "sourceName": "마라톤GO"
+    },
+    {
       "id": "schedule-bfc4c011188d",
       "name": "제7회 충청남도 태안 전국어울림마라톤",
       "region": "충남",
@@ -2556,7 +2642,7 @@
       "registrationOpensAt": "2026-07-01T00:00:00+09:00",
       "registrationClosesAt": "2026-07-24T23:59:00+09:00",
       "registrationTimeConfirmed": false,
-      "registrationStatus": "open",
+      "registrationStatus": "closed",
       "registrationPeriodLabel": "7/1 - 7/24",
       "organizer": "목포MBC / 마라톤세상",
       "verifiedAt": "마라톤온라인 home 아이콘",
@@ -2747,6 +2833,27 @@
       "organizer": "전북",
       "verifiedAt": "마라톤GO 공개 일정 상세",
       "officialUrl": "https://www.facebook.com/jeonbuk.kr/posts/1441578457998057",
+      "externalLinkKind": "official",
+      "sourceName": "마라톤GO"
+    },
+    {
+      "id": "schedule-4c1a70609360",
+      "name": "네이버웍스와 함께하는 세종런 26",
+      "region": "충남",
+      "venue": "세종중앙공원 도시축제마당 일원",
+      "raceDate": "2026-10-24",
+      "distances": [
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-07-31T00:00:00+09:00",
+      "registrationClosesAt": "2026-08-30T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "scheduled",
+      "registrationPeriodLabel": "07/31 - 08/30",
+      "organizer": "세종시 육상연맹",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://sejongrun26.com/",
       "externalLinkKind": "official",
       "sourceName": "마라톤GO"
     },
@@ -3204,6 +3311,50 @@
       "sourceName": "마라톤온라인"
     },
     {
+      "id": "schedule-94de4adc31dc",
+      "name": "2026 전국사상ECO마라톤",
+      "region": "부산",
+      "venue": "삼락생태공원 럭비구장",
+      "raceDate": "2026-11-08",
+      "distances": [
+        "10km 로드레이스",
+        "5km 건강달리기",
+        "5km 슬로조깅"
+      ],
+      "registrationOpensAt": "2026-08-10T00:00:00+09:00",
+      "registrationClosesAt": "2026-10-11T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "scheduled",
+      "registrationPeriodLabel": "08/10 - 10/11",
+      "organizer": "사상구청,사상구체육회",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-jeon-guk-sasang-eco-marathon",
+      "externalLinkKind": "source",
+      "sourceName": "마라톤GO"
+    },
+    {
+      "id": "schedule-b94c08230354",
+      "name": "경주시육상연맹회장배 마라톤대회",
+      "region": "경북",
+      "venue": "경주서천둔치(생활체육광장)",
+      "raceDate": "2026-11-08",
+      "distances": [
+        "Half",
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-07-21T00:00:00+09:00",
+      "registrationClosesAt": "2026-10-08T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "open",
+      "registrationPeriodLabel": "07/21 - 10/08",
+      "organizer": "경주시육상연맹",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://marathongo.co.kr/raceDetail/domestic/gyeongju-athletic-federation-marathon-2026",
+      "externalLinkKind": "source",
+      "sourceName": "마라톤GO"
+    },
+    {
       "id": "schedule-b8f5765d35e8",
       "name": "제11회 송파구청장배 마라톤",
       "region": "서울",
@@ -3259,6 +3410,29 @@
       "verifiedAt": "마라톤GO 공개 일정 상세",
       "officialUrl": "https://pohangmarathon.com/",
       "externalLinkKind": "official",
+      "sourceName": "마라톤GO"
+    },
+    {
+      "id": "schedule-53f2b853fa3c",
+      "name": "제26회 순천 남승룡마라톤대회",
+      "region": "전남",
+      "venue": "전남광주 순천시 팔마로 333",
+      "raceDate": "2026-11-14",
+      "distances": [
+        "Full",
+        "Half",
+        "10K",
+        "5K"
+      ],
+      "registrationOpensAt": "2026-08-03T00:00:00+09:00",
+      "registrationClosesAt": "2026-10-16T23:59:00+09:00",
+      "registrationTimeConfirmed": false,
+      "registrationStatus": "scheduled",
+      "registrationPeriodLabel": "08/03 - 10/16",
+      "organizer": "순천시체육회",
+      "verifiedAt": "마라톤GO 공개 일정 상세",
+      "officialUrl": "https://marathongo.co.kr/raceDetail/domestic/26th-suncheon-namseungryong-marathon-2026",
+      "externalLinkKind": "source",
       "sourceName": "마라톤GO"
     },
     {
